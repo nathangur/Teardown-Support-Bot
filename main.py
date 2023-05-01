@@ -663,4 +663,4 @@ async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplet
 
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot
 bot.run(
-  "MTEwMjQyNTQwMzIwMjc0MDM3NA.G1wlTj.vd2wHO6um3lWNz8ZTiMY-ZQtz8VmBDYK3ju-nY")
+  "TOKEN")

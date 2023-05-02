@@ -261,16 +261,21 @@ async def _teardowntags(ctx: SlashContext, tag: str = None):
   if tag == "all":
     response = "```\n" + "\n".join(TEARDOWN_TAGS.keys()) + "\n```"
     title = f'Teardown Tags'
+    embed = discord.Embed(title=title, description=response, color=0xbc9946)
+    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
+    await ctx.send(embed=embed)
   elif tag and tag.lower() in TEARDOWN_TAGS:
     response = TEARDOWN_TAGS[tag.lower()]
     title = f'Tag: {tag}'
+    embed = discord.Embed(title=title, description=response, color=0xbc9946)
+    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
+    await ctx.send(embed=embed)
   else:
     response = f'Tag "{tag}" not found.'
     title = f'Tag: {tag}'
-    await ctx.send(response, delete_after=5)
-  embed = discord.Embed(title=title, description=response, color=0xbc9946)
-  embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
-  await ctx.send(embed=embed)
+    embed = discord.Embed(title=title, description=response, color=0xbc9946)
+    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
+    await ctx.send(embed=embed, delete_after=5)
 
 
 TEARDOWN_REGISTRY = {
@@ -655,21 +660,29 @@ async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplet
     if registry == "all":
         response = "```\n" + "\n".join(TEARDOWN_REGISTRY.keys()) + "\n```"
         title = f'Teardown Registry'
+        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
+        await ctx.send(embed=embed)
     elif registry and registry.lower() in TEARDOWN_REGISTRY:
         response = TEARDOWN_REGISTRY[registry.lower()]
         if response == "":
             response = "No description"
         title = f'Registry: {registry}'
+        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
+        await ctx.send(embed=embed)
     elif autocomplete and autocomplete.lower() in autocomplete_options:
         response = "```\n" + "\n".join(autocomplete_options[autocomplete.lower()]) + "\n```"
         title = f'Autocomplete: {autocomplete}'
+        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
+        await ctx.send(embed=embed)
     else:
         response = f'Registry entry: "{registry}" not found.'
         title = f'Registry: {registry}'
-        await ctx.send(response, delete_after=5)
-    embed = discord.Embed(title=title, description=response, color=0xbc9946)
-    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-    await ctx.send(embed=embed)
+        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
+        await ctx.send(embed=embed, delete_after=5)
 
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot
 bot.run(

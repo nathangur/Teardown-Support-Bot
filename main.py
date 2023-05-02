@@ -1,20 +1,33 @@
 from discord.ext import commands
+from discord.ext.commands import has_any_role
 import discord
-from discord_slash import SlashCommand, SlashContext
-from discord_slash.utils.manage_commands import create_option, create_choice
-from discord_slash.model import SlashCommandOptionType
+import interactions
+from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment
+from interactions.ext import prefixed_commands
 import json
 
-bot = commands.Bot(command_prefix="/")
-slash = SlashCommand(bot, sync_commands=True)
+intents = discord.Intents.all()
 
+bot = Client(intents=Intents.DEFAULT, sync_interactions=True, asyncio_debug=True)
+prefixed_commands.setup(bot)
 
-@slash.slash(name="TechSupport",
+def load_custom_commands():
+    try:
+        with open("/root/TTS/custom_commands.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+    
+def save_custom_commands(commands):
+    with open("/root/TTS/custom_commands.json", "w") as file:
+        json.dump(commands, file, indent=4)
+
+@slash_command(name="techsupport",
              description="Get answers to basic tech support questions",
              options=[
-               create_option(name="question",
+               SlashCommandOption(name="question",
                              description="Select a question",
-                             option_type=3,
+                             type=3,
                              required=True,
                              choices=[{
                                "name": "Update drivers and Windows and reboot",
@@ -55,6 +68,8 @@ async def _TechSupport(ctx: SlashContext, question: str):
                 '3. Right-click on Teardown and select "Properties".\n'
                 '4. Click on the "Local Files" tab.\n'
                 '5. Click "Verify Integrity of Game Files".')
+    image_url = 'https://media.discordapp.net/attachments/1070933425005002812/1102841814676951060/Screenshot_1.png'
+    image = EmbedAttachment(url=image_url)
   elif question == 'appdata':
     response = (
       '1. Press the Windows key + R to open the Run dialog. Or open file explorer and select the top search bar.\n'
@@ -82,22 +97,77 @@ async def _TechSupport(ctx: SlashContext, question: str):
         '3. You can ask questions in https://discord.com/channels/760105076755922996/768940642767208468.\n'
     )
   elif question == 'artifacts':
-    response = (
-        '1. Update your graphics card drivers to the latest version.\n'
-        '2. Disable any overlays such as the Razer Overlay.\n'
-    )
-    image_url = 'https://media.discordapp.net/attachments/1069850310782234635/1069850311235207258/image.png?width=1562&height=905'
-    response += f'[Example artifact from overlay]({image_url})'
+      response = (
+          '1. Update your graphics card drivers to the latest version.\n'
+          '2. Disable any overlays such as the Razer Overlay.\n'
+      )
+      image_url = 'https://media.discordapp.net/attachments/1069850310782234635/1069850311235207258/image.png?width=1562&height=905'
+      image = EmbedAttachment(url=image_url)
   elif question == "nosound":
-    response = (
-      'When starting Teardown, avoid alt-tabbing or unfocusing the window while it starts.'
-    )
+      response = (
+          'When starting Teardown, avoid alt-tabbing or unfocusing the window while it starts.'
+      )
+  else:
+      response = 'Invalid question'
+      await ctx.send(response, delete_after=3, silent=True)
+
+  embed = interactions.Embed(title="Tech Support", description=response, color=0x41bfff)
+  if image:
+      embed.image = image
+  await ctx.send(embed=embed, silent=True)
+
+@slash_command(name="faq",
+             description="Get answers to frequently asked questions",
+             options=[
+               SlashCommandOption(name="question",
+                             description="Select a question",
+                             type=3,
+                             required=True,
+                             choices=[{
+                               "name": "How do I reset my progress?",
+                               "value": "progress"
+                             }, {
+                               "name": "Will there be a part 3?",
+                               "value": "part3"
+                             }, {
+                               "name": "Will there be multiplayer?",
+                               "value": "multiplayer"
+                              }, {
+                                "name": "Is Teardown available in other languages?", 
+                                "value": "languages"
+                              }, {
+                                "name": "Can you play the game in VR?",
+                                "value": "vr"
+                              }, {
+                                "name": "Will there be more expansions?",
+                                "value": "expansions"
+                              }, {
+                                "name": "When will the next update be released?",
+                                "value": "update"
+                             }])
+             ])
+async def _FAQ(ctx: SlashContext, question: str):
+  if question == 'progress':
+    response = "You can reset your game progress by going to options in the main menu, clicking the game button, and then clicking reset progress."
+  elif question == 'part3':
+    response = "There will not be a Part 3. Teardown is a complete game and will not be receiving any more main campaign updates."
+  elif question == 'multiplayer':
+    response = "Currently, Teardown does not have native multiplayer support. It is possible multiplayer will be added in the future."
+  elif question == 'languages':
+    response = "Teardown is currently only available in English. We might look into localization at a later stage."
+  elif question == 'vr':
+    response = "Teardown does not support VR."
+  elif question == 'expansions':
+    response = "Future expansions are unknown at this time, so keep an eye out for any announcements."
+  elif question == 'update':
+    response = "Updates are released when they are ready. We do not have a set schedule for updates."
   else:
     response = 'Invalid question'
-    await ctx.send(response, delete_after=5)
+    await ctx.send(response, delete_after=3, silent=True)
 
-  embed = discord.Embed(title="Tech Support", description=response, color=0x41bfff)
-  await ctx.send(embed=embed)
+  embed = interactions.Embed(title="FAQ", description=response, color=0x41bfff)
+  await ctx.send(embed=embed, silent=True)
+
 
 
 with open('/root/TTS/teardown_api.json', 'r') as f:
@@ -112,19 +182,19 @@ def search_teardown_api(query: str):
   return results
 
 
-@slash.slash(name="Docs",
+@slash_command(name="docs",
              description="Search the Teardown API documentation",
              options=[
-               create_option(name="query",
+               SlashCommandOption(name="query",
                              description="Enter your search query",
-                             option_type=3,
+                             type=3,
                              required=True)
              ])
 async def _teardowndocs(ctx: SlashContext, query: str):
   results = search_teardown_api(query)
 
   if not results:
-    await ctx.send(f'No results found for "{query}"', delete_after=5)
+    await ctx.send(f'No results found for "{query}"', delete_after=3, silent=True)
     return
 
   for result in results:
@@ -157,10 +227,12 @@ async def _teardowndocs(ctx: SlashContext, query: str):
         example = 'None'
       description += f'\n\n**Example**\n{example}'
 
-    embed = discord.Embed(title=title, description=description, color=0xbc9946)
+    title = f'**{result["name"]}**'
+    url = f'https://teardowngame.com/modding/api.html#{result["name"]}'
+    embed = interactions.Embed(title=title, url=url, description=description, color=0xbc9946)
     # Set the footer with the API version in small italics
     embed.set_footer(text=f'API Version: {TEARDOWN_API["version"]}')
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed, silent=True)
 
 
 TEARDOWN_TAGS = {
@@ -249,32 +321,32 @@ TEARDOWN_TAGS = {
 }
 
 
-@slash.slash(name="Tags",
+@slash_command(name="tags",
              description="Get information about Teardown tags",
              options=[
-               create_option(name="tag",
+               SlashCommandOption(name="tag",
                              description="Enter the name of the tag",
-                             option_type=3,
+                             type=3,
                              required=True)
              ])
 async def _teardowntags(ctx: SlashContext, tag: str = None):
   if tag == "all":
     response = "```\n" + "\n".join(TEARDOWN_TAGS.keys()) + "\n```"
     title = f'Teardown Tags'
-    embed = discord.Embed(title=title, description=response, color=0xbc9946)
+    embed = interactions.Embed(title=title, description=response, color=0xbc9946)
     embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed, silent=True)
   elif tag and tag.lower() in TEARDOWN_TAGS:
     response = TEARDOWN_TAGS[tag.lower()]
     title = f'Tag: {tag}'
-    embed = discord.Embed(title=title, description=response, color=0xbc9946)
+    embed = interactions.Embed(title=title, description=response, color=0xbc9946)
     embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed, silent=True)
   else:
     response = f'Tag "{tag}" not found.'
     title = f'Tag: {tag}'
-    embed = discord.Embed(title=title, description=response, color=0xbc9946)
-    await ctx.send(embed=embed, delete_after=5)
+    embed = interactions.Embed(title=title, description=response, color=0xbc9946)
+    await ctx.send(embed=embed, delete_after=3, silent=True)
 
 
 TEARDOWN_REGISTRY = {
@@ -636,20 +708,20 @@ for key in TEARDOWN_REGISTRY:
             autocomplete_options[option].append(key)
 
 # Add the new option in the slash command
-@slash.slash(
-    name="Registry",
+@slash_command(
+    name="registry",
     description="Get information about Teardown registry",
     options=[
-        create_option(
+        SlashCommandOption(
             name="registry",
             description="Enter the name of the registry",
-            option_type=3,
+            type=3,
             required=False
         ),
-        create_option(
+        SlashCommandOption(
             name="autocomplete",
             description="Enter the name of the autocomplete entry",
-            option_type=3,
+            type=3,
             required=False,
             choices=list(autocomplete_options.keys())
         )
@@ -659,29 +731,110 @@ async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplet
     if registry == "all":
         response = "```\n" + "\n".join(TEARDOWN_REGISTRY.keys()) + "\n```"
         title = f'Teardown Registry'
-        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, silent=True)
     elif registry and registry.lower() in TEARDOWN_REGISTRY:
         response = TEARDOWN_REGISTRY[registry.lower()]
         if response == "":
             response = "No description"
         title = f'Registry: {registry}'
-        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, silent=True)
     elif autocomplete and autocomplete.lower() in autocomplete_options:
         response = "```\n" + "\n".join(autocomplete_options[autocomplete.lower()]) + "\n```"
         title = f'Autocomplete: {autocomplete}'
-        embed = discord.Embed(title=title, description=response, color=0xbc9946)
+        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, silent=True)
     else:
         response = f'Registry entry: "{registry}" not found.'
         title = f'Registry: {registry}'
-        embed = discord.Embed(title=title, description=response, color=0xbc9946)
-        await ctx.send(embed=embed, delete_after=5)
+        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
+        await ctx.send(embed=embed, delete_after=3, silent=True)
+
+custom_commands = load_custom_commands()
+
+@slash_command(name="createcustomcommand",
+             description="Create a custom command",
+             options=[
+               SlashCommandOption(name="command_name",
+                             description="Enter the name of the custom command",
+                             type=3,
+                             required=True),
+               SlashCommandOption(name="command_response",
+                             description="Enter the response for the custom command",
+                             type=3,
+                             required=True)
+             ])
+async def _CreateCustomCommand(ctx: SlashContext, command_name: str, command_response: str):
+  if command_name.lower() == "all":
+    await ctx.send(f"Cannot create a custom command named 'all'.", delete_after=3, silent=True)
+  else:
+    custom_commands[command_name.lower()] = {"response": command_response, "creator_id": ctx.author.id}
+    save_custom_commands(custom_commands)
+    await ctx.send(f"Custom command '{command_name}' has been created.", delete_after=3, silent=True)
+
+@slash_command(name="customcommand",
+             description="Use a custom command",
+             options=[
+               SlashCommandOption(name="command_name",
+                             description="Enter the name of the custom command",
+                             type=3,
+                             required=True)
+             ])
+async def _CustomCommand(ctx: SlashContext, command_name: str):
+    if command_name.lower() == "all":
+        if custom_commands:
+            response = ""
+            for name, command_data in custom_commands.items():
+                command_response = command_data["response"]
+                response += f"**{name}** - {command_response}\n"
+
+            embed = interactions.Embed(title="Custom Commands", description=response, color=0xe9254e)
+            await ctx.send(embed=embed, silent=True)
+        else:
+            await ctx.send("No custom commands have been created.", delete_after=3, silent=True)
+
+    elif command_name.lower() in custom_commands:
+        response = custom_commands[command_name.lower()]["response"]
+        embed = interactions.Embed(title=f"{command_name}", description=response, color=0xe9254e)
+        await ctx.send(embed=embed, silent=True)
+    else:
+        await ctx.send(f"Custom command '{command_name}' not found.", delete_after=3, silent=True)
+
+
+required_roles = ["Moderator", "Admin"]
+
+# Helper function to check if the user has required roles
+def has_required_role(member):
+    return any(role.name in required_roles for role in member.roles)
+
+@slash_command(name="deletecustomcommand",
+             description="Delete a custom command",
+             options=[
+               SlashCommandOption(name="command_name",
+                             description="Enter the name of the custom command to delete",
+                             type=3,
+                             required=True)
+             ])
+async def _DeleteCustomCommand(ctx: SlashContext, command_name: str):
+    if command_name.lower() not in custom_commands:
+        await ctx.send(f"Custom command '{command_name}' not found.", delete_after=3, silent=True)
+        return
+
+    command_creator_id = custom_commands[command_name.lower()]["creator_id"]
+    is_creator = ctx.author.id == command_creator_id
+    has_role = has_required_role(ctx.author)
+
+    if is_creator or has_role:
+        del custom_commands[command_name.lower()]
+        save_custom_commands(custom_commands)
+        await ctx.send(f"Custom command '{command_name}' has been deleted.", delete_after=3, silent=True)
+    else:
+        await ctx.send(f"You don't have permission to delete this custom command.", delete_after=3, silent=True)
 
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot
-bot.run(
+bot.start(
   "TOKEN")

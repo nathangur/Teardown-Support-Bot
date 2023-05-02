@@ -94,12 +94,13 @@ async def _TechSupport(ctx: SlashContext, question: str):
     )
   else:
     response = 'Invalid question'
+    await ctx.send(response, delete_after=5)
 
-  embed = discord.Embed(title="Tech Support", description=response)
+  embed = discord.Embed(title="Tech Support", description=response, color=0x41bfff)
   await ctx.send(embed=embed)
 
 
-with open('TTS/teardown_api.json', 'r') as f:
+with open('/root/TTS/teardown_api.json', 'r') as f:
   TEARDOWN_API = json.load(f)
 
 def search_teardown_api(query: str):
@@ -120,11 +121,10 @@ def search_teardown_api(query: str):
                              required=True)
              ])
 async def _teardowndocs(ctx: SlashContext, query: str):
-  await ctx.defer()
   results = search_teardown_api(query)
 
   if not results:
-    await ctx.send(f'No results found for "{query}"')
+    await ctx.send(f'No results found for "{query}"', delete_after=5)
     return
 
   for result in results:
@@ -140,18 +140,24 @@ async def _teardowndocs(ctx: SlashContext, query: str):
         f'- **{arg["name"]}** ({arg["type"]}): {arg["desc"]}'
         for arg in result['arguments']
       ])
+      if arguments == '':
+        arguments = 'None'
       description += f'\n**Arguments**\n{arguments}'
 
     if 'return' in result:
       returns = '\n'.join(
         [f'- **{ret["type"]}**: {ret["desc"]}' for ret in result['return']])
+      if returns == '':
+        returns = 'None'
       description += f'\n\n**Returns**\n{returns}'
 
     if 'example' in result:
       example = f'```lua\n{result["example"]}\n```'
+      if example == '':
+        example = 'None'
       description += f'\n\n**Example**\n{example}'
 
-    embed = discord.Embed(title=title, description=description)
+    embed = discord.Embed(title=title, description=description, color=0xbc9946)
     # Set the footer with the API version in small italics
     embed.set_footer(text=f'API Version: {TEARDOWN_API["version"]}')
     await ctx.send(embed=embed)
@@ -261,7 +267,8 @@ async def _teardowntags(ctx: SlashContext, tag: str = None):
   else:
     response = f'Tag "{tag}" not found.'
     title = f'Tag: {tag}'
-  embed = discord.Embed(title=title, description=response)
+    await ctx.send(response, delete_after=5)
+  embed = discord.Embed(title=title, description=response, color=0xbc9946)
   embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
   await ctx.send(embed=embed)
 
@@ -650,6 +657,8 @@ async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplet
         title = f'Teardown Registry'
     elif registry and registry.lower() in TEARDOWN_REGISTRY:
         response = TEARDOWN_REGISTRY[registry.lower()]
+        if response == "":
+            response = "No description"
         title = f'Registry: {registry}'
     elif autocomplete and autocomplete.lower() in autocomplete_options:
         response = "```\n" + "\n".join(autocomplete_options[autocomplete.lower()]) + "\n```"
@@ -657,7 +666,8 @@ async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplet
     else:
         response = f'Registry entry: "{registry}" not found.'
         title = f'Registry: {registry}'
-    embed = discord.Embed(title=title, description=response)
+        await ctx.send(response, delete_after=5)
+    embed = discord.Embed(title=title, description=response, color=0xbc9946)
     embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
     await ctx.send(embed=embed)
 

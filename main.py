@@ -274,7 +274,6 @@ async def _teardowntags(ctx: SlashContext, tag: str = None):
     response = f'Tag "{tag}" not found.'
     title = f'Tag: {tag}'
     embed = discord.Embed(title=title, description=response, color=0xbc9946)
-    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
     await ctx.send(embed=embed, delete_after=5)
 
 
@@ -681,7 +680,6 @@ async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplet
         response = f'Registry entry: "{registry}" not found.'
         title = f'Registry: {registry}'
         embed = discord.Embed(title=title, description=response, color=0xbc9946)
-        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
         await ctx.send(embed=embed, delete_after=5)
 
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot

@@ -9,13 +9,18 @@ CREDITS:
 -Source Code: https://github.com/GGProGaming/Teardown-Support-Bot
 """
 import interactions
-from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext, EmbedAttachment
+from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext, EmbedAttachment, Task, IntervalTrigger, listen
 from interactions.client.errors import CommandOnCooldown
 from interactions.ext import prefixed_commands
 import json
 import os
 import re
 import collections
+import aiohttp
+import asyncio
+import difflib
+import time
+import requests
 
 bot = Client(intents=Intents.DEFAULT, sync_interactions=True, asyncio_debug=True)
 prefixed_commands.setup(bot)
@@ -78,8 +83,9 @@ async def _techsupport(ctx: SlashContext, question: str):
           'When starting Teardown, avoid alt-tabbing or unfocusing the window while it starts.'
       )
   else:
-      response = 'Invalid question'
-
+        response = 'Invalid question'
+        embed = interactions.Embed(title="Tech Support", description=response, color=0x41bfff)
+        await ctx.send(embed=embed, silent=True, delete_after=4)
   embed = interactions.Embed(title="Tech Support", description=response, color=0x41bfff)
   if image:
       embed.image = image
@@ -143,6 +149,8 @@ async def _faq(ctx: SlashContext, question: str):
         response = "**Credits:**\nGGProGaming: creator of this bot\nMicro: for hosting the bot and giving feedback\nfunlennysub: for the original bot\nThomasims: Teardown API scraper script\n\n**Source Code:**\nhttps://github.com/GGProGaming/Teardown-Support-Bot"
     else:
         response = 'Invalid question'
+        embed = interactions.Embed(title="FAQ", description=response, color=0x41bfff)
+        await ctx.send(embed=embed, silent=True, delete_after=4)
 
     embed = interactions.Embed(title="FAQ", description=response, color=0x41bfff)
     await ctx.send(embed=embed, silent=True)
@@ -193,7 +201,7 @@ async def _teardowndocs(ctx: SlashContext, autocomplete: str):
     results = search_teardown_api(autocomplete)
 
     if not results:
-        await ctx.send(f'No results found for "{autocomplete}"', delete_after=3, silent=True)
+        await ctx.send(f'No results found for "{autocomplete}"', delete_after=4, silent=True)
         return
 
     for result in results:
@@ -763,19 +771,20 @@ else:
 )
 @slash_option(name="name", description="The name of the tag", opt_type=OptionType.STRING, required=True)
 @slash_option(name="response", description="The response of the tag", opt_type=OptionType.STRING, required=True)
-async def custom(ctx: SlashContext, action: str, name: str, response: str):
+@slash_option(name="private", description="Make the tag private", opt_type=OptionType.BOOLEAN, required=False)
+async def custom(ctx: SlashContext, action: str, name: str, response: str, private: bool = False):
     name = name.lower()
     if action == "delete":
         await deletetag(ctx, name)
     elif response:
         if action == "create":
-            await createtag(ctx, name, response)
+            await createtag(ctx, name, response, private)
         elif action == "edit":
-            await edittag(ctx, name, response)
+            await edittag(ctx, name, response, private)
 
 
 @cooldown(Buckets.GUILD, 6, 86400)
-async def createtag(ctx: SlashContext, name: str, response: str):
+async def createtag(ctx: SlashContext, name: str, response: str, private: bool = False):
     usage_statistics["Create Tag"] += 1
     global custom_commands
     if not response:
@@ -783,7 +792,7 @@ async def createtag(ctx: SlashContext, name: str, response: str):
     elif name == "all" or name == "pat":
         embed = interactions.Embed(title="Error", description=f"The name {name} is reserved and cannot be used for a tag.", color=0xe9254e)
     elif name not in custom_commands:
-        custom_commands[name] = {"response": response, "creator": ctx.author.id}
+        custom_commands[name] = {"response": response, "creator": ctx.author.id, "private": private}
         with open("./tags.json", "w") as f:
             json.dump(custom_commands, f)
         embed = interactions.Embed(title="Tag Created", description=f"{name} has been created.", color=0xe9254e)
@@ -797,16 +806,23 @@ async def calltag(ctx: SlashContext, name: str):
     usage_statistics["Call Tag"] += 1
     name = name.lower()
     if name == "all":
-        command_list = "\n".join(f"{command_name}" for command_name in custom_commands.keys())
+        public_commands = [
+            command_name
+            for command_name, command_info in custom_commands.items()
+            if not command_info.get("private", False)
+            or command_info["creator"] == ctx.author.id
+            or has_required_role(ctx.author)
+        ]
+        command_list = "\n".join(public_commands)
         embed = interactions.Embed(title="List of Tags", description=command_list, color=0xe9254e)
-        await ctx.send(embed=embed, silent=True, delete_after=30)
+        await ctx.send(embed=embed, silent=True, delete_after=30, allowed_mentions=interactions.AllowedMentions.none(), ephemeral=True)
     elif name == "pat":
         await ctx.send("nya", silent=True)
     elif name in custom_commands:
         response = custom_commands[name]["response"]
         creator_id = custom_commands[name]["creator"]
         creator = await ctx.bot.fetch_user(creator_id)
-        
+
         # Check for image URL
         image_url = re.search(r"(https?://[^\s]+(?:jpg|jpeg|png|gif))", response)
         if image_url:
@@ -816,23 +832,23 @@ async def calltag(ctx: SlashContext, name: str):
             embed.set_image(url=image_url)
         else:
             embed = interactions.Embed(title=name, description=response.replace('\\n', '\n'), color=0xe9254e)
-            
+
         embed.set_footer(text=f"Created by {creator}", icon_url=creator.avatar_url)
         await ctx.send(embed=embed, silent=True, delete_after=210)
     else:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
         await ctx.send(embed=embed, silent=True, delete_after=4)
 
-
-async def edittag(ctx: SlashContext, name: str, new_response: str):
+async def edittag(ctx: SlashContext, name: str, new_response: str, private: bool = False):
     usage_statistics["Edit Tag"] += 1
     global custom_commands
     if name not in custom_commands:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
     elif not new_response:
         embed = interactions.Embed(title="Error", description="A response must be provided to edit a tag.", color=0xe9254e)
-    elif custom_commands[name]["creator"] == ctx.author.id or has_required_role(ctx.author):
+    if custom_commands[name]["creator"] == ctx.author.id or has_required_role(ctx.author):
         custom_commands[name]["response"] = new_response
+        custom_commands[name]["private"] = private
         with open("./tags.json", "w") as f:
             json.dump(custom_commands, f)
         embed = interactions.Embed(title="Tag Edited", description=f"{name} has been updated.", color=0xe9254e)
@@ -907,7 +923,82 @@ async def _usage_analytics(ctx: SlashContext):
 
       embed = interactions.Embed(title="Usage Analytics", description=response, color=0xe9254e)
       await ctx.send(embed=embed, silent=True, delete_after=210)
+"""
+STEAM_API_KEY = "F15539D3EE060289D56DC3B3A70248A6"
 
+async def fetch_workshop_items():
+    url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+    data = {
+        "key": "STEAM_API_KEY",
+        "publishedfileids[0]": "1167630",
+        "itemcount": 1,
+    }
+    response = requests.post(url, data=data)
+
+    if response.status_code == 200:
+        workshop_items = response.json()["response"]["publishedfiledetails"]
+        return workshop_items
+    else:
+        return None
+
+async def get_duplicate_items(ctx: SlashContext):
+    if not has_required_role(ctx.author):
+        await ctx.send("You don't have permission to use this command.", silent=True)
+        return
+
+    workshop_items = await fetch_workshop_items()
+
+    if workshop_items:
+        duplicates = find_duplicates(workshop_items)
+
+        if duplicates:
+            message = "Duplicate Workshop Items:\n\n"
+            for original, duplicate in duplicates:
+                message += f"Original: {original['title']} ({original['file_size']} bytes) - [Link](https://steamcommunity.com/sharedfiles/filedetails/?id={original['publishedfileid']})\n"
+                message += f"Duplicate: {duplicate['title']} ({duplicate['file_size']} bytes) - [Link](https://steamcommunity.com/sharedfiles/filedetails/?id={duplicate['publishedfileid']})\n\n"
+
+            await ctx.send(message, silent=True)
+        else:
+            await ctx.send("No duplicate items found.", silent=True)
+    else:
+        await ctx.send("Failed to fetch workshop items.", silent=True)
+
+@slash_command(name="findduplicates", description="Find duplicate items in the Teardown workshop")
+async def find_duplicates(ctx: SlashContext):
+    user = ctx.author
+    has_role = has_required_role(ctx.author)
+    if has_role:
+        workshop_items = await fetch_workshop_items()
+        if workshop_items:
+            published_file_ids = [item["publishedfileid"] for item in workshop_items]
+            item_details = await fetch_workshop_items(published_file_ids)
+            duplicate_items = get_duplicate_items(item_details)
+
+            if duplicate_items:
+                message = "Found duplicate items:\n"
+                for original, duplicate in duplicate_items:
+                    message += f'Original: {original["title"]} ({original["file_size"]} bytes) - [Link](https://steamcommunity.com/sharedfiles/filedetails/?id={original["publishedfileid"]})\n'
+                    message += f'Duplicate: {duplicate["title"]} ({duplicate["file_size"]} bytes) - [Link](https://steamcommunity.com/sharedfiles/filedetails/?id={duplicate["publishedfileid"]})\n\n'
+                await ctx.send(message, silent=True)
+            else:
+                await ctx.send("No duplicate items found.", silent=True)
+        else:
+            await ctx.send("Failed to fetch workshop items.", silent=True)
+
+def compare_items(item1, item2, size_threshold=10240, name_similarity=0.8):
+    name1 = item1["title"].lower()
+    name2 = item2["title"].lower()
+    size1 = int(item1["file_size"])
+    size2 = int(item2["file_size"])
+
+    # Compare the names using a sequence matcher
+    similarity = difflib.SequenceMatcher(None, name1, name2).ratio()
+
+    # Check if the names are similar and the sizes are within the threshold
+    if similarity >= name_similarity and abs(size1 - size2) <= size_threshold:
+        return True
+    return False
+"""
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot
 bot.start(
   "TOKEN")

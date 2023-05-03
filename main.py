@@ -736,7 +736,7 @@ if os.path.exists("/root/TTS/tags.json"):
 else:
     custom_commands = {}
 
-@slash_command(name="tagz", description="Create, call, or delete a custom tag")
+@slash_command(name="tagz", description="Create, edit, or delete a custom tag")
 @slash_option(
     name="action",
     description="Choose an action",
@@ -744,7 +744,6 @@ else:
     required=True,
     choices=[
         {"name": "Create Tag", "value": "create"},
-        {"name": "Call Tag", "value": "call"},
         {"name": "Edit Tag", "value": "edit"},
         {"name": "Delete Tag", "value": "delete"},
     ],
@@ -753,16 +752,14 @@ else:
 @slash_option(name="response", description="The response of the tag", opt_type=OptionType.STRING, required=False)
 async def custom(ctx: SlashContext, action: str, name: str, response: str = None):
     if action == "create":
-        await createcommand(ctx, name, response)
-    elif action == "call":
-        await callcommand(ctx, name)
+        await createtag(ctx, name, response)
     elif action == "edit":
-        await editcommand(ctx, name, response)
+        await edittag(ctx, name, response)
     elif action == "delete":
-        await deletecommand(ctx, name)
+        await deletetag(ctx, name)
 
 @cooldown(Buckets.GUILD, 6, 86400)
-async def createcommand(ctx: SlashContext, name: str, response: str):
+async def createtag(ctx: SlashContext, name: str, response: str):
     usage_statistics["Create Tag"] += 1
     global custom_commands
     if not response:
@@ -778,7 +775,9 @@ async def createcommand(ctx: SlashContext, name: str, response: str):
         embed = interactions.Embed(title="Error", description="This tag already exists.", color=0xe9254e)
     await ctx.send(embed=embed, silent=True, delete_after=3)
 
-async def callcommand(ctx: SlashContext, name: str):
+@slash_command(name="calltag", description="Call a tag")
+@slash_option(name="name", description="The name of the tag", required=True, opt_type=OptionType.STRING)
+async def calltag(ctx: SlashContext, name: str):
     usage_statistics["Call Tag"] += 1
     if name.lower() == "all":
         command_list = "\n".join(f"{command_name}" for command_name in custom_commands.keys())
@@ -794,7 +793,7 @@ async def callcommand(ctx: SlashContext, name: str):
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
         await ctx.send(embed=embed, silent=True, delete_after=3)
 
-async def editcommand(ctx: SlashContext, name: str, new_response: str):
+async def edittag(ctx: SlashContext, name: str, new_response: str):
     usage_statistics["Edit Tag"] += 1
     global custom_commands
     if name not in custom_commands:
@@ -817,7 +816,7 @@ required_roles = ["Moderator", "Admin"]
 def has_required_role(member):
     return any(role.name in required_roles for role in member.roles)
 
-async def deletecommand(ctx: SlashContext, name: str):
+async def deletetag(ctx: SlashContext, name: str):
     usage_statistics["Delete Tag"] += 1
     global custom_commands
     if name in custom_commands:

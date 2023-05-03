@@ -1,3 +1,11 @@
+"""
+CREDITS:
+
+-GGProGaming: creator of this bot
+-Micro: for hosting the bot and giving feedback
+-funlennysub: for the original bot
+
+"""
 import interactions
 from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext
 from interactions.client.errors import CommandOnCooldown

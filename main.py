@@ -5,13 +5,15 @@ CREDITS:
 -Micro: for hosting the bot and giving feedback
 -funlennysub: for the original bot
 
+-Source Code: https://github.com/GGProGaming/Teardown-Support-Bot
 """
 import interactions
-from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext
+from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext, EmbedAttachment
 from interactions.client.errors import CommandOnCooldown
 from interactions.ext import prefixed_commands
 import json
 import os
+import re
 import collections
 
 bot = Client(intents=Intents.DEFAULT, sync_interactions=True, asyncio_debug=True)
@@ -31,8 +33,8 @@ async def _techsupport(ctx: SlashContext, question: str):
   image = None
   if question == 'drivers':
     response = (
-      '1. For Nvidia Users:\nYou can update drivers via Geforce Experience or their driver page found here: https://www.nvidia.com/download/index.aspx.\n'
-      '2. For AMD Users:\nYou can check for updates using the AMD Radeon Settings or by navigating to their driver page found here: https://www.amd.com/en/support.\n'
+      '1. For Nvidia Users:\nYou can update drivers via Geforce Experience or their [driver page](https://www.nvidia.com/download/index.aspx).\n'
+      '2. For AMD Users:\nYou can check for updates using the AMD Radeon Settings or by navigating to their [driver page](https://www.amd.com/en/support).\n'
       '3. After updating drivers, search for "Windows Update" in the Start menu and install any available updates.\n'
       '4. Once updates are installed, restart your computer.')
   elif question == 'verify':
@@ -63,12 +65,6 @@ async def _techsupport(ctx: SlashContext, question: str):
       '4. Click "Clean and restart".\n'
       '5. After restarting, download and install the latest GPU drivers from the manufacturer\'s website.'
     )
-  elif question == 'resources':
-    response = (
-        '1. The official Teardown modding documentation can be found here: https://teardowngame.com/modding.html.\n'
-        '2. There are many tutorials and guides found here: https://discord.com/channels/760105076755922996/771750716456697886.\n'
-        '3. You can ask questions in https://discord.com/channels/760105076755922996/768940642767208468.\n'
-    )
   elif question == 'artifacts':
       response = (
           '1. Update your graphics card drivers to the latest version.\n'
@@ -82,7 +78,6 @@ async def _techsupport(ctx: SlashContext, question: str):
       )
   else:
       response = 'Invalid question'
-      await ctx.send(response, delete_after=3, silent=True)
 
   embed = interactions.Embed(title="Tech Support", description=response, color=0x41bfff)
   if image:
@@ -97,7 +92,6 @@ async def techsupport_autocomplete(ctx: AutocompleteContext):
         {"name": "Find AppData local files", "value": "appdata"},
         {"name": "Find CPU and GPU information", "value": "cpu_gpu"},
         {"name": "Perform DDU process", "value": "ddu"},
-        {"name": "Modding Resources", "value": "resources"},
         {"name": "Artifacts", "value": "artifacts"},
         {"name": "No Sound", "value": "nosound"},
     ]
@@ -118,38 +112,53 @@ async def techsupport_autocomplete(ctx: AutocompleteContext):
                                       required=True)
                ])
 async def _faq(ctx: SlashContext, question: str):
-  usage_statistics["FAQ"] += 1
-  if question == 'progress':
-    response = "You can reset your game progress by going to options in the main menu, clicking the game button, and then clicking reset progress."
-  elif question == 'part3':
-    response = "There will not be a Part 3. Teardown is a complete game and will not be receiving any more main campaign updates."
-  elif question == 'multiplayer':
-    response = "Currently, Teardown does not have native multiplayer support. It is possible multiplayer will be added in the future."
-  elif question == 'languages':
-    response = "Teardown is currently only available in English. We might look into localization at a later stage."
-  elif question == 'vr':
-    response = "Teardown does not support VR."
-  elif question == 'expansions':
-    response = "Future expansions are unknown at this time, so keep an eye out for any announcements."
-  elif question == 'update':
-    response = "Updates are released when they are ready. We do not have a set schedule for updates."
-  else:
-    response = 'Invalid question'
-    await ctx.send(response, delete_after=3, silent=True)
+    usage_statistics["FAQ"] += 1
+    if question == 'progress':
+        response = "You can reset your game progress by going to options in the main menu, clicking the game button, and then clicking reset progress."
+    elif question == 'resources':
+        response = (
+            '1. The official Teardown modding documentation can be found [here](https://teardowngame.com/modding/index.html).\n'
+            '2. The official Teardown modding API documentation can be found [here](https://teardowngame.com/modding/api.html).\n'
+            '3. The offical voxtool... tool can be found [here](https://teardowngame.com/voxtool/).\n'
+            '4. There are many tutorials and guides found here: https://discord.com/channels/760105076755922996/771750716456697886.\n'
+            '5. You can find the magicavoxel application [here](https://ephtracy.github.io/).\n'
+            '6. You can ask questions in https://discord.com/channels/760105076755922996/768940642767208468.\n'
+        )
+    elif question == 'part3':
+        response = "There will not be a Part 3. Teardown is a complete game and will not be receiving any more main campaign updates."
+    elif question == 'multiplayer':
+        response = "Currently, Teardown does not have native multiplayer support. It is possible multiplayer will be added in the future."
+    elif question == 'languages':
+        response = "Teardown is currently only available in English. We might look into localization at a later stage."
+    elif question == 'vr':
+        response = "Teardown does not support VR."
+    elif question == 'expansions':
+        response = "Future expansions are unknown at this time, so keep an eye out for any announcements."
+    elif question == 'update':
+        response = "Updates are released when they are ready. We do not have a set schedule for updates."
+    elif question == 'requirements':
+        response = "Requires a 64-bit processor and operating system \nThe minimum system requirements are as follows:\n**OS:** Windows 7 \n**Processor:** Quad Core \n**CPU Memory:** 4 GB RAM \n**Graphics:** NVIDIA GeForce GTX 1060 or similar. 3 Gb VRAM.\n**Storage:** 4 GB available space \n**Additional Notes:** Intel integrated graphics cards not supported."
+    elif question == 'botinfo':
+        response = "**Credits:**\nGGProGaming: creator of this bot\nMicro: for hosting the bot and giving feedback\nfunlennysub: for the original bot\n\n**Source Code:**\nhttps://github.com/GGProGaming/Teardown-Support-Bot"
+    else:
+        response = 'Invalid question'
 
-  embed = interactions.Embed(title="FAQ", description=response, color=0x41bfff)
-  await ctx.send(embed=embed, silent=True)
+    embed = interactions.Embed(title="FAQ", description=response, color=0x41bfff)
+    await ctx.send(embed=embed, silent=True)
 
 @_faq.autocomplete("question")
 async def faq_autocomplete(ctx: AutocompleteContext):
     choices = [
         {"name": "How do I reset my progress?", "value": "progress"},
+        {"name": "Modding Resources", "value": "resources"},
         {"name": "Will there be a part 3?", "value": "part3"},
         {"name": "Will there be multiplayer?", "value": "multiplayer"},
         {"name": "Is Teardown available in other languages?", "value": "languages"},
         {"name": "Can you play the game in VR?", "value": "vr"},
         {"name": "Will there be more expansions?", "value": "expansions"},
         {"name": "When will the next update be released?", "value": "update"},
+        {"name": "What are the minimum system requirements?", "value": "requirements"},
+        {"name": "Bot Info", "value": "botinfo"},
     ]
 
     matching_choices = [
@@ -757,14 +766,16 @@ else:
     ],
 )
 @slash_option(name="name", description="The name of the tag", opt_type=OptionType.STRING, required=True)
-@slash_option(name="response", description="The response of the tag", opt_type=OptionType.STRING, required=False)
-async def custom(ctx: SlashContext, action: str, name: str, response: str = None):
-    if action == "create":
-        await createtag(ctx, name, response)
-    elif action == "edit":
-        await edittag(ctx, name, response)
-    elif action == "delete":
+@slash_option(name="response", description="The response of the tag", opt_type=OptionType.STRING, required=True)
+async def custom(ctx: SlashContext, action: str, name: str, response: str):
+    if action == "delete":
         await deletetag(ctx, name)
+    elif response:
+        if action == "create":
+            await createtag(ctx, name, response)
+        elif action == "edit":
+            await edittag(ctx, name, response)
+
 
 @cooldown(Buckets.GUILD, 6, 86400)
 async def createtag(ctx: SlashContext, name: str, response: str):
@@ -783,7 +794,7 @@ async def createtag(ctx: SlashContext, name: str, response: str):
         embed = interactions.Embed(title="Error", description="This tag already exists.", color=0xe9254e)
     await ctx.send(embed=embed, silent=True, delete_after=3)
 
-@slash_command(name="calltag", description="Call a tag")
+@slash_command(name="calltag", description="Call a tag. Use `all` to list all tags.")
 @slash_option(name="name", description="The name of the tag", required=True, opt_type=OptionType.STRING)
 async def calltag(ctx: SlashContext, name: str):
     usage_statistics["Call Tag"] += 1
@@ -795,7 +806,20 @@ async def calltag(ctx: SlashContext, name: str):
         await ctx.send("nya", silent=True)
     elif name in custom_commands:
         response = custom_commands[name]["response"]
-        embed = interactions.Embed(title=name, description=response, color=0xe9254e)
+        creator_id = custom_commands[name]["creator"]
+        creator = await ctx.bot.fetch_user(creator_id)
+        
+        # Check for image URL
+        image_url = re.search(r"(https?://[^\s]+(?:jpg|jpeg|png|gif))", response)
+        if image_url:
+            image_url = image_url.group(0)
+            response = response.replace(image_url, "").strip()
+            embed = interactions.Embed(title=name, description=response, color=0xe9254e)
+            embed.set_image(url=image_url)
+        else:
+            embed = interactions.Embed(title=name, description=response, color=0xe9254e)
+            
+        embed.set_footer(text=f"Created by {creator}", icon_url=creator.avatar_url)
         await ctx.send(embed=embed, silent=True)
     else:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
@@ -840,8 +864,6 @@ async def deletetag(ctx: SlashContext, name: str):
     else:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
     await ctx.send(embed=embed, silent=True, delete_after=3)
-
-
 
 # Constants
 USAGE_STATISTICS_FILE = "/root/TTS/usage_statistics.json"

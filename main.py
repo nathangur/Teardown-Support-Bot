@@ -1,62 +1,27 @@
-from discord.ext import commands
-from discord.ext.commands import has_any_role
-import discord
 import interactions
-from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment
+from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext
+from interactions.client.errors import CommandOnCooldown
 from interactions.ext import prefixed_commands
 import json
-
-intents = discord.Intents.all()
+import os
+import collections
 
 bot = Client(intents=Intents.DEFAULT, sync_interactions=True, asyncio_debug=True)
 prefixed_commands.setup(bot)
 
-def load_custom_commands():
-    try:
-        with open("/root/TTS/custom_commands.json", "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return {}
-    
-def save_custom_commands(commands):
-    with open("/root/TTS/custom_commands.json", "w") as file:
-        json.dump(commands, file, indent=4)
-
+# Tech Support Slash Command
 @slash_command(name="techsupport",
-             description="Get answers to basic tech support questions",
-             options=[
-               SlashCommandOption(name="question",
-                             description="Select a question",
-                             type=3,
-                             required=True,
-                             choices=[{
-                               "name": "Update drivers and Windows and reboot",
-                               "value": "update"
-                             }, {
-                               "name": "Verify Steam files",
-                               "value": "verify"
-                             }, {
-                               "name": "Find AppData local files",
-                               "value": "appdata"
-                             }, {
-                               "name": "Find CPU and GPU information",
-                               "value": "cpu_gpu"
-                             }, {
-                               "name": "Perform DDU process",
-                               "value": "ddu"
-                             }, {
-                               "name": "No Sound",
-                               "value": "nosound"
-                             }, {
-                               "name": "Modding Resources",
-                               "value": "resources"
-                             }, {
-                               "name": "Artifacts",
-                               "value": "artifacts"
-                             }])
-             ])
-async def _TechSupport(ctx: SlashContext, question: str):
-  if question == 'update':
+               description="Get answers to basic tech support questions",
+               options=[
+                   SlashCommandOption(name="question",
+                                      description="Enter your question",
+                                      type=3,
+                                      required=True)
+               ])
+async def _techsupport(ctx: SlashContext, question: str):
+  usage_statistics["Tech Support"] += 1
+  image = None
+  if question == 'drivers':
     response = (
       '1. For Nvidia Users:\nYou can update drivers via Geforce Experience or their driver page found here: https://www.nvidia.com/download/index.aspx.\n'
       '2. For AMD Users:\nYou can check for updates using the AMD Radeon Settings or by navigating to their driver page found here: https://www.amd.com/en/support.\n'
@@ -116,37 +81,36 @@ async def _TechSupport(ctx: SlashContext, question: str):
       embed.image = image
   await ctx.send(embed=embed, silent=True)
 
+@_techsupport.autocomplete("question")
+async def techsupport_autocomplete(ctx: AutocompleteContext):
+    choices = [
+        {"name": "Update drivers and Windows and reboot", "value": "drivers"},
+        {"name": "Verify Steam files", "value": "verify"},
+        {"name": "Find AppData local files", "value": "appdata"},
+        {"name": "Find CPU and GPU information", "value": "cpu_gpu"},
+        {"name": "Perform DDU process", "value": "ddu"},
+        {"name": "Modding Resources", "value": "resources"},
+        {"name": "Artifacts", "value": "artifacts"},
+        {"name": "No Sound", "value": "nosound"},
+    ]
+
+    matching_choices = [
+        choice for choice in choices if ctx.input_text.lower() in choice["name"].lower()
+    ]
+
+    await ctx.send(choices=matching_choices)
+
+# FAQ Slash Command
 @slash_command(name="faq",
-             description="Get answers to frequently asked questions",
-             options=[
-               SlashCommandOption(name="question",
-                             description="Select a question",
-                             type=3,
-                             required=True,
-                             choices=[{
-                               "name": "How do I reset my progress?",
-                               "value": "progress"
-                             }, {
-                               "name": "Will there be a part 3?",
-                               "value": "part3"
-                             }, {
-                               "name": "Will there be multiplayer?",
-                               "value": "multiplayer"
-                              }, {
-                                "name": "Is Teardown available in other languages?", 
-                                "value": "languages"
-                              }, {
-                                "name": "Can you play the game in VR?",
-                                "value": "vr"
-                              }, {
-                                "name": "Will there be more expansions?",
-                                "value": "expansions"
-                              }, {
-                                "name": "When will the next update be released?",
-                                "value": "update"
-                             }])
-             ])
-async def _FAQ(ctx: SlashContext, question: str):
+               description="Get answers to frequently asked questions",
+               options=[
+                   SlashCommandOption(name="question",
+                                      description="Enter your question",
+                                      type=3,
+                                      required=True)
+               ])
+async def _faq(ctx: SlashContext, question: str):
+  usage_statistics["FAQ"] += 1
   if question == 'progress':
     response = "You can reset your game progress by going to options in the main menu, clicking the game button, and then clicking reset progress."
   elif question == 'part3':
@@ -168,72 +132,102 @@ async def _FAQ(ctx: SlashContext, question: str):
   embed = interactions.Embed(title="FAQ", description=response, color=0x41bfff)
   await ctx.send(embed=embed, silent=True)
 
+@_faq.autocomplete("question")
+async def faq_autocomplete(ctx: AutocompleteContext):
+    choices = [
+        {"name": "How do I reset my progress?", "value": "progress"},
+        {"name": "Will there be a part 3?", "value": "part3"},
+        {"name": "Will there be multiplayer?", "value": "multiplayer"},
+        {"name": "Is Teardown available in other languages?", "value": "languages"},
+        {"name": "Can you play the game in VR?", "value": "vr"},
+        {"name": "Will there be more expansions?", "value": "expansions"},
+        {"name": "When will the next update be released?", "value": "update"},
+    ]
 
+    matching_choices = [
+        choice for choice in choices if ctx.input_text.lower() in choice["name"].lower()
+    ]
+
+    await ctx.send(choices=matching_choices)
 
 with open('/root/TTS/teardown_api.json', 'r') as f:
-  TEARDOWN_API = json.load(f)
+    TEARDOWN_API = json.load(f)
 
 def search_teardown_api(query: str):
-  results = []
-  for category in TEARDOWN_API['api']:
+    results = []
+    for category in TEARDOWN_API['api']:
+        for function in category['functions']:
+            if function['name'].lower() == query.lower():
+                results.append(function)
+    return results
+
+autocomplete_api = []
+
+for category in TEARDOWN_API['api']:
     for function in category['functions']:
-      if function['name'].lower() == query.lower():
-        results.append(function)
-  return results
+        autocomplete_api.append(function['name'])
 
+@slash_command(name="docs", description="Search the Teardown API documentation")
+@slash_option(
+    name="autocomplete",
+    description="Enter your search query",
+    required=True,
+    opt_type=OptionType.STRING,
+    autocomplete=True
+)
+async def _teardowndocs(ctx: SlashContext, autocomplete: str):
+    usage_statistics["Docs"] += 1
+    results = search_teardown_api(autocomplete)
 
-@slash_command(name="docs",
-             description="Search the Teardown API documentation",
-             options=[
-               SlashCommandOption(name="query",
-                             description="Enter your search query",
-                             type=3,
-                             required=True)
-             ])
-async def _teardowndocs(ctx: SlashContext, query: str):
-  results = search_teardown_api(query)
+    if not results:
+        await ctx.send(f'No results found for "{autocomplete}"', delete_after=3, silent=True)
+        return
 
-  if not results:
-    await ctx.send(f'No results found for "{query}"', delete_after=3, silent=True)
-    return
+    for result in results:
+      title = f'**{result["name"]}**'
+      description = result['info']
 
-  for result in results:
-    title = f'**{result["name"]}**'
-    description = result['info']
+      # Include the function definition in a code block
+      function_def = f'```lua\n{result["def"]}\n```'
+      description += f'\n\n**Function Definition**\n{function_def}'
 
-    # Include the function definition in a code block
-    function_def = f'```lua\n{result["def"]}\n```'
-    description += f'\n\n**Function Definition**\n{function_def}'
+      if 'arguments' in result:
+        arguments = '\n'.join([
+          f'- **{arg["name"]}** ({arg["type"]}): {arg["desc"]}'
+          for arg in result['arguments']
+        ])
+        if arguments == '':
+          arguments = 'None'
+        description += f'\n**Arguments**\n{arguments}'
 
-    if 'arguments' in result:
-      arguments = '\n'.join([
-        f'- **{arg["name"]}** ({arg["type"]}): {arg["desc"]}'
-        for arg in result['arguments']
-      ])
-      if arguments == '':
-        arguments = 'None'
-      description += f'\n**Arguments**\n{arguments}'
+      if 'return' in result:
+        returns = '\n'.join(
+          [f'- **{ret["type"]}**: {ret["desc"]}' for ret in result['return']])
+        if returns == '':
+          returns = 'None'
+        description += f'\n\n**Returns**\n{returns}'
 
-    if 'return' in result:
-      returns = '\n'.join(
-        [f'- **{ret["type"]}**: {ret["desc"]}' for ret in result['return']])
-      if returns == '':
-        returns = 'None'
-      description += f'\n\n**Returns**\n{returns}'
+      if 'example' in result:
+        example = f'```lua\n{result["example"]}\n```'
+        if example == '':
+          example = 'None'
+        description += f'\n\n**Example**\n{example}'
 
-    if 'example' in result:
-      example = f'```lua\n{result["example"]}\n```'
-      if example == '':
-        example = 'None'
-      description += f'\n\n**Example**\n{example}'
+      title = f'**{result["name"]}**'
+      url = f'https://teardowngame.com/modding/api.html#{result["name"]}'
+      embed = interactions.Embed(title=title, url=url, description=description, color=0xbc9946)
+      # Set the footer with the API version in small italics
+      embed.set_footer(text=f'API Version: {TEARDOWN_API["version"]}')
+      await ctx.send(embed=embed, silent=True)
 
-    title = f'**{result["name"]}**'
-    url = f'https://teardowngame.com/modding/api.html#{result["name"]}'
-    embed = interactions.Embed(title=title, url=url, description=description, color=0xbc9946)
-    # Set the footer with the API version in small italics
-    embed.set_footer(text=f'API Version: {TEARDOWN_API["version"]}')
-    await ctx.send(embed=embed, silent=True)
+@_teardowndocs.autocomplete("autocomplete")
+async def docs_autocomplete(ctx: AutocompleteContext):
+    matching_api = [api for api in autocomplete_api if ctx.input_text.lower() in api.lower()]
 
+    matching_api = sorted(matching_api)[:25]  # Get the first 25 matching API functions
+
+    choices = [{"name": api, "value": api} for api in matching_api]
+    await ctx.send(choices=choices)
 
 TEARDOWN_TAGS = {
   "autobreak":
@@ -320,34 +314,41 @@ TEARDOWN_TAGS = {
   "wire": 'Joint tag. (What it do?)'
 }
 
+autocomplete_tags = []
 
-@slash_command(name="tags",
-             description="Get information about Teardown tags",
-             options=[
-               SlashCommandOption(name="tag",
-                             description="Enter the name of the tag",
-                             type=3,
-                             required=True)
-             ])
-async def _teardowntags(ctx: SlashContext, tag: str = None):
-  if tag == "all":
-    response = "```\n" + "\n".join(TEARDOWN_TAGS.keys()) + "\n```"
-    title = f'Teardown Tags'
-    embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
-    await ctx.send(embed=embed, silent=True)
-  elif tag and tag.lower() in TEARDOWN_TAGS:
-    response = TEARDOWN_TAGS[tag.lower()]
-    title = f'Tag: {tag}'
-    embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-    embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
-    await ctx.send(embed=embed, silent=True)
-  else:
-    response = f'Tag "{tag}" not found.'
-    title = f'Tag: {tag}'
-    embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-    await ctx.send(embed=embed, delete_after=3, silent=True)
+for key in TEARDOWN_TAGS:
+    autocomplete_tags.append(key)
 
+@slash_command(name="tags", description="Get information about Teardown tags")
+@slash_option(
+    name="autocomplete",
+    description="Enter the name of the tag",
+    required=True,
+    opt_type=OptionType.STRING,
+    autocomplete=True
+)
+async def _teardowntags(ctx: SlashContext, autocomplete: str):
+    usage_statistics["Tags"] += 1
+    if autocomplete.lower() in TEARDOWN_TAGS:
+        response = TEARDOWN_TAGS[autocomplete.lower()]
+        title = f'Tag: {autocomplete}'
+        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
+        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
+        await ctx.send(embed=embed, silent=True)
+    else:
+        response = f'Tag "{autocomplete}" not found.'
+        title = f'Tag: {autocomplete}'
+        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
+        await ctx.send(embed=embed, delete_after=3, silent=True)
+
+@_teardowntags.autocomplete("autocomplete")
+async def tags_autocomplete(ctx: AutocompleteContext):
+    matching_tags = [tag for tag in autocomplete_tags if tag.startswith(ctx.input_text.lower())]
+
+    matching_tags = sorted(matching_tags)[:25]  # Get the first 25 matching tags
+
+    choices = [{"name": tag, "value": tag} for tag in matching_tags]
+    await ctx.send(choices=choices)
 
 TEARDOWN_REGISTRY = {
   "game.break":
@@ -690,120 +691,90 @@ TEARDOWN_REGISTRY = {
   'Integer. 0 is public, 1 is friends only, 2 is private, and 3 is unlisted. A -1 value is referenced in the code but its purpose is unclear.',
 }
 
-# Add the new option for autocomplete entries
-autocomplete_options = {
-    "game": [],
-    "hud": [],
-    "level": [],
-    "options": [],
-    "promo": [],
-    "savegame": [],
-    "mods": [],
-}
+autocomplete_options = []
 
-# Populate the autocomplete_options with matching keys
 for key in TEARDOWN_REGISTRY:
-    for option in autocomplete_options:
-        if key.startswith(option + "."):
-            autocomplete_options[option].append(key)
+    autocomplete_options.append(key)
 
-# Add the new option in the slash command
-@slash_command(
-    name="registry",
-    description="Get information about Teardown registry",
-    options=[
-        SlashCommandOption(
-            name="registry",
-            description="Enter the name of the registry",
-            type=3,
-            required=False
-        ),
-        SlashCommandOption(
-            name="autocomplete",
-            description="Enter the name of the autocomplete entry",
-            type=3,
-            required=False,
-            choices=list(autocomplete_options.keys())
-        )
-    ]
+@slash_command(name="registry", description="Get information about Teardown registry")
+@slash_option(
+    name="autocomplete",
+    description="Enter the name of the registry",
+    required=True,
+    opt_type=OptionType.STRING,
+    autocomplete=True
 )
-async def _teardownregistry(ctx: SlashContext, registry: str = None, autocomplete: str = None):
-    if registry == "all":
-        response = "```\n" + "\n".join(TEARDOWN_REGISTRY.keys()) + "\n```"
-        title = f'Teardown Registry'
-        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-        await ctx.send(embed=embed, silent=True)
-    elif registry and registry.lower() in TEARDOWN_REGISTRY:
-        response = TEARDOWN_REGISTRY[registry.lower()]
+async def _teardownregistry(ctx: SlashContext, autocomplete: str):
+    usage_statistics["Registry"] += 1
+    if autocomplete.lower() in TEARDOWN_REGISTRY:
+        response = TEARDOWN_REGISTRY[autocomplete.lower()]
         if response == "":
             response = "No description"
-        title = f'Registry: {registry}'
-        embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-        embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-        await ctx.send(embed=embed, silent=True)
-    elif autocomplete and autocomplete.lower() in autocomplete_options:
-        response = "```\n" + "\n".join(autocomplete_options[autocomplete.lower()]) + "\n```"
-        title = f'Autocomplete: {autocomplete}'
+        title = f'Registry: {autocomplete}'
         embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
         await ctx.send(embed=embed, silent=True)
     else:
-        response = f'Registry entry: "{registry}" not found.'
-        title = f'Registry: {registry}'
+        response = f'Registry entry: "{autocomplete}" not found.'
+        title = f'Registry: {autocomplete}'
         embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         await ctx.send(embed=embed, delete_after=3, silent=True)
 
-custom_commands = load_custom_commands()
+@_teardownregistry.autocomplete("autocomplete")
+async def registry_autocomplete(ctx: AutocompleteContext):
+    matching_options = [option for option in autocomplete_options if option.startswith(ctx.input_text.lower())]
 
-@slash_command(name="createcustomcommand",
-             description="Create a custom command",
-             options=[
-               SlashCommandOption(name="command_name",
-                             description="Enter the name of the custom command",
-                             type=3,
-                             required=True),
-               SlashCommandOption(name="command_response",
-                             description="Enter the response for the custom command",
-                             type=3,
-                             required=True)
-             ])
-async def _CreateCustomCommand(ctx: SlashContext, command_name: str, command_response: str):
-  if command_name.lower() == "all":
-    await ctx.send(f"Cannot create a custom command named 'all'.", delete_after=3, silent=True)
-  else:
-    custom_commands[command_name.lower()] = {"response": command_response, "creator_id": ctx.author.id}
-    save_custom_commands(custom_commands)
-    await ctx.send(f"Custom command '{command_name}' has been created.", delete_after=3, silent=True)
+    matching_options = sorted(matching_options)[:25]  # Get the first 25 matching options
 
-@slash_command(name="customcommand",
-             description="Use a custom command",
-             options=[
-               SlashCommandOption(name="command_name",
-                             description="Enter the name of the custom command",
-                             type=3,
-                             required=True)
-             ])
-async def _CustomCommand(ctx: SlashContext, command_name: str):
-    if command_name.lower() == "all":
-        if custom_commands:
-            response = ""
-            for name, command_data in custom_commands.items():
-                command_response = command_data["response"]
-                response += f"**{name}** - {command_response}\n"
+    choices = [{"name": option, "value": option} for option in matching_options]
+    await ctx.send(choices=choices)
 
-            embed = interactions.Embed(title="Custom Commands", description=response, color=0xe9254e)
-            await ctx.send(embed=embed, silent=True)
-        else:
-            await ctx.send("No custom commands have been created.", delete_after=3, silent=True)
+# Load custom commands from JSON file
+if os.path.exists("/root/TTS/tags.json"):
+    with open("/root/TTS/tags.json", "r") as f:
+        custom_commands = json.load(f)
+else:
+    custom_commands = {}
 
-    elif command_name.lower() in custom_commands:
-        response = custom_commands[command_name.lower()]["response"]
-        embed = interactions.Embed(title=f"{command_name}", description=response, color=0xe9254e)
+@slash_command(name="custom", description="Create, call, or delete a custom tag")
+async def custom(ctx: SlashContext):
+    pass
+
+@custom.subcommand(sub_cmd_name="createtag", sub_cmd_description="Create a new tag")
+@slash_option(name="name", description="The name of the tag", required=True, opt_type=OptionType.STRING)
+@slash_option(name="response", description="The response of the tag", required=True, opt_type=OptionType.STRING)
+@cooldown(Buckets.GUILD, 6, 86400)
+async def createcommand(ctx: SlashContext, name: str, response: str):
+    usage_statistics["Create Tag"] += 1
+    global custom_commands
+    if name == "all" or name == "pat":
+        embed = interactions.Embed(title="Error", description=f"The name {name} is reserved and cannot be used for a tag.", color=0xe9254e)
+    elif name not in custom_commands:
+        custom_commands[name] = {"response": response, "creator": ctx.author.id}
+        with open("./tags.json", "w") as f:
+            json.dump(custom_commands, f)
+        embed = interactions.Embed(title="Tag Created", description=f"{name} has been created.", color=0xe9254e)
+    else:
+        embed = interactions.Embed(title="Error", description="This tag already exists.", color=0xe9254e)
+    await ctx.send(embed=embed, silent=True, delete_after=3)
+
+@custom.subcommand(sub_cmd_name="calltag", sub_cmd_description="Call a tag")
+@slash_option(name="name", description="The name of the tag", required=True, opt_type=OptionType.STRING)
+async def callcommand(ctx: SlashContext, name: str):
+    usage_statistics["Call Tag"] += 1
+    if name.lower() == "all":
+        command_list = "\n".join(f"{command_name}" for command_name in custom_commands.keys())
+        embed = interactions.Embed(title="List of Tags", description=command_list, color=0xe9254e)
+        await ctx.send(embed=embed, silent=True)
+    elif name.lower() == "pat":
+        await ctx.send("nya", silent=True)
+    elif name in custom_commands:
+        response = custom_commands[name]["response"]
+        embed = interactions.Embed(title=name, description=response, color=0xe9254e)
         await ctx.send(embed=embed, silent=True)
     else:
-        await ctx.send(f"Custom command '{command_name}' not found.", delete_after=3, silent=True)
-
+        embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
+        await ctx.send(embed=embed, silent=True, delete_after=3)
 
 required_roles = ["Moderator", "Admin"]
 
@@ -811,29 +782,68 @@ required_roles = ["Moderator", "Admin"]
 def has_required_role(member):
     return any(role.name in required_roles for role in member.roles)
 
-@slash_command(name="deletecustomcommand",
-             description="Delete a custom command",
-             options=[
-               SlashCommandOption(name="command_name",
-                             description="Enter the name of the custom command to delete",
-                             type=3,
-                             required=True)
-             ])
-async def _DeleteCustomCommand(ctx: SlashContext, command_name: str):
-    if command_name.lower() not in custom_commands:
-        await ctx.send(f"Custom command '{command_name}' not found.", delete_after=3, silent=True)
-        return
-
-    command_creator_id = custom_commands[command_name.lower()]["creator_id"]
-    is_creator = ctx.author.id == command_creator_id
-    has_role = has_required_role(ctx.author)
-
-    if is_creator or has_role:
-        del custom_commands[command_name.lower()]
-        save_custom_commands(custom_commands)
-        await ctx.send(f"Custom command '{command_name}' has been deleted.", delete_after=3, silent=True)
+@custom.subcommand(sub_cmd_name="deletetag", sub_cmd_description="Delete a tag")
+@slash_option(name="name", description="The name of the tag", required=True, opt_type=OptionType.STRING)
+async def deletecommand(ctx: SlashContext, name: str):
+    usage_statistics["Delete Tag"] += 1
+    global custom_commands
+    if name in custom_commands:
+        user = ctx.author
+        has_role = has_required_role(ctx.author)
+        if custom_commands[name]["creator"] == user.id or has_role:
+            del custom_commands[name]
+            with open("/root/TTS/tags.json", "w") as f:
+                json.dump(custom_commands, f)
+            embed = interactions.Embed(title="Tag Deleted", description=f"{name} has been deleted.", color=0xe9254e)
+        else:
+            embed = interactions.Embed(title="Error", description="You don't have permission to delete this tag.", color=0xe9254e)
     else:
-        await ctx.send(f"You don't have permission to delete this custom command.", delete_after=3, silent=True)
+        embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
+    await ctx.send(embed=embed, silent=True, delete_after=3)
+
+# Constants
+USAGE_STATISTICS_FILE = "/root/TTS/usage_statistics.json"
+
+# Load usage statistics from file
+def load_usage_statistics():
+    try:
+        with open(USAGE_STATISTICS_FILE, 'r') as f:
+            return collections.defaultdict(int, json.load(f))
+    except FileNotFoundError:
+        return collections.defaultdict(int)
+
+# Save usage statistics to file
+def save_usage_statistics(usage_statistics):
+    with open(USAGE_STATISTICS_FILE, 'w') as f:
+        json.dump(usage_statistics, f, indent=4)
+
+# Load usage statistics on startup
+usage_statistics = load_usage_statistics()
+
+@slash_command(name="usage_analytics",
+               description="Collect and display usage statistics",
+               default_member_permissions=13)
+
+async def _usage_analytics(ctx: SlashContext):
+    has_role = has_required_role(ctx.author)
+    if not has_role:
+        await ctx.send("You don't have permission to use this command.", delete_after=3, silent=True)
+        return
+    else:
+      # Increment the usage counter for this command
+      usage_statistics["Analytics"] += 1
+
+      # Display usage statistics
+      response = "```\n"
+      for command, count in usage_statistics.items():
+          response += f"{command}: {count}\n"
+      response += "```"
+
+      # Save the updated usage_statistics after using the command
+      save_usage_statistics(usage_statistics)
+
+      embed = interactions.Embed(title="Usage Analytics", description=response, color=0xe9254e)
+      await ctx.send(embed=embed, silent=True)
 
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot
 bot.start(

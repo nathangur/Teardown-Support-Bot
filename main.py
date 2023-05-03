@@ -172,17 +172,12 @@ with open('/root/TTS/teardown_api.json', 'r') as f:
 
 def search_teardown_api(query: str):
     results = []
-    for category in TEARDOWN_API['api']:
-        for function in category['functions']:
-            if function['name'].lower() == query.lower():
-                results.append(function)
+    for function in TEARDOWN_API['functions']:
+        if function['name'].lower() == query.lower():
+            results.append(function)
     return results
 
-autocomplete_api = []
-
-for category in TEARDOWN_API['api']:
-    for function in category['functions']:
-        autocomplete_api.append(function['name'])
+autocomplete_api = [function['name'] for function in TEARDOWN_API['functions']]
 
 @slash_command(name="docs", description="Search the Teardown API documentation")
 @slash_option(
@@ -201,41 +196,41 @@ async def _teardowndocs(ctx: SlashContext, autocomplete: str):
         return
 
     for result in results:
-      title = f'**{result["name"]}**'
-      description = result['info']
+        title = f'**{result["name"]}**'
+        description = result['description']
 
-      # Include the function definition in a code block
-      function_def = f'```lua\n{result["def"]}\n```'
-      description += f'\n\n**Function Definition**\n{function_def}'
+        # Include the function definition in a code block
+        function_def = f'```lua\n{result["name"]}({", ".join([arg["name"] for arg in result["arguments"]])})\n```'
+        description += f'\n\n**Function Definition**\n{function_def}'
 
-      if 'arguments' in result:
-        arguments = '\n'.join([
-          f'- **{arg["name"]}** ({arg["type"]}): {arg["desc"]}'
-          for arg in result['arguments']
-        ])
-        if arguments == '':
-          arguments = 'None'
-        description += f'\n**Arguments**\n{arguments}'
+        if 'arguments' in result:
+            arguments = '\n'.join([
+              f'- **{arg["name"]}** ({arg["type"]}): {arg["desc"]}'
+              for arg in result['arguments']
+            ])
+            if arguments == '':
+              arguments = 'None'
+            description += f'\n**Arguments**\n{arguments}'
 
-      if 'return' in result:
-        returns = '\n'.join(
-          [f'- **{ret["type"]}**: {ret["desc"]}' for ret in result['return']])
-        if returns == '':
-          returns = 'None'
-        description += f'\n\n**Returns**\n{returns}'
+        if 'returns' in result:
+            returns = '\n'.join(
+              [f'- **{ret["type"]}**: {ret["desc"]}' for ret in result['returns']])
+            if returns == '':
+              returns = 'None'
+            description += f'\n\n**Returns**\n{returns}'
 
-      if 'example' in result:
-        example = f'```lua\n{result["example"]}\n```'
-        if example == '':
-          example = 'None'
-        description += f'\n\n**Example**\n{example}'
+        if 'examples' in result:
+            example = f'```lua\n{result["examples"][0]}\n```'
+            if example == '':
+              example = 'None'
+            description += f'\n\n**Example**\n{example}'
 
-      title = f'**{result["name"]}**'
-      url = f'https://teardowngame.com/modding/api.html#{result["name"]}'
-      embed = interactions.Embed(title=title, url=url, description=description, color=0xbc9946)
-      # Set the footer with the API version in small italics
-      embed.set_footer(text=f'API Version: {TEARDOWN_API["version"]}')
-      await ctx.send(embed=embed, silent=True)
+        title = f'**{result["name"]}**'
+        url = f'https://teardowngame.com/modding/api.html#{result["name"]}'
+        embed = interactions.Embed(title=title, url=url, description=description, color=0xbc9946)
+        # Set the footer with the API version in small italics
+        embed.set_footer(text=f'API Version: {TEARDOWN_API["version"]}')
+        await ctx.send(embed=embed, silent=True, delete_after=300)
 
 @_teardowndocs.autocomplete("autocomplete")
 async def docs_autocomplete(ctx: AutocompleteContext):
@@ -351,12 +346,12 @@ async def _teardowntags(ctx: SlashContext, autocomplete: str):
         title = f'Tag: {autocomplete}'
         embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/tags.html)")
-        await ctx.send(embed=embed, silent=True)
+        await ctx.send(embed=embed, delete_after=210, silent=True)
     else:
         response = f'Tag "{autocomplete}" not found.'
         title = f'Tag: {autocomplete}'
         embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-        await ctx.send(embed=embed, delete_after=3, silent=True)
+        await ctx.send(embed=embed, delete_after=4, silent=True)
 
 @_teardowntags.autocomplete("autocomplete")
 async def tags_autocomplete(ctx: AutocompleteContext):
@@ -730,12 +725,12 @@ async def _teardownregistry(ctx: SlashContext, autocomplete: str):
         title = f'Registry: {autocomplete}'
         embed = interactions.Embed(title=title, description=response, color=0xbc9946)
         embed.add_field(name="Credit", value="[Dennispedia](https://x4fx77x4f.github.io/dennispedia/teardown/registry.html)")
-        await ctx.send(embed=embed, silent=True)
+        await ctx.send(embed=embed, silent=True, delete_after=210)
     else:
         response = f'Registry entry: "{autocomplete}" not found.'
         title = f'Registry: {autocomplete}'
         embed = interactions.Embed(title=title, description=response, color=0xbc9946)
-        await ctx.send(embed=embed, delete_after=3, silent=True)
+        await ctx.send(embed=embed, delete_after=4, silent=True)
 
 @_teardownregistry.autocomplete("autocomplete")
 async def registry_autocomplete(ctx: AutocompleteContext):
@@ -768,6 +763,7 @@ else:
 @slash_option(name="name", description="The name of the tag", opt_type=OptionType.STRING, required=True)
 @slash_option(name="response", description="The response of the tag", opt_type=OptionType.STRING, required=True)
 async def custom(ctx: SlashContext, action: str, name: str, response: str):
+    name = name.lower()
     if action == "delete":
         await deletetag(ctx, name)
     elif response:
@@ -792,17 +788,18 @@ async def createtag(ctx: SlashContext, name: str, response: str):
         embed = interactions.Embed(title="Tag Created", description=f"{name} has been created.", color=0xe9254e)
     else:
         embed = interactions.Embed(title="Error", description="This tag already exists.", color=0xe9254e)
-    await ctx.send(embed=embed, silent=True, delete_after=3)
+    await ctx.send(embed=embed, silent=True, delete_after=4)
 
 @slash_command(name="calltag", description="Call a tag. Use `all` to list all tags.")
 @slash_option(name="name", description="The name of the tag", required=True, opt_type=OptionType.STRING)
 async def calltag(ctx: SlashContext, name: str):
     usage_statistics["Call Tag"] += 1
-    if name.lower() == "all":
+    name = name.lower()
+    if name == "all":
         command_list = "\n".join(f"{command_name}" for command_name in custom_commands.keys())
         embed = interactions.Embed(title="List of Tags", description=command_list, color=0xe9254e)
-        await ctx.send(embed=embed, silent=True)
-    elif name.lower() == "pat":
+        await ctx.send(embed=embed, silent=True, delete_after=30)
+    elif name == "pat":
         await ctx.send("nya", silent=True)
     elif name in custom_commands:
         response = custom_commands[name]["response"]
@@ -817,13 +814,14 @@ async def calltag(ctx: SlashContext, name: str):
             embed = interactions.Embed(title=name, description=response, color=0xe9254e)
             embed.set_image(url=image_url)
         else:
-            embed = interactions.Embed(title=name, description=response, color=0xe9254e)
+            embed = interactions.Embed(title=name, description=response.replace('\\n', '\n'), color=0xe9254e)
             
         embed.set_footer(text=f"Created by {creator}", icon_url=creator.avatar_url)
-        await ctx.send(embed=embed, silent=True)
+        await ctx.send(embed=embed, silent=True, delete_after=210)
     else:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
-        await ctx.send(embed=embed, silent=True, delete_after=3)
+        await ctx.send(embed=embed, silent=True, delete_after=4)
+
 
 async def edittag(ctx: SlashContext, name: str, new_response: str):
     usage_statistics["Edit Tag"] += 1
@@ -839,7 +837,7 @@ async def edittag(ctx: SlashContext, name: str, new_response: str):
         embed = interactions.Embed(title="Tag Edited", description=f"{name} has been updated.", color=0xe9254e)
     else:
         embed = interactions.Embed(title="Error", description="You don't have permission to edit this tag.", color=0xe9254e)
-    await ctx.send(embed=embed, silent=True, delete_after=3)
+    await ctx.send(embed=embed, silent=True, delete_after=4)
 
 # List of roles that can delete tags
 required_roles = ["Moderator", "Admin"]
@@ -863,7 +861,7 @@ async def deletetag(ctx: SlashContext, name: str):
             embed = interactions.Embed(title="Error", description="You don't have permission to delete this tag.", color=0xe9254e)
     else:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
-    await ctx.send(embed=embed, silent=True, delete_after=3)
+    await ctx.send(embed=embed, silent=True, delete_after=4)
 
 # Constants
 USAGE_STATISTICS_FILE = "/root/TTS/usage_statistics.json"
@@ -891,7 +889,7 @@ usage_statistics = load_usage_statistics()
 async def _usage_analytics(ctx: SlashContext):
     has_role = has_required_role(ctx.author)
     if not has_role:
-        await ctx.send("You don't have permission to use this command.", delete_after=3, silent=True)
+        await ctx.send("You don't have permission to use this command.", delete_after=4, silent=True)
         return
     else:
       # Increment the usage counter for this command
@@ -907,7 +905,7 @@ async def _usage_analytics(ctx: SlashContext):
       save_usage_statistics(usage_statistics)
 
       embed = interactions.Embed(title="Usage Analytics", description=response, color=0xe9254e)
-      await ctx.send(embed=embed, silent=True)
+      await ctx.send(embed=embed, silent=True, delete_after=210)
 
 # Replace "YOUR_BOT_TOKEN" with the actual token for your bot
 bot.start(

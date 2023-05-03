@@ -4,6 +4,7 @@ CREDITS:
 -GGProGaming: creator of this bot
 -Micro: for hosting the bot and giving feedback
 -funlennysub: for the original bot
+-Thomasims: Teardown API scraper script
 
 -Source Code: https://github.com/GGProGaming/Teardown-Support-Bot
 """
@@ -139,7 +140,7 @@ async def _faq(ctx: SlashContext, question: str):
     elif question == 'requirements':
         response = "Requires a 64-bit processor and operating system \nThe minimum system requirements are as follows:\n**OS:** Windows 7 \n**Processor:** Quad Core \n**CPU Memory:** 4 GB RAM \n**Graphics:** NVIDIA GeForce GTX 1060 or similar. 3 Gb VRAM.\n**Storage:** 4 GB available space \n**Additional Notes:** Intel integrated graphics cards not supported."
     elif question == 'botinfo':
-        response = "**Credits:**\nGGProGaming: creator of this bot\nMicro: for hosting the bot and giving feedback\nfunlennysub: for the original bot\n\n**Source Code:**\nhttps://github.com/GGProGaming/Teardown-Support-Bot"
+        response = "**Credits:**\nGGProGaming: creator of this bot\nMicro: for hosting the bot and giving feedback\nfunlennysub: for the original bot\nThomasims: Teardown API scraper script\n\n**Source Code:**\nhttps://github.com/GGProGaming/Teardown-Support-Bot"
     else:
         response = 'Invalid question'
 

@@ -9,7 +9,7 @@ CREDITS:
 -Source Code: https://github.com/GGProGaming/Teardown-Support-Bot
 """
 import interactions
-from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext, EmbedAttachment, Task, IntervalTrigger, listen
+from interactions import Client, slash_command, SlashCommandOption, SlashCommandChoice, SlashContext, Intents, EmbedAttachment, cooldown, Buckets, subcommand, slash_option, OptionType, AutocompleteContext, EmbedAttachment, Task, IntervalTrigger, listen, Member
 from interactions.client.errors import CommandOnCooldown
 from interactions.ext import prefixed_commands
 import json
@@ -861,7 +861,10 @@ required_roles = ["Moderator", "Admin"]
 
 # Helper function to check if the user has required roles
 def has_required_role(member):
-    return any(role.name in required_roles for role in member.roles)
+    if isinstance(member, Member):
+        return any(role.name in required_roles for role in member.roles)
+    else:
+        return False
 
 async def deletetag(ctx: SlashContext, name: str):
     usage_statistics["Delete Tag"] += 1
@@ -901,6 +904,7 @@ usage_statistics = load_usage_statistics()
 
 @slash_command(name="usage_analytics",
                description="Collect and display usage statistics",
+               dm_permission=False,
                default_member_permissions=13)
 
 async def _usage_analytics(ctx: SlashContext):
@@ -924,12 +928,12 @@ async def _usage_analytics(ctx: SlashContext):
       embed = interactions.Embed(title="Usage Analytics", description=response, color=0xe9254e)
       await ctx.send(embed=embed, silent=True, delete_after=210)
 """
-STEAM_API_KEY = "F15539D3EE060289D56DC3B3A70248A6"
+STEAM_API_KEY = "STEAM_API_KEY"
 
 async def fetch_workshop_items():
     url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
     data = {
-        "key": "STEAM_API_KEY",
+        "key": "F15539D3EE060289D56DC3B3A70248A6",
         "publishedfileids[0]": "1167630",
         "itemcount": 1,
     }

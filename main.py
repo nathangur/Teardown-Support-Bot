@@ -822,19 +822,27 @@ async def calltag(ctx: SlashContext, name: str):
         response = custom_commands[name]["response"]
         creator_id = custom_commands[name]["creator"]
         creator = await ctx.bot.fetch_user(creator_id)
+        is_private = custom_commands[name].get("private", False)
 
-        # Check for image URL
-        image_url = re.search(r"(https?://[^\s]+(?:jpg|jpeg|png|gif))", response)
-        if image_url:
-            image_url = image_url.group(0)
-            response = response.replace(image_url, "").strip()
-            embed = interactions.Embed(title=name, description=response, color=0xe9254e)
-            embed.set_image(url=image_url)
+        # Determine if the user can view the private tag
+        can_view_private = (creator_id == ctx.author.id) or has_required_role(ctx.author)
+
+        if not is_private or can_view_private:
+            # Check for image URL
+            image_url = re.search(r"(https?://[^\s]+(?:jpg|jpeg|png|gif))", response)
+            if image_url:
+                image_url = image_url.group(0)
+                response = response.replace(image_url, "").strip()
+                embed = interactions.Embed(title=name, description=response, color=0xe9254e)
+                embed.set_image(url=image_url)
+            else:
+                embed = interactions.Embed(title=name, description=response.replace('\\n', '\n'), color=0xe9254e)
+
+            embed.set_footer(text=f"Created by {creator}", icon_url=creator.avatar_url)
+            await ctx.send(embed=embed, silent=True, delete_after=210, ephemeral=is_private)
         else:
-            embed = interactions.Embed(title=name, description=response.replace('\\n', '\n'), color=0xe9254e)
-
-        embed.set_footer(text=f"Created by {creator}", icon_url=creator.avatar_url)
-        await ctx.send(embed=embed, silent=True, delete_after=210)
+            embed = interactions.Embed(title="Error", description="You don't have permission to view this tag.", color=0xe9254e)
+            await ctx.send(embed=embed, silent=True, delete_after=4)
     else:
         embed = interactions.Embed(title="Error", description="This tag does not exist.", color=0xe9254e)
         await ctx.send(embed=embed, silent=True, delete_after=4)
@@ -928,6 +936,8 @@ async def _usage_analytics(ctx: SlashContext):
       embed = interactions.Embed(title="Usage Analytics", description=response, color=0xe9254e)
       await ctx.send(embed=embed, silent=True, delete_after=210)
 """
+My poor attempt at finding duplicate workshop items. Need help!
+
 STEAM_API_KEY = "STEAM_API_KEY"
 
 async def fetch_workshop_items():

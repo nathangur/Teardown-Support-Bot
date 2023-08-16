@@ -11,4 +11,6 @@ CREDITS:
 
 -Thomasims: Teardown API scraper script
 
+-Prop Guy: Images
+
 -Source Code: https://github.com/GGProGaming/Teardown-Support-Bot

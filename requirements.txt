@@ -1,0 +1,8 @@
+aiohttp
+matplotlib
+numpy
+pdf2image
+Pillow
+PyPDF2
+steam_workshop
+typst

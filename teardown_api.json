@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "functions": [
     {
       "name": "GetIntParam",
@@ -176,7 +176,7 @@
       "examples": [
         "local t = GetTime()"
       ],
-      "description": "Returns running time of this script. If called from update, this returns\nthe simulated time, otherwise it returns wall time.",
+      "description": "Returns running time of this script. If called from update, this returns the\nsimulated time, otherwise it returns wall time.",
       "tables": {}
     },
     {
@@ -193,7 +193,7 @@
       "examples": [
         "local dt = GetTimeStep()"
       ],
-      "description": "Returns timestep of the last frame. If called from update, this returns\nthe simulation time step, which is always one 60th of a second (0.0166667).\nIf called from tick or draw it returns the actual time since last frame.",
+      "description": "Returns timestep of the last frame. If called from update, this returns the\nsimulation time step, which is always one 60th of a second (0.0166667). If\ncalled from tick or draw it returns the actual time since last frame.",
       "tables": {}
     },
     {
@@ -341,7 +341,7 @@
       "examples": [
         "myValue = 0\nSetValue(\"myValue\", 1, \"linear\", 0.5)\n\nThis will change the value of myValue from 0 to 1 in a linear fasion over 0.5 seconds"
       ],
-      "description": "Set value of a number variable in the global context with an optional transition.\nIf a transition is provided the value will animate from current value to the new value during the transition time.\nTransition can be one of the following:\n${table:Transition}",
+      "description": "Set value of a number variable in the global context with an optional\ntransition. If a transition is provided the value will animate from current\nvalue to the new value during the transition time. Transition can be one of the\nfollowing: ${table:Transition}",
       "tables": {
         "Transition": [
           [
@@ -394,7 +394,7 @@
       "examples": [
         "function tick()\n\n    -- Primary button will be placed in the main pause menu\n\tif PauseMenuButton(\"Back to Hub\", true) then\n\t\tStartLevel(\"hub\", \"MOD/hub.xml\")\n\tend\n\t\n\t-- Button will be placed in the bottom bar of the pause menu\n\tif PauseMenuButton(\"MyMod Settings\") then\n\t\tvisible = true\n\tend\nend\n\nfunction draw()\n\tif visible then\n\t\tUiMakeInteractive()\n\t\t...\n\tend\nend"
       ],
-      "description": "Calling this function will add a button on the bottom bar or in the main pause menu (center of the screen) when the game is paused. \nA primary button will be placed in the main pause menu if this function is called from a playable mod. There can be only one primary button.\nUse this as a way to bring up mod settings or other user interfaces while the game is running. \nCall this function every frame from the tick function for as long as the pause menu button\nshould still be visible.",
+      "description": "Calling this function will add a button on the bottom bar or in the main pause\nmenu (center of the screen) when the game is paused. A primary button will be\nplaced in the main pause menu if this function is called from a playable mod.\nThere can be only one primary button. Use this as a way to bring up mod settings\nor other user interfaces while the game is running. Call this function every\nframe from the tick function for as long as the pause menu button should still\nbe visible.",
       "tables": {}
     },
     {
@@ -755,7 +755,7 @@
       "examples": [
         "--These are equivalent\nlocal a1 = Vec()\nlocal a2 = {0, 0, 0}\n\n--These are equivalent\nlocal b1 = Vec(0, 1, 0)\nlocal b2 = {0, 1, 0}"
       ],
-      "description": "Create new vector and optionally initializes it to the provided values.\nA Vec is equivalent to a regular lua table with three numbers.",
+      "description": "Create new vector and optionally initializes it to the provided values. A Vec is\nequivalent to a regular lua table with three numbers.",
       "tables": {}
     },
     {
@@ -779,7 +779,7 @@
       "examples": [
         "--Do this to assign a vector\nlocal right1 = Vec(1, 2, 3)\nlocal right2 = VecCopy(right1)\n\n--Never do this unless you REALLY know what you're doing\nlocal wrong1 = Vec(1, 2, 3)\nlocal wrong2 = wrong1"
       ],
-      "description": "Vectors should never be assigned like regular numbers. Since they are\nimplemented with lua tables assignment means two references pointing to\nthe same data. Use this function instead.",
+      "description": "Vectors should never be assigned like regular numbers. Since they are\nimplemented with lua tables assignment means two references pointing to the same\ndata. Use this function instead.",
       "tables": {}
     },
     {
@@ -1055,7 +1055,7 @@
       "examples": [
         "--These are equivalent\nlocal a1 = Quat()\nlocal a2 = {0, 0, 0, 1}"
       ],
-      "description": "Create new quaternion and optionally initializes it to the provided values.\nDo not attempt to initialize a quaternion with raw values unless you know\nwhat you are doing. Use QuatEuler or QuatAxisAngle instead.\nIf no arguments are given, a unit quaternion will be created: {0, 0, 0, 1}.\nA quaternion is equivalent to a regular lua table with four numbers.",
+      "description": "Create new quaternion and optionally initializes it to the provided values. Do\nnot attempt to initialize a quaternion with raw values unless you know what you\nare doing. Use QuatEuler or QuatAxisAngle instead. If no arguments are given, a\nunit quaternion will be created: {0, 0, 0, 1}. A quaternion is equivalent to a\nregular lua table with four numbers.",
       "tables": {}
     },
     {
@@ -1079,7 +1079,7 @@
       "examples": [
         "--Do this to assign a quaternion\nlocal right1 = QuatEuler(0, 90, 0)\nlocal right2 = QuatCopy(right1)\n\n--Never do this unless you REALLY know what you're doing\nlocal wrong1 = QuatEuler(0, 90, 0)\nlocal wrong2 = wrong1"
       ],
-      "description": "Quaternions should never be assigned like regular numbers. Since they are\nimplemented with lua tables assignment means two references pointing to\nthe same data. Use this function instead.",
+      "description": "Quaternions should never be assigned like regular numbers. Since they are\nimplemented with lua tables assignment means two references pointing to the same\ndata. Use this function instead.",
       "tables": {}
     },
     {
@@ -1145,7 +1145,7 @@
       "examples": [
         "--Create quaternion representing rotation 30 degrees around Y axis and 25 degrees around Z axis\nlocal q = QuatEuler(0, 30, 25)"
       ],
-      "description": "Create quaternion using euler angle notation. The order of applied rotations uses the\n\"NASA standard aeroplane\" model:\n<ol>\n<li>Rotation around Y axis (yaw or heading)</li>\n<li>Rotation around Z axis (pitch or attitude)</li>\n<li>Rotation around X axis (roll or bank)</li>\n</ol>",
+      "description": "Create quaternion using euler angle notation. The order of applied rotations\nuses the \"NASA standard aeroplane\" model: <ol> <li>Rotation around Y axis (yaw\nor heading)</li> <li>Rotation around Z axis (pitch or attitude)</li>\n<li>Rotation around X axis (roll or bank)</li> </ol>",
       "tables": {}
     },
     {
@@ -1181,7 +1181,7 @@
       "examples": [
         "--Return euler angles from quaternion q\nrx, ry, rz = GetQuatEuler(q)"
       ],
-      "description": "Return euler angles from quaternion. The order of rotations uses the \"NASA standard aeroplane\" model:\n<ol>\n<li>Rotation around Y axis (yaw or heading)</li>\n<li>Rotation around Z axis (pitch or attitude)</li>\n<li>Rotation around X axis (roll or bank)</li>\n</ol>",
+      "description": "Return euler angles from quaternion. The order of rotations uses the \"NASA\nstandard aeroplane\" model: <ol> <li>Rotation around Y axis (yaw or heading)</li>\n<li>Rotation around Z axis (pitch or attitude)</li> <li>Rotation around X axis\n(roll or bank)</li> </ol>",
       "tables": {}
     },
     {
@@ -1211,7 +1211,7 @@
       "examples": [
         "local eye = Vec(0, 10, 0)\nlocal target = Vec(0, 1, 5)\nlocal rot = QuatLookAt(eye, target)\nSetCameraTransform(Transform(eye, rot))"
       ],
-      "description": "Create a quaternion pointing the negative Z axis (forward) towards\na specific point, keeping the Y axis upwards. This is very useful\nfor creating camera transforms.",
+      "description": "Create a quaternion pointing the negative Z axis (forward) towards a specific\npoint, keeping the Y axis upwards. This is very useful for creating camera\ntransforms.",
       "tables": {}
     },
     {
@@ -1247,7 +1247,7 @@
       "examples": [
         "local a = QuatEuler(0, 10, 0)\nlocal b = QuatEuler(0, 0, 45)\n\n--Create quaternion half way between a and b\nlocal q = QuatSlerp(a, b, 0.5)"
       ],
-      "description": "Spherical, linear interpolation between a and b, using t. This is\nvery useful for animating between two rotations.",
+      "description": "Spherical, linear interpolation between a and b, using t. This is very useful\nfor animating between two rotations.",
       "tables": {}
     },
     {
@@ -1277,7 +1277,7 @@
       "examples": [
         "local a = QuatEuler(0, 10, 0)\nlocal b = QuatEuler(0, 0, 45)\nlocal q = QuatRotateQuat(a, b)\n\n--q now represents a rotation first 10 degrees around\n--the Y axis and then 45 degrees around the Z axis."
       ],
-      "description": "Rotate one quaternion with another quaternion. This is mathematically\nequivalent to c = a * b using quaternion multiplication.",
+      "description": "Rotate one quaternion with another quaternion. This is mathematically equivalent\nto c = a * b using quaternion multiplication.",
       "tables": {}
     },
     {
@@ -1337,7 +1337,7 @@
       "examples": [
         "--Create transform located at {0, 0, 0} with no rotation\nlocal t1 = Transform()\n\n--Create transform located at {10, 0, 0} with no rotation\nlocal t2 = Transform(Vec(10, 0,0))\n\n--Create transform located at {10, 0, 0}, rotated 45 degrees around Y axis\nlocal t2 = Transform(Vec(10, 0,0), QuatEuler(0, 45, 0))"
       ],
-      "description": "A transform is a regular lua table with two entries: pos and rot,\na vector and quaternion representing transform position and rotation.",
+      "description": "A transform is a regular lua table with two entries: pos and rot, a vector and\nquaternion representing transform position and rotation.",
       "tables": {}
     },
     {
@@ -1361,7 +1361,7 @@
       "examples": [
         "--Do this to assign a quaternion\nlocal right1 = Transform(Vec(1,0,0), QuatEuler(0, 90, 0))\nlocal right2 = TransformCopy(right1)\n\n--Never do this unless you REALLY know what you're doing\nlocal wrong1 = Transform(Vec(1,0,0), QuatEuler(0, 90, 0))\nlocal wrong2 = wrong1"
       ],
-      "description": "Transforms should never be assigned like regular numbers. Since they are\nimplemented with lua tables assignment means two references pointing to\nthe same data. Use this function instead.",
+      "description": "Transforms should never be assigned like regular numbers. Since they are\nimplemented with lua tables assignment means two references pointing to the same\ndata. Use this function instead.",
       "tables": {}
     },
     {
@@ -1391,7 +1391,7 @@
       "examples": [
         "local b = GetBodyTransform(body)\nlocal s = GetShapeLocalTransform(shape)\n\n--b represents the location of body in world space\n--s represents the location of shape in body space\n\nlocal w = TransformToParentTransform(b, s)\n\n--w now represents the location of shape in world space"
       ],
-      "description": "Transform child transform out of the parent transform.\nThis is the opposite of TransformToLocalTransform.",
+      "description": "Transform child transform out of the parent transform. This is the opposite of\nTransformToLocalTransform.",
       "tables": {}
     },
     {
@@ -1421,7 +1421,7 @@
       "examples": [
         "local b = GetBodyTransform(body)\nlocal w = GetShapeWorldTransform(shape)\n\n--b represents the location of body in world space\n--w represents the location of shape in world space\n\nlocal s = TransformToLocalTransform(b, w)\n\n--s now represents the location of shape in body space."
       ],
-      "description": "Transform one transform into the local space of another transform.\nThis is the opposite of TransformToParentTransform.",
+      "description": "Transform one transform into the local space of another transform. This is the\nopposite of TransformToParentTransform.",
       "tables": {}
     },
     {
@@ -1657,6 +1657,30 @@
       "tables": {}
     },
     {
+      "name": "ListTags",
+      "arguments": [
+        {
+          "name": "handle",
+          "desc": "Entity handle",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "tags",
+          "desc": "Indexed table of tags on entity",
+          "optional": false,
+          "type": "table"
+        }
+      ],
+      "examples": [
+        "--List all tags and their tag values for a particular entity\nlocal tags = ListTags(handle)\nfor i=1, #tags do\n\tDebugPrint(tags[i] .. \" \" .. GetTagValue(handle, tags[i]))\nend"
+      ],
+      "description": "",
+      "tables": {}
+    },
+    {
       "name": "GetDescription",
       "arguments": [
         {
@@ -1677,7 +1701,7 @@
       "examples": [
         "local desc = GetDescription(body)"
       ],
-      "description": "All entities can have an associated description. For bodies and\nshapes this can be provided through the editor. This function \nretrieves that description.",
+      "description": "All entities can have an associated description. For bodies and shapes this can\nbe provided through the editor. This function retrieves that description.",
       "tables": {}
     },
     {
@@ -1700,7 +1724,7 @@
       "examples": [
         "SetDescription(body, \"Target object\")"
       ],
-      "description": "All entities can have an associated description. The description for \nbodies and shapes will show up on the HUD when looking at them.",
+      "description": "All entities can have an associated description. The description for bodies and\nshapes will show up on the HUD when looking at them.",
       "tables": {}
     },
     {
@@ -1717,7 +1741,7 @@
       "examples": [
         "Delete(body)\n--All shapes associated with body will also be removed"
       ],
-      "description": "Remove an entity from the scene. All entities owned by this entity\nwill also be removed.",
+      "description": "Remove an entity from the scene. All entities owned by this entity will also be\nremoved.",
       "tables": {}
     },
     {
@@ -1765,7 +1789,7 @@
       "examples": [
         "local t = GetEntityType(e)\nif t == \"body\" then\n\t--e is a body handle\nend"
       ],
-      "description": "Returns the type name of provided entity, for example \"body\", \"shape\", \"light\", etc.",
+      "description": "Returns the type name of provided entity, for example \"body\", \"shape\", \"light\",\netc.",
       "tables": {}
     },
     {
@@ -1920,7 +1944,7 @@
       "examples": [
         "local dynamic = IsBodyDynamic(body)"
       ],
-      "description": "Check if body is dynamic. Note that something that was created static \nmay become dynamic due to destruction.",
+      "description": "Check if body is dynamic. Note that something that was created static may become\ndynamic due to destruction.",
       "tables": {}
     },
     {
@@ -1943,7 +1967,7 @@
       "examples": [
         "SetBodyDynamic(body, false)"
       ],
-      "description": "Change the dynamic state of a body. There is very limited use for this\nfunction. In most situations you should leave it up to the engine to decide.\nUse with caution.",
+      "description": "Change the dynamic state of a body. There is very limited use for this function.\nIn most situations you should leave it up to the engine to decide. Use with\ncaution.",
       "tables": {}
     },
     {
@@ -1966,7 +1990,7 @@
       "examples": [
         "local vel = Vec(2,0,0)\nSetBodyVelocity(body, vel)"
       ],
-      "description": "This can be used for animating bodies with preserved physical interaction,\nbut in most cases you are better off with a motorized joint instead.",
+      "description": "This can be used for animating bodies with preserved physical interaction, but\nin most cases you are better off with a motorized joint instead.",
       "tables": {}
     },
     {
@@ -2020,7 +2044,7 @@
       "examples": [
         "local vel = GetBodyVelocityAtPos(body, pos)"
       ],
-      "description": "Return the velocity on a body taking both linear and angular velocity into account.",
+      "description": "Return the velocity on a body taking both linear and angular velocity into\naccount.",
       "tables": {}
     },
     {
@@ -2043,7 +2067,7 @@
       "examples": [
         "local angVel = Vec(2,0,0)\nSetBodyAngularVelocity(body, angVel)"
       ],
-      "description": "This can be used for animating bodies with preserved physical interaction,\nbut in most cases you are better off with a motorized joint instead.",
+      "description": "This can be used for animating bodies with preserved physical interaction, but\nin most cases you are better off with a motorized joint instead.",
       "tables": {}
     },
     {
@@ -2091,7 +2115,7 @@
       "examples": [
         "if IsBodyActive(body) then\n\t...\nend"
       ],
-      "description": "Check if body is body is currently simulated. For performance reasons,\nbodies that don't move are taken out of the simulation. This function\ncan be used to query the active state of a specific body. Only dynamic\nbodies can be active.",
+      "description": "Check if body is body is currently simulated. For performance reasons, bodies\nthat don't move are taken out of the simulation. This function can be used to\nquery the active state of a specific body. Only dynamic bodies can be active.",
       "tables": {}
     },
     {
@@ -2114,7 +2138,7 @@
       "examples": [
         "--Wake up body\nSetBodyActive(body, true)\n\n--Put body to sleep\nSetBodyActive(body, false)"
       ],
-      "description": "This function makes it possible to manually activate and deactivate bodies to include or\nexclude in simulation. The engine normally handles this automatically, so use with care.",
+      "description": "This function makes it possible to manually activate and deactivate bodies to\ninclude or exclude in simulation. The engine normally handles this\nautomatically, so use with care.",
       "tables": {}
     },
     {
@@ -2281,7 +2305,7 @@
       "examples": [
         "if IsBodyVisible(body, 25) then\n\t--Body is within 25 meters visible to the camera\nend"
       ],
-      "description": "This will check if a body is currently visible in the camera frustum and\nnot occluded by other objects.",
+      "description": "This will check if a body is currently visible in the camera frustum and not\noccluded by other objects.",
       "tables": {}
     },
     {
@@ -2329,7 +2353,7 @@
       "examples": [
         "local connectedToStatic = IsBodyJointedToStatic(body)"
       ],
-      "description": "Determine if a body is in any way connected to a static object, either by being static itself or\nbe being directly or indirectly jointed to something static.",
+      "description": "Determine if a body is in any way connected to a static object, either by being\nstatic itself or be being directly or indirectly jointed to something static.",
       "tables": {}
     },
     {
@@ -2370,7 +2394,7 @@
       "examples": [
         "--Draw white outline at 50% transparency\nDrawBodyOutline(body, 0.5)\n\n--Draw green outline, fully opaque\nDrawBodyOutline(body, 0, 1, 0, 1)"
       ],
-      "description": "Render next frame with an outline around specified body.\nIf no color is given, a white outline will be drawn.",
+      "description": "Render next frame with an outline around specified body. If no color is given, a\nwhite outline will be drawn.",
       "tables": {}
     },
     {
@@ -2393,7 +2417,7 @@
       "examples": [
         "DrawBodyHighlight(body, 0.5)"
       ],
-      "description": "Flash the appearance of a body when rendering this frame. This is\nused for valuables in the game.",
+      "description": "Flash the appearance of a body when rendering this frame. This is used for\nvaluables in the game.",
       "tables": {}
     },
     {
@@ -2494,7 +2518,7 @@
       "examples": [
         "--Constrain the velocity between bodies A and B so that the relative velocity \n--along the X axis at point (0, 5, 0) is always 3 m/s\nConstrainVelocity(a, b, Vec(0, 5, 0), Vec(1, 0, 0), 3)"
       ],
-      "description": "This will tell the physics solver to constrain the velocity between two bodies. The physics solver\nwill try to reach the desired goal, while not applying an impulse bigger than the min and max values.\nThis function should only be used from the update callback.",
+      "description": "This will tell the physics solver to constrain the velocity between two bodies.\nThe physics solver will try to reach the desired goal, while not applying an\nimpulse bigger than the min and max values. This function should only be used\nfrom the update callback.",
       "tables": {}
     },
     {
@@ -2541,7 +2565,7 @@
       "examples": [
         "--Constrain the angular velocity between bodies A and B so that the relative angular velocity\n--along the Y axis is always 3 rad/s\nConstrainAngularVelocity(a, b, Vec(1, 0, 0), 3)"
       ],
-      "description": "This will tell the physics solver to constrain the angular velocity between two bodies. The physics solver\nwill try to reach the desired goal, while not applying an angular impulse bigger than the min and max values.\nThis function should only be used from the update callback.",
+      "description": "This will tell the physics solver to constrain the angular velocity between two\nbodies. The physics solver will try to reach the desired goal, while not\napplying an angular impulse bigger than the min and max values. This function\nshould only be used from the update callback.",
       "tables": {}
     },
     {
@@ -2588,7 +2612,7 @@
       "examples": [
         "--Constrain the origo of body a to an animated point in the world\nlocal worldPos = Vec(0, 3+math.sin(GetTime()), 0)\nConstrainPosition(a, 0, GetBodyTransform(a).pos, worldPos)\n\n--Constrain the origo of body a to the origo of body b (like a ball joint)\nConstrainPosition(a, b, GetBodyTransform(a).pos, GetBodyTransform(b).pos)"
       ],
-      "description": "This is a helper function that uses ConstrainVelocity to constrain a point on one \nbody to a point on another body while not affecting the bodies more than the provided \nmaximum relative velocity and maximum impulse. In other words: physically push on\nthe bodies so that pointA and pointB are aligned in world space. This is useful for \nphysically animating objects. This function should only be used from the update callback.",
+      "description": "This is a helper function that uses ConstrainVelocity to constrain a point on\none body to a point on another body while not affecting the bodies more than the\nprovided maximum relative velocity and maximum impulse. In other words:\nphysically push on the bodies so that pointA and pointB are aligned in world\nspace. This is useful for physically animating objects. This function should\nonly be used from the update callback.",
       "tables": {}
     },
     {
@@ -2635,7 +2659,7 @@
       "examples": [
         "--Constrain the orietation of body a to an upright orientation in the world\nConstrainOrientation(a, 0, GetBodyTransform(a).rot, Quat())\n\n--Constrain the orientation of body a to the orientation of body b\nConstrainOrientation(a, b, GetBodyTransform(a).rot, GetBodyTransform(b).rot)"
       ],
-      "description": "This is the angular counterpart to ConstrainPosition, a helper function that uses\nConstrainAngularVelocity to constrain the orientation of one body to the orientation\non another body while not affecting the bodies more than the provided maximum relative\nangular velocity and maximum angular impulse. In other words: physically rotate the\nbodies so that quatA and quatB are aligned in world space. This is useful for \nphysically animating objects. This function should only be used from the update callback.",
+      "description": "This is the angular counterpart to ConstrainPosition, a helper function that\nuses ConstrainAngularVelocity to constrain the orientation of one body to the\norientation on another body while not affecting the bodies more than the\nprovided maximum relative angular velocity and maximum angular impulse. In other\nwords: physically rotate the bodies so that quatA and quatB are aligned in world\nspace. This is useful for physically animating objects. This function should\nonly be used from the update callback.",
       "tables": {}
     },
     {
@@ -2652,7 +2676,7 @@
       "examples": [
         "local w = GetWorldBody()"
       ],
-      "description": "Every scene in Teardown has an implicit static world body that contains all shapes that are not explicitly assigned a body in the editor.",
+      "description": "Every scene in Teardown has an implicit static world body that contains all\nshapes that are not explicitly assigned a body in the editor.",
       "tables": {}
     },
     {
@@ -2807,7 +2831,7 @@
       "examples": [
         "local body = GetShapeBody(shape)"
       ],
-      "description": "Get handle to the body this shape is owned by. A shape is always owned by a body,\nbut can be transfered to a new body during destruction.",
+      "description": "Get handle to the body this shape is owned by. A shape is always owned by a\nbody, but can be transfered to a new body during destruction.",
       "tables": {}
     },
     {
@@ -2908,7 +2932,7 @@
       "examples": [
         "--Pulsate emissiveness and light intensity for shape\nlocal scale = math.sin(GetTime())*0.5 + 0.5\nSetShapeEmissiveScale(shape, scale)"
       ],
-      "description": "Scale emissiveness for shape. If the shape has light sources attached,\ntheir intensity will be scaled by the same amount.",
+      "description": "Scale emissiveness for shape. If the shape has light sources attached, their\nintensity will be scaled by the same amount.",
       "tables": {}
     },
     {
@@ -2955,6 +2979,12 @@
         {
           "name": "a",
           "desc": "Alpha",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "entry",
+          "desc": "Palette entry for voxel (zero if empty)",
           "optional": false,
           "type": "number"
         }
@@ -3023,12 +3053,18 @@
           "desc": "Alpha",
           "optional": false,
           "type": "number"
+        },
+        {
+          "name": "entry",
+          "desc": "Palette entry for voxel (zero if empty)",
+          "optional": false,
+          "type": "number"
         }
       ],
       "examples": [
         "local mat = GetShapeMaterialAtIndex(shape, 0, 0, 0)\nDebugPrint(\"The voxel closest to origo is of material: \" .. mat)"
       ],
-      "description": "Return material properties for a particular voxel in the voxel grid indexed by integer values.\nThe first index is zero (not one, as opposed to a lot of lua related things)",
+      "description": "Return material properties for a particular voxel in the voxel grid indexed by\ninteger values. The first index is zero (not one, as opposed to a lot of lua\nrelated things)",
       "tables": {}
     },
     {
@@ -3130,7 +3166,7 @@
       "examples": [
         "if IsShapeVisible(shape, 25) then\n\t--Shape is within 25 meters visible to the camera\nend"
       ],
-      "description": "This will check if a shape is currently visible in the camera frustum and\nnot occluded by other objects.",
+      "description": "This will check if a shape is currently visible in the camera frustum and not\noccluded by other objects.",
       "tables": {}
     },
     {
@@ -3154,7 +3190,7 @@
       "examples": [
         "local broken = IsShapeBroken(shape)"
       ],
-      "description": "Determine if shape has been broken. Note that a shape can be transfered\nto another body during destruction, but might still not be considered\nbroken if all voxels are intact.",
+      "description": "Determine if shape has been broken. Note that a shape can be transfered to\nanother body during destruction, but might still not be considered broken if all\nvoxels are intact.",
       "tables": {}
     },
     {
@@ -3195,7 +3231,7 @@
       "examples": [
         "--Draw white outline at 50% transparency\nDrawShapeOutline(shape, 0.5)\n\n--Draw green outline, fully opaque\nDrawShapeOutline(shape, 0, 1, 0, 1)"
       ],
-      "description": "Render next frame with an outline around specified shape.\nIf no color is given, a white outline will be drawn.",
+      "description": "Render next frame with an outline around specified shape. If no color is given,\na white outline will be drawn.",
       "tables": {}
     },
     {
@@ -3247,7 +3283,593 @@
       "examples": [
         "--This will put shapes a and b in layer 2 and disable collisions with\n--object shapes in layers 2, preventing any collisions between the two.\nSetShapeCollisionFilter(a, 2, 255-2)\nSetShapeCollisionFilter(b, 2, 255-2)\n\n--This will put shapes c and d in layer 4 and allow collisions with other\n--shapes in layer 4, but ignore all other collisions with the rest of the world.\nSetShapeCollisionFilter(c, 4, 4)\nSetShapeCollisionFilter(d, 4, 4)"
       ],
-      "description": "This is used to filter out collisions with other shapes. Each shape can be given a layer \nbitmask (8 bits, 0-255) along with a mask (also 8 bits). The layer of one object must be in\nthe mask of the other object and vice versa for the collision to be valid. The default layer\nfor all objects is 1 and the default mask is 255 (collide with all layers).",
+      "description": "This is used to filter out collisions with other shapes. Each shape can be given\na layer bitmask (8 bits, 0-255) along with a mask (also 8 bits). The layer of\none object must be in the mask of the other object and vice versa for the\ncollision to be valid. The default layer for all objects is 1 and the default\nmask is 255 (collide with all layers).",
+      "tables": {}
+    },
+    {
+      "name": "CreateShape",
+      "arguments": [
+        {
+          "name": "body",
+          "desc": "Body handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "transform",
+          "desc": "Shape transform in body space",
+          "optional": false,
+          "type": "table"
+        },
+        {
+          "name": "refShape",
+          "desc": "Handle to reference shape or path to vox file",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "newShape",
+          "desc": "Handle of new shape",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Create new, empty shape on existing body using the palette of a reference shape.\nThe reference shape can be any existingf shape in the scene or an external vox\nfile. The size of the new shape will be 1x1x1.",
+      "tables": {}
+    },
+    {
+      "name": "ClearShape",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Shape handle",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Fill a voxel shape with zeroes, thus removing all voxels.",
+      "tables": {}
+    },
+    {
+      "name": "ResizeShape",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Shape handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "xmi",
+          "desc": "Lower X coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "ymi",
+          "desc": "Lower Y coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "zmi",
+          "desc": "Lower Z coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "xma",
+          "desc": "Upper X coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "yma",
+          "desc": "Upper Y coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "zma",
+          "desc": "Upper Z coordinate",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "offset",
+          "desc": "Offset vector in shape local space",
+          "optional": false,
+          "type": "table"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Resize an existing shape. The new coordinates are expressed in the existing\nshape coordinate frame, so you can provide negative values. The existing content\nis preserved, but may be cropped if needed. The local shape transform will be\nmoved automatically with an offset vector to preserve the original content in\nbody space. This offset vector is returned in shape local space.",
+      "tables": {}
+    },
+    {
+      "name": "SetShapeBody",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Shape handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "body",
+          "desc": "Body handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "transform",
+          "desc": "New local shape transform. Default is existing local transform.",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Move existing shape to a new body, optionally providing a new local transform.",
+      "tables": {}
+    },
+    {
+      "name": "CopyShapeContent",
+      "arguments": [
+        {
+          "name": "src",
+          "desc": "Source shape handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "dst",
+          "desc": "Destination shape handle",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Copy voxel content from source shape to destination shape. If destination shape\nhas a different size, it will be resized to match the source shape.",
+      "tables": {}
+    },
+    {
+      "name": "CopyShapePalette",
+      "arguments": [
+        {
+          "name": "src",
+          "desc": "Source shape handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "dst",
+          "desc": "Destination shape handle",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Copy the palette from source shape to destination shape.",
+      "tables": {}
+    },
+    {
+      "name": "GetShapePalette",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Shape handle",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "entries",
+          "desc": "Palette material entries",
+          "optional": false,
+          "type": "table"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Return list of material entries, each entry is a material index that can be\nprovided to GetShapeMaterial or used as brush for populating a shape.",
+      "tables": {}
+    },
+    {
+      "name": "GetShapeMaterial",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Shape handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "entry",
+          "desc": "Material entry",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "type",
+          "desc": "Type",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "red",
+          "desc": "Red value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "green",
+          "desc": "Green value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "blue",
+          "desc": "Blue value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "alpha",
+          "desc": "Alpha value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "reflectivity",
+          "desc": "Range 0 to 1",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "shininess",
+          "desc": "Range 0 to 1",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "metallic",
+          "desc": "Range 0 to 1",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "emissive",
+          "desc": "Range 0 to 32",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Return material properties for specific matirial entry.",
+      "tables": {}
+    },
+    {
+      "name": "SetBrush",
+      "arguments": [
+        {
+          "name": "type",
+          "desc": "One of \"sphere\", \"cube\" or \"noise\"",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "desc": "Size of brush in voxels (must be in range 1 to 16)",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "index",
+          "desc": "Material index or path to brush vox file",
+          "optional": false,
+          "type": "or"
+        },
+        {
+          "name": "object",
+          "desc": "Optional object in brush vox file if brush vox file is used",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Set material index to be used for following calls to DrawShapeLine and\nDrawShapeBox and ExtrudeShape. An optional brush vox file and subobject can be\nused and provided instead of material index, in which case the content of the\nbrush will be used and repeated. Use material index zero to remove of voxels.",
+      "tables": {}
+    },
+    {
+      "name": "DrawShapeLine",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Handle to shape",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "x0",
+          "desc": "Start X coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "y0",
+          "desc": "Start Y coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "z0",
+          "desc": "Start Z coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "x1",
+          "desc": "End X coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "y1",
+          "desc": "End Y coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "z1",
+          "desc": "End Z coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "paint",
+          "desc": "Paint mode. Default is false.",
+          "optional": true,
+          "type": "bool"
+        },
+        {
+          "name": "noOverwrite",
+          "desc": "Only fill in voxels if space isn't already occupied. Default is false.",
+          "optional": true,
+          "type": "bool"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Draw voxelized line between (x0,y0,z0) and (x1,y1,z1) into shape using the\nmaterial set up with SetBrush. Paint mode will only change material of existing\nvoxels (where the current material index is non-zero). noOverwrite mode will\nonly fill in voxels if the space isn't already accupied by another shape in the\nscene.",
+      "tables": {}
+    },
+    {
+      "name": "DrawShapeBox",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Handle to shape",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "x0",
+          "desc": "Start X coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "y0",
+          "desc": "Start Y coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "z0",
+          "desc": "Start Z coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "x1",
+          "desc": "End X coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "y1",
+          "desc": "End Y coordinate",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "z1",
+          "desc": "End Z coordinate",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Draw box between (x0,y0,z0) and (x1,y1,z1) into shape using the material set up\nwith SetBrush.",
+      "tables": {}
+    },
+    {
+      "name": "ExtrudeShape",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Handle to shape",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "x",
+          "desc": "X coordinate to extrude",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "y",
+          "desc": "Y coordinate to extrude",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "z",
+          "desc": "Z coordinate to extrude",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "dx",
+          "desc": "X component of extrude direction, should be -1, 0 or 1",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "dy",
+          "desc": "Y component of extrude direction, should be -1, 0 or 1",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "dz",
+          "desc": "Z component of extrude direction, should be -1, 0 or 1",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "steps",
+          "desc": "Length of extrusion in voxels",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "mode",
+          "desc": "Extrusion mode, one of \"exact\", \"material\", \"geometry\". Default is \"exact\"",
+          "optional": false,
+          "type": "string"
+        }
+      ],
+      "returns": [],
+      "examples": [
+        null
+      ],
+      "description": "Extrude region of shape. The extruded region will be filled in with the material\nset up with SetBrush. The mode parameter sepcifies how the region is determined.\nExact mode selects region of voxels that exactly match the input voxel at input\ncoordinate. Material mode selects region that has the same material type as the\ninput voxel. Geometry mode selects any connected voxel in the same plane as the\ninput voxel.",
+      "tables": {}
+    },
+    {
+      "name": "TrimShape",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Source handle",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "offset",
+          "desc": "Offset vector in shape local space",
+          "optional": false,
+          "type": "table"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Trim away empty regions of shape, thus potentially making it smaller. If the\nsize of the shape changes, the shape will be automatically moved to preserve the\nshape content in body space. The offset vector for this translation is returned\nin shape local space.",
+      "tables": {}
+    },
+    {
+      "name": "SplitShape",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Source handle",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "removeResidual",
+          "desc": "Remove residual shapes (default false)",
+          "optional": false,
+          "type": "bool"
+        }
+      ],
+      "returns": [
+        {
+          "name": "newShapes",
+          "desc": "List of shape handles created",
+          "optional": false,
+          "type": "table"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Split up a shape into multiple shapes based on connectivity. If the\nremoveResidual flag is used, small disconnected chunks will be removed during\nthis process to reduce the number of newly created shapes.",
+      "tables": {}
+    },
+    {
+      "name": "MergeShape",
+      "arguments": [
+        {
+          "name": "shape",
+          "desc": "Input shape",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "returns": [
+        {
+          "name": "shape",
+          "desc": "Shape handle after merge",
+          "optional": false,
+          "type": "number"
+        }
+      ],
+      "examples": [
+        null
+      ],
+      "description": "Try to merge shape with a nearby, matching shape. For a merge to happen, the\nshapes need to be aligned to the same rotation and touching. If the provided\nshape was merged into another shape, that shape may be resized to fit the merged\ncontent. If shape was merged, the handle to the other shape is returned,\notherwise the input handle is returned.",
       "tables": {}
     },
     {
@@ -3511,7 +4133,7 @@
       "examples": [
         "if GetJointType(joint) == \"rope\" then\n\t--Joint is rope\nend"
       ],
-      "description": "Joint type is one of the following: \"ball\", \"hinge\", \"prismatic\" or \"rope\".\nAn empty string is returned if joint handle is invalid.",
+      "description": "Joint type is one of the following: \"ball\", \"hinge\", \"prismatic\" or \"rope\". An\nempty string is returned if joint handle is invalid.",
       "tables": {}
     },
     {
@@ -3541,7 +4163,7 @@
       "examples": [
         "--joint is connected to a and b\n\notherShape = GetJointOtherShape(joint, a)\n--otherShape is now b\n\notherShape = GetJointOtherShape(joint, b)\n--otherShape is now a"
       ],
-      "description": "A joint is always connected to two shapes. Use this function if you know \none shape and want to find the other one.",
+      "description": "A joint is always connected to two shapes. Use this function if you know one\nshape and want to find the other one.",
       "tables": {}
     },
     {
@@ -3594,7 +4216,7 @@
       "examples": [
         "--Set motor speed to 0.5 radians per second\nSetJointMotor(hinge, 0.5)"
       ],
-      "description": "Set joint motor target velocity. If joint is of type hinge, velocity is\ngiven in radians per second angular velocity. If joint type is prismatic joint\nvelocity is given in meters per second. Calling this function will override and\nvoid any previous call to SetJointMotorTarget.",
+      "description": "Set joint motor target velocity. If joint is of type hinge, velocity is given in\nradians per second angular velocity. If joint type is prismatic joint velocity\nis given in meters per second. Calling this function will override and void any\nprevious call to SetJointMotorTarget.",
       "tables": {}
     },
     {
@@ -3629,7 +4251,7 @@
       "examples": [
         "--Make joint reach a 45 degree angle, going at a maximum of 3 radians per second\nSetJointMotorTarget(hinge, 45, 3)"
       ],
-      "description": "If a joint has a motor target, it will try to maintain its relative movement. This\nis very useful for elevators or other animated, jointed mechanisms.\nIf joint is of type hinge, target is an angle in degrees (-180 to 180) and velocity\nis given in radians per second. If joint type is prismatic, target is given\nin meters and velocity is given in meters per second. Setting a motor target will\noverride any previous call to SetJointMotor.",
+      "description": "If a joint has a motor target, it will try to maintain its relative movement.\nThis is very useful for elevators or other animated, jointed mechanisms. If\njoint is of type hinge, target is an angle in degrees (-180 to 180) and velocity\nis given in radians per second. If joint type is prismatic, target is given in\nmeters and velocity is given in meters per second. Setting a motor target will\noverride any previous call to SetJointMotor.",
       "tables": {}
     },
     {
@@ -3683,7 +4305,7 @@
       "examples": [
         "local current = GetJointMovement(hinge)"
       ],
-      "description": "Return the current position or angle or the joint, measured in same way\nas joint limits.",
+      "description": "Return the current position or angle or the joint, measured in same way as joint\nlimits.",
       "tables": {}
     },
     {
@@ -3813,7 +4435,7 @@
       "examples": [
         "SetLightEnabled(light, false)"
       ],
-      "description": "If light is owned by a shape, the emissive scale of that shape will be set\nto 0.0 when light is disabled and 1.0 when light is enabled.",
+      "description": "If light is owned by a shape, the emissive scale of that shape will be set to\n0.0 when light is disabled and 1.0 when light is enabled.",
       "tables": {}
     },
     {
@@ -3848,7 +4470,7 @@
       "examples": [
         "--Set light color to yellow\nSetLightColor(light, 1, 1, 0)"
       ],
-      "description": "This will only set the color tint of the light. Use SetLightIntensity for brightness.\nSetting the light color will not affect the emissive color of a parent shape.",
+      "description": "This will only set the color tint of the light. Use SetLightIntensity for\nbrightness. Setting the light color will not affect the emissive color of a\nparent shape.",
       "tables": {}
     },
     {
@@ -3871,7 +4493,7 @@
       "examples": [
         "--Pulsate light\nSetLightIntensity(light, math.sin(GetTime())*0.5 + 1.0)"
       ],
-      "description": "If the shape is owned by a shape you most likely want to use\nSetShapeEmissiveScale instead, which will affect both the emissiveness \nof the shape and the brightness of the light at the same time.",
+      "description": "If the shape is owned by a shape you most likely want to use\nSetShapeEmissiveScale instead, which will affect both the emissiveness of the\nshape and the brightness of the light at the same time.",
       "tables": {}
     },
     {
@@ -4110,7 +4732,7 @@
       "examples": [
         "local mi, ma = GetTriggerBounds(trigger)\nlocal list = QueryAabbShapes(mi, ma)"
       ],
-      "description": "Return the lower and upper points in world space of the trigger axis aligned bounding box",
+      "description": "Return the lower and upper points in world space of the trigger axis aligned\nbounding box",
       "tables": {}
     },
     {
@@ -4266,7 +4888,7 @@
       "examples": [
         "local empty, highPoint = IsTriggerEmpty(trigger)\nif not empty then\n\t--highPoint[2] is the tallest point in trigger\nend"
       ],
-      "description": "This function will check if trigger is empty. If trigger contains any part of a body\nit will return false and the highest point as second return value.",
+      "description": "This function will check if trigger is empty. If trigger contains any part of a\nbody it will return false and the highest point as second return value.",
       "tables": {}
     },
     {
@@ -4296,7 +4918,7 @@
       "examples": [
         "local p = Vec(0, 10, 0)\nlocal dist = GetTriggerDistance(trigger, p)"
       ],
-      "description": "Get distance to the surface of trigger volume. Will return negative distance if inside.",
+      "description": "Get distance to the surface of trigger volume. Will return negative distance if\ninside.",
       "tables": {}
     },
     {
@@ -4326,7 +4948,7 @@
       "examples": [
         "local p = Vec(0, 10, 0)\nlocal closest = GetTriggerClosestPoint(trigger, p)"
       ],
-      "description": "Return closest point in trigger volume. Will return the input point itself if inside trigger\nor closest point on surface of trigger if outside.",
+      "description": "Return closest point in trigger volume. Will return the input point itself if\ninside trigger or closest point on surface of trigger if outside.",
       "tables": {}
     },
     {
@@ -4648,7 +5270,7 @@
       "examples": [
         "function tick()\n\t--Drive mycar forwards\n\tlocal v = FindVehicle(\"mycar\")\n\tDriveVehicle(v, 1, 0, false)\nend"
       ],
-      "description": "This function applies input to vehicles, allowing for autonomous driving. The vehicle\nwill be turned on automatically and turned off when no longer called. Call this from\nthe tick function, not update.",
+      "description": "This function applies input to vehicles, allowing for autonomous driving. The\nvehicle will be turned on automatically and turned off when no longer called.\nCall this from the tick function, not update.",
       "tables": {}
     },
     {
@@ -4665,7 +5287,7 @@
       "examples": [
         "local p = GetPlayerPos()\n\n--This is equivalent to\np = VecAdd(GetPlayerTransform().pos, Vec(0,1,0))"
       ],
-      "description": "Return center point of player. This function is deprecated. \nUse GetPlayerTransform instead.",
+      "description": "Return center point of player. This function is deprecated. Use\nGetPlayerTransform instead.",
       "tables": {}
     },
     {
@@ -4689,7 +5311,7 @@
       "examples": [
         "local t = GetPlayerTransform()"
       ],
-      "description": "The player transform is located at the bottom of the player. The player transform\nconsiders heading (looking left and right). Forward is along negative Z axis.\nPlayer pitch (looking up and down) does not affect player transform unless includePitch\nis set to true. If you want the transform of the eye, use GetPlayerCameraTransform() instead.",
+      "description": "The player transform is located at the bottom of the player. The player\ntransform considers heading (looking left and right). Forward is along negative\nZ axis. Player pitch (looking up and down) does not affect player transform\nunless includePitch is set to true. If you want the transform of the eye, use\nGetPlayerCameraTransform() instead.",
       "tables": {}
     },
     {
@@ -4712,7 +5334,7 @@
       "examples": [
         "local t = Transform(Vec(10, 0, 0), QuatEuler(0, 90, 0))\nSetPlayerTransform(t)"
       ],
-      "description": "Instantly teleport the player to desired transform. Unless includePitch is\nset to true, up/down look angle will be set to zero during this process.\nPlayer velocity will be reset to zero.",
+      "description": "Instantly teleport the player to desired transform. Unless includePitch is set\nto true, up/down look angle will be set to zero during this process. Player\nvelocity will be reset to zero.",
       "tables": {}
     },
     {
@@ -4729,7 +5351,7 @@
       "examples": [
         "SetPlayerGroundVelocity(Vec(2,0,0))"
       ],
-      "description": "Make the ground act as a conveyor belt, pushing the player even if ground shape is static.",
+      "description": "Make the ground act as a conveyor belt, pushing the player even if ground shape\nis static.",
       "tables": {}
     },
     {
@@ -4746,7 +5368,7 @@
       "examples": [
         "local t = GetPlayerCameraTransform()"
       ],
-      "description": "The player camera transform is usually the same as what you get from GetCameraTransform,\nbut if you have set a camera transform manually with SetCameraTransform, you can retrieve\nthe standard player camera transform with this function.",
+      "description": "The player camera transform is usually the same as what you get from\nGetCameraTransform, but if you have set a camera transform manually with\nSetCameraTransform, you can retrieve the standard player camera transform with\nthis function.",
       "tables": {}
     },
     {
@@ -4763,7 +5385,7 @@
       "examples": [
         "local t = Transform(Vec(), QuatAxisAngle(Vec(1, 0, 0), math.sin(time*3.0) * 3.0))\nSetPlayerCameraOffsetTransform(t)"
       ],
-      "description": "Call this function continously to apply a camera offset. Can be used for camera effects \nsuch as shake and wobble.",
+      "description": "Call this function continously to apply a camera offset. Can be used for camera\neffects such as shake and wobble.",
       "tables": {}
     },
     {
@@ -4943,7 +5565,7 @@
       "examples": [
         "local shape = GetPlayerInteractShape()\nif shape ~= 0 then\n\t...\nend"
       ],
-      "description": "Interactable shapes has to be tagged with \"interact\". The engine\ndetermines which interactable shape is currently interactable.",
+      "description": "Interactable shapes has to be tagged with \"interact\". The engine determines\nwhich interactable shape is currently interactable.",
       "tables": {}
     },
     {
@@ -4960,7 +5582,7 @@
       "examples": [
         "local body = GetPlayerInteractBody()\nif body ~= 0 then\n\t...\nend"
       ],
-      "description": "Interactable shapes has to be tagged with \"interact\". The engine\ndetermines which interactable body is currently interactable.",
+      "description": "Interactable shapes has to be tagged with \"interact\". The engine determines\nwhich interactable body is currently interactable.",
       "tables": {}
     },
     {
@@ -4977,7 +5599,7 @@
       "examples": [
         "--Interact with screen\nSetPlayerScreen(screen)\n\n--Do not interact with screen\nSetPlayerScreen(0)"
       ],
-      "description": "Set the screen the player should interact with. For the screen\nto feature a mouse pointer and receieve input, the screen also\nneeds to have interactive property.",
+      "description": "Set the screen the player should interact with. For the screen to feature a\nmouse pointer and receieve input, the screen also needs to have interactive\nproperty.",
       "tables": {}
     },
     {
@@ -5073,7 +5695,7 @@
       "examples": [
         "function init()\n\tRegisterTool(\"lasergun\", \"Laser Gun\", \"MOD/vox/lasergun.vox\")\n\tSetBool(\"game.tool.lasergun.enabled\", true)\nend\n\nfunction tick()\n\tif GetString(\"game.player.tool\") == \"lasergun\" then\n\t\t--Tool is selected. Tool logic goes here.\n\tend\nend"
       ],
-      "description": "Register a custom tool that will show up in the player inventory and \ncan be selected with scroll wheel. Do this only once per tool.\nYou also need to enable the tool in the registry before it can be used.",
+      "description": "Register a custom tool that will show up in the player inventory and can be\nselected with scroll wheel. Do this only once per tool. You also need to enable\nthe tool in the registry before it can be used.",
       "tables": {}
     },
     {
@@ -5113,7 +5735,7 @@
       "examples": [
         "--Offset the tool half a meter to the right\nlocal offset = Transform(Vec(0.5, 0, 0))\nSetToolTransform(offset)"
       ],
-      "description": "Apply an additional transform on the visible tool body. This can be used to\ncreate tool animations. You need to set this every frame from the tick function.\nThe optional sway parameter control the amount of tool swaying when walking.\nSet to zero to disable completely.",
+      "description": "Apply an additional transform on the visible tool body. This can be used to\ncreate tool animations. You need to set this every frame from the tick function.\nThe optional sway parameter control the amount of tool swaying when walking. Set\nto zero to disable completely.",
       "tables": {}
     },
     {
@@ -5370,7 +5992,7 @@
       "examples": [
         "--Raycast dynamic, physical objects above debris threshold, but not specific vehicle\nQueryRequire(\"physical dynamic large\")\nQueryRejectVehicle(vehicle)\nQueryRaycast(...)"
       ],
-      "description": "Set required layers for next query. Available layers are: \n${table:Layer}",
+      "description": "Set required layers for next query. Available layers are: ${table:Layer}",
       "tables": {
         "Layer": [
           [
@@ -5392,6 +6014,10 @@
           [
             "small",
             "below debris threshold"
+          ],
+          [
+            "visible",
+            "only hit visible shapes"
           ]
         ]
       }
@@ -5558,7 +6184,7 @@
       "examples": [
         "--Find closest point within 10 meters of {0, 5, 0}, excluding any point on myVehicle\nQueryRejectVehicle(myVehicle)\nlocal hit, p, n, s = QueryClosestPoint(Vec(0, 5, 0), 10)\nif hit then\n\t--Point p of shape s is closest\nend"
       ],
-      "description": "This will query the closest point to all shapes in the world. If you \nwant to set up a filter for the query you need to do so before every call\nto this function.",
+      "description": "This will query the closest point to all shapes in the world. If you want to set\nup a filter for the query you need to do so before every call to this function.",
       "tables": {}
     },
     {
@@ -5653,7 +6279,7 @@
       "examples": [
         "QueryPath(Vec(-10, 0, 0), Vec(10, 0, 0))"
       ],
-      "description": "Initiate path planning query. The result will run asynchronously as long as GetPathState\nretuns \"busy\". An ongoing path query can be aborted with AbortPath. The path planning query\nwill use the currently set up query filter, just like the other query functions.",
+      "description": "Initiate path planning query. The result will run asynchronously as long as\nGetPathState retuns \"busy\". An ongoing path query can be aborted with AbortPath.\nThe path planning query will use the currently set up query filter, just like\nthe other query functions.",
       "tables": {}
     },
     {
@@ -5663,7 +6289,7 @@
       "examples": [
         "AbortPath()"
       ],
-      "description": "Abort current path query, regardless of what state it is currently in. This is a way to\nsave computing resources if the result of the current query is no longer of interest.",
+      "description": "Abort current path query, regardless of what state it is currently in. This is a\nway to save computing resources if the result of the current query is no longer\nof interest.",
       "tables": {}
     },
     {
@@ -5680,7 +6306,7 @@
       "examples": [
         "local s = GetPathState()\nif s == \"done\" then\n\tDoSomething()\nend"
       ],
-      "description": "Return the current state of the last path planning query.\n${table:State}",
+      "description": "Return the current state of the last path planning query. ${table:State}",
       "tables": {
         "State": [
           [
@@ -5716,7 +6342,7 @@
       "examples": [
         "local l = GetPathLength()"
       ],
-      "description": "Return the path length of the most recently computed path query. Note that the result can often be retrieved even\nif the path query failed. If the target point couldn't be reached, the path endpoint will be the point closest\nto the target.",
+      "description": "Return the path length of the most recently computed path query. Note that the\nresult can often be retrieved even if the path query failed. If the target point\ncouldn't be reached, the path endpoint will be the point closest to the target.",
       "tables": {}
     },
     {
@@ -5740,7 +6366,7 @@
       "examples": [
         "local d = 0\nlocal l = GetPathLength()\nwhile d < l do\n\tDebugCross(GetPathPoint(d))\n\td = d + 0.5\nend"
       ],
-      "description": "Return a point along the path for the most recently computed path query. Note that the result can often be retrieved even\nif the path query failed. If the target point couldn't be reached, the path endpoint will be the point closest\nto the target.",
+      "description": "Return a point along the path for the most recently computed path query. Note\nthat the result can often be retrieved even if the path query failed. If the\ntarget point couldn't be reached, the path endpoint will be the point closest to\nthe target.",
       "tables": {}
     },
     {
@@ -5817,7 +6443,7 @@
       "examples": [
         "local v = GetWindVelocity(Vec(0, 10, 0))"
       ],
-      "description": "Get the wind velocity at provided point. The wind will be determined by wind property of\nthe environment, but it varies with position procedurally.",
+      "description": "Get the wind velocity at provided point. The wind will be determined by wind\nproperty of the environment, but it varies with position procedurally.",
       "tables": {}
     },
     {
@@ -5908,7 +6534,7 @@
       "examples": [
         "--Constant red\nParticleColor(1,0,0)\n\n--Animating from yellow to red\nParticleColor(1,1,0, 1,0,0)"
       ],
-      "description": "Set particle color to either constant (three arguments) or linear interpolation (six arguments)",
+      "description": "Set particle color to either constant (three arguments) or linear interpolation\n(six arguments)",
       "tables": {}
     },
     {
@@ -6031,7 +6657,7 @@
       "examples": [
         "--Move particles slowly upwards\nParticleGravity(2)"
       ],
-      "description": "Set particle gravity. It will be applied along the world Y axis. A negative value will move the particle downwards.",
+      "description": "Set particle gravity. It will be applied along the world Y axis. A negative\nvalue will move the particle downwards.",
       "tables": {}
     },
     {
@@ -6072,7 +6698,7 @@
       "examples": [
         "--Slow down fast moving particles\nParticleDrag(0.5)"
       ],
-      "description": "Particle drag will slow down fast moving particles. It's implemented slightly different for\nsmoke and plain particles. Drag must be positive, and usually look good between zero and one.",
+      "description": "Particle drag will slow down fast moving particles. It's implemented slightly\ndifferent for smoke and plain particles. Drag must be positive, and usually look\ngood between zero and one.",
       "tables": {}
     },
     {
@@ -6113,7 +6739,7 @@
       "examples": [
         "--Highly emissive at start, not emissive at end\nParticleEmissive(5, 0)"
       ],
-      "description": "Draw particle as emissive (glow in the dark). This is useful for fire and embers.",
+      "description": "Draw particle as emissive (glow in the dark). This is useful for fire and\nembers.",
       "tables": {}
     },
     {
@@ -6195,7 +6821,7 @@
       "examples": [
         "--Stretch particle along direction of motion\nParticleStretch(1.0)"
       ],
-      "description": "Stretch particle along with velocity. 0.0 means no stretching. 1.0 stretches with the particle motion over\none frame. Larger values stretches the particle even more.",
+      "description": "Stretch particle along with velocity. 0.0 means no stretching. 1.0 stretches\nwith the particle motion over one frame. Larger values stretches the particle\neven more.",
       "tables": {}
     },
     {
@@ -6277,7 +6903,7 @@
       "examples": [
         "--Disable collisions\nParticleCollide(0)\n\n--Enable collisions over time\nParticleCollide(0, 1)\n\n--Ramp up collisions very quickly, only skipping the first 5% of lifetime\nParticleCollide(1, 1, \"constant\", 0.05)"
       ],
-      "description": "Control particle collisions. A value of zero means that collisions are ignored. One means full collision.\nIt is sometimes useful to animate this value from zero to one in order to not collide with objects around\nthe emitter.",
+      "description": "Control particle collisions. A value of zero means that collisions are ignored.\nOne means full collision. It is sometimes useful to animate this value from zero\nto one in order to not collide with objects around the emitter.",
       "tables": {}
     },
     {
@@ -6294,7 +6920,7 @@
       "examples": [
         "--Fire extinguishing particle\nParticleFlags(256)\nSpawnParticle(...)"
       ],
-      "description": "Set particle bitmask. The value 256 means fire extinguishing particles and is currently the only \nflag in use. There might be support for custom flags and queries in the future.",
+      "description": "Set particle bitmask. The value 256 means fire extinguishing particles and is\ncurrently the only flag in use. There might be support for custom flags and\nqueries in the future.",
       "tables": {}
     },
     {
@@ -6323,7 +6949,7 @@
       "examples": [
         "ParticleReset()\nParticleType(\"smoke\")\nParticleColor(0.7, 0.6, 0.5)\n--Spawn particle at world origo with upwards velocity and a lifetime of ten seconds\nSpawnParticle(Vec(0, 0, 0), Vec(0, 1, 0), 10.0)"
       ],
-      "description": "Spawn particle using the previously set up particle state. You can call this multiple times\nusing the same particle state, but with different position, velocity and lifetime. You can\nalso modify individual properties in the particle state in between calls to to this function.",
+      "description": "Spawn particle using the previously set up particle state. You can call this\nmultiple times using the same particle state, but with different position,\nvelocity and lifetime. You can also modify individual properties in the particle\nstate in between calls to to this function.",
       "tables": {}
     },
     {
@@ -6363,9 +6989,9 @@
         }
       ],
       "examples": [
-        "Spawn(\"MOD/prefab/mycar.xml\", Transform(Vec(0, 5, 0)))\nSpawn(\"&lt;voxbox size='10 10 10' prop='true' material='wood'/&gt;\", Transform(Vec(0, 10, 0)))"
+        "Spawn(\"MOD/prefab/mycar.xml\", Transform(Vec(0, 5, 0)))\nSpawn(\"<voxbox size='10 10 10' prop='true' material='wood'/>\", Transform(Vec(0, 10, 0)))"
       ],
-      "description": "The first argument can be either a prefab XML file in your mod folder or a string with XML content. It is also \npossible to spawn prefabs from other mods, by using the mod id followed by colon, followed by the prefab path.\nSpawning prefabs from other mods should be used with causion since the referenced mod might not be installed.",
+      "description": "The first argument can be either a prefab XML file in your mod folder or a\nstring with XML content. It is also possible to spawn prefabs from other mods,\nby using the mod id followed by colon, followed by the prefab path. Spawning\nprefabs from other mods should be used with causion since the referenced mod\nmight not be installed.",
       "tables": {}
     },
     {
@@ -6406,7 +7032,7 @@
       "examples": [
         "Shoot(Vec(0, 10, 0), Vec(0, 0, 1), \"shotgun\")"
       ],
-      "description": "Fire projectile. Type can be one of \"bullet\", \"rocket\", \"gun\" or \"shotgun\".\nFor backwards compatilbility, type also accept a number, where 1 is same as \"rocket\" and anything else \"bullet\"\nNote that this function will only spawn the projectile, not make any sound\nAlso note that \"bullet\" and \"rocket\" are the only projectiles that can hurt the player.",
+      "description": "Fire projectile. Type can be one of \"bullet\", \"rocket\", \"gun\" or \"shotgun\". For\nbackwards compatilbility, type also accept a number, where 1 is same as \"rocket\"\nand anything else \"bullet\" Note that this function will only spawn the\nprojectile, not make any sound Also note that \"bullet\" and \"rocket\" are the only\nprojectiles that can hurt the player.",
       "tables": {}
     },
     {
@@ -6489,7 +7115,7 @@
       "examples": [
         "MakeHole(pos, 1.2, 1.0)"
       ],
-      "description": "Make a hole in the environment. Radius is given in meters. \nSoft materials: glass, foliage, dirt, wood, plaster and plastic. \nMedium materials: concrete, brick and weak metal. \nHard materials: hard metal and hard masonry.",
+      "description": "Make a hole in the environment. Radius is given in meters. Soft materials:\nglass, foliage, dirt, wood, plaster and plastic. Medium materials: concrete,\nbrick and weak metal. Hard materials: hard metal and hard masonry.",
       "tables": {}
     },
     {
@@ -6682,7 +7308,7 @@
       "examples": [
         "SetCameraTransform(Transform(Vec(0, 10, 0), QuatEuler(0, 90, 0)))"
       ],
-      "description": "Override current camera transform for this frame. Call continuously to keep overriding.",
+      "description": "Override current camera transform for this frame. Call continuously to keep\noverriding.",
       "tables": {}
     },
     {
@@ -6699,7 +7325,7 @@
       "examples": [
         "function tick()\n\tSetCameraFov(60)\nend"
       ],
-      "description": "Override field of view for the next frame for all camera modes, except when explicitly set in SetCameraTransform",
+      "description": "Override field of view for the next frame for all camera modes, except when\nexplicitly set in SetCameraTransform",
       "tables": {}
     },
     {
@@ -6722,7 +7348,7 @@
       "examples": [
         "--Set depth of field to 10 meters\nSetCameraDof(10)"
       ],
-      "description": "Override depth of field for the next frame for all camera modes. Depth of field will be used even if turned off in options.",
+      "description": "Override depth of field for the next frame for all camera modes. Depth of field\nwill be used even if turned off in options.",
       "tables": {}
     },
     {
@@ -6763,7 +7389,7 @@
       "examples": [
         "--Pulsating, yellow light above world origo\nlocal intensity = 3 + math.sin(GetTime())\nPointLight(Vec(0, 5, 0), 1, 1, 0, intensity)"
       ],
-      "description": "Add a temporary point light to the world for this frame. Call continuously\nfor a steady light.",
+      "description": "Add a temporary point light to the world for this frame. Call continuously for a\nsteady light.",
       "tables": {}
     },
     {
@@ -6780,7 +7406,7 @@
       "examples": [
         "--Slow down time when holding down a key\nif InputDown('t') then\nSetTimeScale(0.2)\nend"
       ],
-      "description": "Experimental. Scale time in order to make a slow-motion effect. Audio will\nalso be affected. Note that this will affect physics behavior and is not\nintended for gameplay purposes. Calling this function will slow down time\nfor the next frame only. Call every frame from tick function to get steady\nslow-motion.",
+      "description": "Experimental. Scale time in order to make a slow-motion effect. Audio will also\nbe affected. Note that this will affect physics behavior and is not intended for\ngameplay purposes. Calling this function will slow down time for the next frame\nonly. Call every frame from tick function to get steady slow-motion.",
       "tables": {}
     },
     {
@@ -6790,7 +7416,7 @@
       "examples": [
         "SetEnvironmentDefault()"
       ],
-      "description": "Reset the environment properties to default. This is often useful before \nsetting up a custom environment.",
+      "description": "Reset the environment properties to default. This is often useful before setting\nup a custom environment.",
       "tables": {}
     },
     {
@@ -6831,7 +7457,7 @@
       "examples": [
         "SetEnvironmentProperty(\"skybox\", \"cloudy.dds\")\nSetEnvironmentProperty(\"rain\", 0.7)\nSetEnvironmentProperty(\"fogcolor\", 0.5, 0.5, 0.8)\nSetEnvironmentProperty(\"nightlight\", false)"
       ],
-      "description": "This function is used for manipulating the environment properties. The available properties are \nexactly the same as in the editor, except for \"snowonground\" which is not currently supported.",
+      "description": "This function is used for manipulating the environment properties. The available\nproperties are exactly the same as in the editor, except for \"snowonground\"\nwhich is not currently supported.",
       "tables": {}
     },
     {
@@ -6879,7 +7505,7 @@
       "examples": [
         "local skyboxPath = GetEnvironmentProperty(\"skybox\")\nlocal rainValue = GetEnvironmentProperty(\"rain\")\nlocal r,g,b = GetEnvironmentProperty(\"fogcolor\")\nlocal enabled = GetEnvironmentProperty(\"nightlight\")"
       ],
-      "description": "This function is used for querying the current environment properties. The available properties are\nexactly the same as in the editor.",
+      "description": "This function is used for querying the current environment properties. The\navailable properties are exactly the same as in the editor.",
       "tables": {}
     },
     {
@@ -6924,7 +7550,7 @@
       "examples": [
         "--Sepia post processing\nSetPostProcessingProperty(\"saturation\", 0.4)\nSetPostProcessingProperty(\"colorbalance\", 1.3, 1.0, 0.7)"
       ],
-      "description": "This function is used for manipulating the post processing properties. The available properties are\nexactly the same as in the editor.",
+      "description": "This function is used for manipulating the post processing properties. The\navailable properties are exactly the same as in the editor.",
       "tables": {}
     },
     {
@@ -6960,7 +7586,7 @@
       "examples": [
         "local saturation = GetPostProcessingProperty(\"saturation\")\nlocal r,g,b = GetPostProcessingProperty(\"colorbalance\")"
       ],
-      "description": "This function is used for querying the current post processing properties. \nThe available properties are exactly the same as in the editor.",
+      "description": "This function is used for querying the current post processing properties. The\navailable properties are exactly the same as in the editor.",
       "tables": {}
     },
     {
@@ -7007,7 +7633,7 @@
       "examples": [
         "--Draw white debug line\nDrawLine(Vec(0, 0, 0), Vec(-10, 5, -10))\n\n--Draw red debug line\nDrawLine(Vec(0, 0, 0), Vec(10, 5, 10), 1, 0, 0)"
       ],
-      "description": "Draw a 3D line. In contrast to DebugLine, it will not show behind objects. Default color is white.",
+      "description": "Draw a 3D line. In contrast to DebugLine, it will not show behind objects.\nDefault color is white.",
       "tables": {}
     },
     {
@@ -7118,7 +7744,7 @@
       "examples": [
         "local t = 5\nDebugWatch(\"time\", t)"
       ],
-      "description": "Show a named valued on screen for debug purposes.\nUp to 32 values can be shown simultaneously. Values updated the current\nframe are drawn opaque. Old values are drawn transparent in white.\n\nThe function will also recognize vectors, quaternions and transforms as\nsecond argument and convert them to strings automatically.",
+      "description": "Show a named valued on screen for debug purposes. Up to 32 values can be shown\nsimultaneously. Values updated the current frame are drawn opaque. Old values\nare drawn transparent in white. The function will also recognize vectors,\nquaternions and transforms as second argument and convert them to strings\nautomatically.",
       "tables": {}
     },
     {
@@ -7145,7 +7771,7 @@
       "examples": [
         "UiMakeInteractive()"
       ],
-      "description": "Calling this function will disable game input, bring up the mouse pointer\nand allow Ui interaction with the calling script without pausing the game.\nThis can be useful to make interactive user interfaces from scripts while\nthe game is running. Call this continuously every frame as long as Ui \ninteraction is desired.",
+      "description": "Calling this function will disable game input, bring up the mouse pointer and\nallow Ui interaction with the calling script without pausing the game. This can\nbe useful to make interactive user interfaces from scripts while the game is\nrunning. Call this continuously every frame as long as Ui interaction is\ndesired.",
       "tables": {}
     },
     {
@@ -7155,7 +7781,7 @@
       "examples": [
         "UiColor(1,0,0)\nUiText(\"Red\")\nUiPush()\n\tUiColor(0,1,0)\n\tUiText(\"Green\")\nUiPop()\nUiText(\"Red\")"
       ],
-      "description": "Push state onto stack. This is used in combination with UiPop to\nremember a state and restore to that state later.",
+      "description": "Push state onto stack. This is used in combination with UiPop to remember a\nstate and restore to that state later.",
       "tables": {}
     },
     {
@@ -7165,7 +7791,7 @@
       "examples": [
         "UiColor(1,0,0)\nUiText(\"Red\")\nUiPush()\n\tUiColor(0,1,0)\n\tUiText(\"Green\")\nUiPop()\nUiText(\"Red\")"
       ],
-      "description": "Pop state from stack and make it the current one. This is used in\ncombination with UiPush to remember a previous state and go back to\nit later.",
+      "description": "Pop state from stack and make it the current one. This is used in combination\nwith UiPush to remember a previous state and go back to it later.",
       "tables": {}
     },
     {
@@ -7401,7 +8027,7 @@
       "examples": [
         "UiPush()\n\tUiWindow(400, 200)\n\tlocal w = UiWidth()\n\t--w is now 400\nUiPop()"
       ],
-      "description": "Set up new bounds. Calls to UiWidth, UiHeight, UiCenter and UiMiddle\nwill operate in the context of the window size. \nIf clip is set to true, contents of window will be clipped to \nbounds (only works properly for non-rotated windows).",
+      "description": "Set up new bounds. Calls to UiWidth, UiHeight, UiCenter and UiMiddle will\noperate in the context of the window size. If clip is set to true, contents of\nwindow will be clipped to bounds (only works properly for non-rotated windows).",
       "tables": {}
     },
     {
@@ -7436,7 +8062,7 @@
       "examples": [
         "function draw()\n\tlocal x0, y0, x1, y1 = UiSafeMargins()\n\tUiTranslate(x0, y0)\n\tUiWindow(x1-x0, y1-y0, true)\n\t--The drawing area is now 1920 by 1080 in the center of screen\n\tdrawMenu()\nend"
       ],
-      "description": "Return a safe drawing area that will always be visible regardless of\ndisplay aspect ratio. The safe drawing area will always be 1920 by 1080\nin size. This is useful for setting up a fixed size UI.",
+      "description": "Return a safe drawing area that will always be visible regardless of display\naspect ratio. The safe drawing area will always be 1920 by 1080 in size. This is\nuseful for setting up a fixed size UI.",
       "tables": {}
     },
     {
@@ -7453,7 +8079,7 @@
       "examples": [
         "UiAlign(\"left\")\nUiText(\"Aligned left at baseline\")\n\nUiAlign(\"center middle\")\nUiText(\"Fully centered\")"
       ],
-      "description": "The alignment determines how content is aligned with respect to the\ncursor.\n${table:Alignment}\nAlignment can contain combinations of these, for instance:\n\"center middle\", \"left top\", \"center top\", etc. If horizontal\nor vertical alginment is omitted it will depend on the element drawn.\nText, for instance has default vertical alignment at baseline.",
+      "description": "The alignment determines how content is aligned with respect to the cursor.\n${table:Alignment} Alignment can contain combinations of these, for instance:\n\"center middle\", \"left top\", \"center top\", etc. If horizontal or vertical\nalginment is omitted it will depend on the element drawn. Text, for instance has\ndefault vertical alignment at baseline.",
       "tables": {
         "Alignment": [
           [
@@ -7490,7 +8116,7 @@
       "examples": [
         "UiModalBegin()\nif UiTextButton(\"Okay\") then\n\t--All other interactive ui elements except this one are disabled\nend\nUiModalEnd()\n\n--This is also okay\nUiPush()\n\tUiModalBegin()\n\tif UiTextButton(\"Okay\") then\n\t\t--All other interactive ui elements except this one are disabled\n\tend\nUiPop()\n--No longer modal"
       ],
-      "description": "Disable input for everything, except what's between UiModalBegin and UiModalEnd \n(or if modal state is popped)",
+      "description": "Disable input for everything, except what's between UiModalBegin and UiModalEnd\n(or if modal state is popped)",
       "tables": {}
     },
     {
@@ -7500,7 +8126,7 @@
       "examples": [
         "UiModalBegin()\nif UiTextButton(\"Okay\") then\n\t--All other interactive ui elements except this one are disabled\nend\nUiModalEnd()"
       ],
-      "description": "Disable input for everything, except what's between UiModalBegin and UiModalEnd\nCalling this function is optional. Modality is part of the current state and will\nbe lost if modal state is popped.",
+      "description": "Disable input for everything, except what's between UiModalBegin and UiModalEnd\nCalling this function is optional. Modality is part of the current state and\nwill be lost if modal state is popped.",
       "tables": {}
     },
     {
@@ -7537,7 +8163,7 @@
       "examples": [
         "if UiReceivesInput() then\n\thighlightItemAtMousePointer()\nend"
       ],
-      "description": "This function will check current state receives input. This is the case \nif input is not explicitly disabled with (with UiDisableInput) and no other\nstate is currently modal (with UiModalBegin). Input functions and UI\nelements already do this check internally, but it can sometimes be useful \nto read the input state manually to trigger things in the UI.",
+      "description": "This function will check current state receives input. This is the case if input\nis not explicitly disabled with (with UiDisableInput) and no other state is\ncurrently modal (with UiModalBegin). Input functions and UI elements already do\nthis check internally, but it can sometimes be useful to read the input state\nmanually to trigger things in the UI.",
       "tables": {}
     },
     {
@@ -7626,7 +8252,7 @@
       "examples": [
         "local x, y, dist = UiWorldToPixel(point)\nif dist > 0 then\nUiTranslate(x, y)\nUiText(\"Label\")\nend"
       ],
-      "description": "Convert world space position to user interface X and Y coordinate relative\nto the cursor. The distance is in meters and positive if in front of camera,\nnegative otherwise.",
+      "description": "Convert world space position to user interface X and Y coordinate relative to\nthe cursor. The distance is in meters and positive if in front of camera,\nnegative otherwise.",
       "tables": {}
     },
     {
@@ -7742,6 +8368,18 @@
         {
           "name": "h",
           "desc": "Height of text",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "x",
+          "desc": "End x-position of text. Only valid when \"advance cursor\" is false",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "y",
+          "desc": "End y-position of text. Only valid when \"advance cursor\" is false",
           "optional": false,
           "type": "number"
         }
@@ -8067,7 +8705,7 @@
       "examples": [
         "UiSound(\"click.ogg\")"
       ],
-      "description": "UI sounds are not affected by acoustics simulation. Use LoadSound / PlaySound for that.",
+      "description": "UI sounds are not affected by acoustics simulation. Use LoadSound / PlaySound\nfor that.",
       "tables": {}
     },
     {
@@ -8090,7 +8728,7 @@
       "examples": [
         "if animating then\n\tUiSoundLoop(\"screech.ogg\")\nend"
       ],
-      "description": "Call this continuously to keep playing loop. \nUI sounds are not affected by acoustics simulation. Use LoadLoop / PlayLoop for that.",
+      "description": "Call this continuously to keep playing loop. UI sounds are not affected by\nacoustics simulation. Use LoadLoop / PlayLoop for that.",
       "tables": {}
     },
     {
@@ -8113,7 +8751,7 @@
       "examples": [
         "if menuOpen then\n\tUiMute(1.0)\nend"
       ],
-      "description": "Mute game audio and optionally music for the next frame. Call\ncontinuously to stay muted.",
+      "description": "Mute game audio and optionally music for the next frame. Call continuously to\nstay muted.",
       "tables": {}
     },
     {

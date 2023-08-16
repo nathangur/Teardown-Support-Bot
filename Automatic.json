@@ -1,0 +1,2096 @@
+[
+    {
+        "function": "AutoNoteFrequency",
+        "description": "Documentation Assumes that TDTD's library is in the environemnt--#endregion--#re\ngion ShortcutsAutoFlatSprite = LoadSprite('ui/menu/white_32.png')AutoColors = {b\nackground_dark = { 0.28627450980392, 0.25490196078431, 0.38039215686275 },backgr\nound_light = { 0.41960784313725, 0.39607843137255, 0.58823529411765 },wood_dark \n= { 0.6, 0.33725490196078, 0.42352941176471 },wood_light = { 0.78039215686275, 0\n.53333333333333, 0.56470588235294 },rock_dark = { 0.41960784313725, 0.3803921568\n6275, 0.46666666666667 },rock_light = { 0.49803921568627, 0.46274509803922, 0.55\n686274509804 },green_dark = { 0.3843137254902, 0.76078431372549, 0.7607843137254\n9 },green_light = { 0.4156862745098, 0.90980392156863, 0.63529411764706 },jade_d\nark = { 0.33725490196078, 0.52156862745098, 0.6 },jade_light = { 0.2941176470588\n2, 0.68627450980392, 0.69019607843137 },aqua_dark = { 0.28627450980392, 0.466666\n66666667, 0.58039215686275 },aqua_light = { 0.32156862745098, 0.60392156862745, \n0.78039215686275 },pastel_dark = { 1, 0.7921568627451, 0.83137254901961 },pastel\n_light = { 0.80392156862745, 0.70588235294118, 0.85882352941176 },pink_dark = { \n0.70196078431373, 0.45098039215686, 0.64313725490196 },pink_light = { 0.94901960\n784314, 0.57647058823529, 0.86274509803922 },purple_dark = { 0.56470588235294, 0\n.34117647058824, 0.63921568627451 },purple_light = { 0.77647058823529, 0.4509803\n9215686, 0.8156862745098 },yellow_dark = { 0.7921568627451, 0.65490196078431, 0.\n32156862745098 },yellow_light = { 0.89803921568627, 0.75686274509804, 0.36862745\n098039 },amber_dark = { 0.7843137254902, 0.50196078431373, 0.28627450980392 },am\nber_light = { 0.96470588235294, 0.63921568627451, 0.18039215686275 },red_dark = \n{ 0.72549019607843, 0.35686274509804, 0.48627450980392 },red_light = { 0.8431372\n5490196, 0.33333333333333, 0.41960784313725 },white_dark = { 0.84705882352941, 0\n.74509803921569, 0.61960784313725 },white_light = { 0.96470588235294, 0.91372549\n019608, 0.80392156862745 },blue_dark = { 0.2078431372549, 0.31372549019608, 0.43\n921568627451 },blue_light = { 0.19607843137255, 0.61176470588235, 0.788235294117\n65 },alert_dark = { 0.22352941176471, 0.098039215686275, 0.2 },alert_light = { 0\n.74901960784314, 0.21960784313725, 0.49019607843137 },}Creates pitch frequencies\n for UiSound",
+        "arguments": [
+            "baseline string"
+        ],
+        "returns": [
+            "{ C:number, Cs:number, D:number, Ds:number, E:number, F:number, Fs:number, G:number, Gs:number, A:number, As:number, B:number }"
+        ]
+    },
+    {
+        "function": "AutoSigmoid",
+        "description": "Sigmoid function, Can be used for juicy UI and smooth easing among other things.\nhttps://www.desmos.com/calculator/cmmwrjtyit?invertedColors",
+        "arguments": [
+            "v number? Input number, if nil then it will be a Random number between 0 and 1",
+            "max number The Maximum value",
+            "steep number How steep the curve is",
+            "offset number The horizontal offset of the middle of the curve"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoRound",
+        "description": "Rounds a number.This was a Challenge by @TallTim and @1ssnl to make the smallest\n rounding function, but I expanded it to make it easier to read and a little mor\ne efficent",
+        "arguments": [
+            "v number Input number",
+            "increment number? The lowest increment. A Step of 1 will round the number to 1, A step of 5 will round it to the closest increment of 5, A step of 0.1 will round to the tenth. Default is 1"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoMap",
+        "description": "Maps a value from range a1-a2 to range b1-b2",
+        "arguments": [
+            "v number Input number",
+            "a1 number Goes from the range of number a1",
+            "a2 number To number a2",
+            "b1 number To the range of b1",
+            "b2 number To number b2",
+            "clamp boolean? Clamp the number between b1 and b2, Default is false"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoClamp",
+        "description": "Limits a value from going below the min and above the max",
+        "arguments": [
+            "v number The number to clamp",
+            "min number? The minimum the number can be, Default is 0",
+            "max number? The maximum the number can be, Default is 1"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoClampLength",
+        "description": "Limits a value from going below the min and above the max",
+        "arguments": [
+            "v number The number to clamp",
+            "max number? The maximum the length of the number can be, Default is 1"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoWrap",
+        "description": "Wraps a value inbetween a range, Thank you iaobardar for the Optimization",
+        "arguments": [
+            "v number The number to wrap",
+            "min number? The minimum range",
+            "max number? The maximum range"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoLerp",
+        "description": "Linerarly Iterpolates between `a` and `b` by fraction `t`Does not clamp",
+        "arguments": [
+            "a number Goes from number A",
+            "b number To number B",
+            "t number Interpolated by T"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoLerpWrap",
+        "description": "Spherically Iterpolates between `a` and `b` by fraction `t`.Basically Lerp but w\nith wrapping",
+        "arguments": [
+            "a number Goes from number A",
+            "b number To number B",
+            "t number Interpolated by T",
+            "w number Wraps at"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoMove",
+        "description": "Moves `a` towards `b` by amount `t`Will clamp as to not overshoot",
+        "arguments": [
+            "a number Goes from number A",
+            "b number To number B",
+            "t number Moved by T"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoDist",
+        "description": "Return the Distance between the numbers `a` and `b`",
+        "arguments": [
+            "a number",
+            "b number"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoNormalize",
+        "description": "Normalizes all values in a table to have a magnitude of 1 - Scales every number \nto still represent the same \"direction\"",
+        "arguments": [
+            "t table<number>",
+            "scale number?"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoFlex",
+        "description": "Takes a table of weights, like {1, 2, 0.5, 0.5}, and produces a table of how muc\nh space each weight would take up if it were to span over a given length.If give\nn the weights {1, 2, 0.5, 0.5}, with a span length of 100, the resulting table w\nould be = {25, 50, 12.5, 12.5}.A padding parameter can also be added which can b\ne used to make Ui easier. Iterate through the resulting table, after each UiRect\n, move the width + the padding parameter",
+        "arguments": [
+            "weights table<number>|number weights",
+            "span number",
+            "padding number?"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoBias",
+        "description": "Returns index of the selected weight using a bias based on the weight values. Go\nod for Biased Randomness",
+        "arguments": [
+            "weights table<number>"
+        ],
+        "returns": [
+            "number selected"
+        ]
+    },
+    {
+        "function": "AutoSwizzle",
+        "description": "Rebuilds a table in a given order, also known as Swizzling| Swizzle | Result || \n |  || `xyz` | { x, y, z } || `zxy` | { z, x, y } || `xy` | { x, y } || `xz` | {\n x, z } || `xxx` | { x, x, x } || `xyzw` | { x, y, z, w } || `wxyz` | { w, x, y,\n z } || `rgba` | { r, g, b, a } || `bgra` | { b, g, r, a } || `aaaa` | { a, a, a\n, a } |",
+        "arguments": [
+            "vec vector|table",
+            "swizzle string"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoVecEquals",
+        "description": "Returns true if each axis of vector `a` is equal to each axis of vector `b`",
+        "arguments": [
+            "a vector",
+            "b vector"
+        ],
+        "returns": [
+            "boolean"
+        ]
+    },
+    {
+        "function": "AutoVecRnd",
+        "description": "Return a Random Vector with an optional offset and scale",
+        "arguments": [
+            "param1 number|vector",
+            "param2 number?"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecDist",
+        "description": "Return the Distance between Two Vectors",
+        "arguments": [
+            "a vector",
+            "b vector"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoVecMove",
+        "description": "Moves a vector in a direction by a given amountEquivalent to `VecAdd(vec, VecSca\nle(dir, dist))`",
+        "arguments": [
+            "vec any",
+            "dir any",
+            "dist any"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecRound",
+        "description": "Return the Vector Rounded to a number",
+        "arguments": [
+            "vec vector",
+            "r number?"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecRescale",
+        "description": "Return a vector that has the magnitude of `b`, but with the direction of `a`Equi\nvalent to `VecScale(VecNormalize(a), b)`",
+        "arguments": [
+            "a vector",
+            "b number"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecMap",
+        "description": "Maps a Vector from range a1-a2 to range b1-b2",
+        "arguments": [
+            "v vector Input Vector",
+            "a1 number Goes from the range of number a1",
+            "a2 number To number a2",
+            "b1 number To the range of b1",
+            "b2 number To number b2"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecClampMagnitude",
+        "description": "Limits the magnitude of a vector to be between min and max",
+        "arguments": [
+            "v vector The Vector to clamp",
+            "min number? The minimum the magnitude can be, Default is 0",
+            "max number? The maximum the magnitude can be, Default is 1"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecClamp",
+        "description": "Limits a vector to be between min and max",
+        "arguments": [
+            "v vector The Vector to clamp",
+            "min number? The minimum, Default is 0",
+            "max number? The maximum, Default is 1"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecOne",
+        "description": "Return Vec(1, 1, 1) scaled by length",
+        "arguments": [
+            "length number return the vector of size length, Default is 1"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecMidpoint",
+        "description": "Returns the midpoint between two vectorsEquivalent to `VecScale(VecAdd(a, b), 0.\n5)`",
+        "arguments": [
+            "a any",
+            "b any"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecMulti",
+        "description": "Return Vec `a` multiplied by Vec `b`",
+        "arguments": [
+            "a vector",
+            "b vector"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecDiv",
+        "description": "Return Vec `a` divided by Vec `b`",
+        "arguments": [
+            "a vector",
+            "b vector"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecPow",
+        "description": "Return Vec `a` to the Power of `b`",
+        "arguments": [
+            "a vector",
+            "b number"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecPowVec",
+        "description": "Return Vec `a` to the Power of Vec `b`",
+        "arguments": [
+            "a vector",
+            "b vector"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecAbs",
+        "description": "Returns the absolute value of an vector",
+        "arguments": [
+            "v vector"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecMin",
+        "description": "Equivalent to `math.min(unpack(v))`",
+        "arguments": [
+            "v vector"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoVecMax",
+        "description": "Equivalent to `math.max(unpack(v))`",
+        "arguments": [
+            "v vector"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoVecRotate",
+        "description": "Rotates a vector around an axis by a given angle",
+        "arguments": [
+            "vec vector The vector to rotate ",
+            "axis vector The rotation axis, a unit vector ",
+            "angle number The rotation angle in degrees "
+        ],
+        "returns": [
+            "vector vec The rotated vector"
+        ]
+    },
+    {
+        "function": "AutoVecSubsituteX",
+        "description": "Return `v` with it's `x` value replaced by `subx`",
+        "arguments": [
+            "v vector",
+            "subx number"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoVecSubsituteY",
+        "description": "Return `v` with it's `y` value replaced by `suby`",
+        "arguments": [
+            "v vector",
+            "suby number"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoVecSubsituteZ",
+        "description": "Return `v` with it's `z` value replaced by `subz`",
+        "arguments": [
+            "v vector",
+            "subz number"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoDotToAngle",
+        "description": "Converts the output of VecDot with normalized vectors to an angle",
+        "arguments": [
+            "dot number"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoQuatFwd",
+        "description": "Equivalent to `QuatRotateVec(rot, Vec(0, 0, 1))`",
+        "arguments": [
+            "rot quaternion"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoRandomQuat",
+        "description": "Returns a random quaternion",
+        "arguments": [
+            "angle number degrees"
+        ],
+        "returns": [
+            "quaternion"
+        ]
+    },
+    {
+        "function": "AutoQuatDot",
+        "description": "Computes the dot product of two quaternions.",
+        "arguments": [
+            "a quaternion",
+            "b quaternion"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoQuatConjugate",
+        "description": "Returns the Conjugate of the given quaternion.",
+        "arguments": [
+            "quat quaternion"
+        ],
+        "returns": [
+            "quaternion quat"
+        ]
+    },
+    {
+        "function": "AutoQuatInverse",
+        "description": "Returns the Inverse of the given quaternion.",
+        "arguments": [
+            "quat quaternion"
+        ],
+        "returns": [
+            "quaternion quat"
+        ]
+    },
+    {
+        "function": "function AutoQuatNearest",
+        "description": "Between -a and a, picks the quaternion nearest to b",
+        "arguments": [
+            "a quaternion",
+            "b quaternion"
+        ],
+        "returns": [
+            "quaternionThankyou to Mathias for this"
+        ]
+    },
+    {
+        "function": "---@param v any\n---@return quaternion\nfunction AutoQuatFromAxisAngle",
+        "description": "Same as `QuatAxisAngle()` but takes a single vector instead of a unit vector + a\nn angle, for convenienceThankyou to Mathias for this",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "function AutoQuatToAxisAngle",
+        "description": "Converts a quaternion to an axis angle representationReturns a rotation vector w\nhere axis is the direction and angle is the lengthThankyou to Mathias for this",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoBodyCenter",
+        "description": "Get the center of a body's bounds",
+        "arguments": [
+            "body body_handle"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoShapeCenter",
+        "description": "Get the center of a shapes's bounds",
+        "arguments": [
+            "shape shape_handle"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoAABBExpandPoint",
+        "description": "Returns a Axis ALigned Bounding Box with the center of pos",
+        "arguments": [
+            "pos vector",
+            "halfextents vector|number"
+        ],
+        "returns": [
+            "vector lower-bound",
+            "vector upper-bound"
+        ]
+    },
+    {
+        "function": "AutoAABBCorrection",
+        "description": "Takes two vectors and modifys them so they can be used in other bound functions",
+        "arguments": [
+            "aa vector",
+            "bb vector"
+        ],
+        "returns": [
+            "vector",
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoAABBGetPos",
+        "description": "Get a position inside or on the Input Bounds",
+        "arguments": [
+            "aa vector lower-bound",
+            "bb vector upper-bound",
+            "vec vector? A normalized Vector pointing towards the position that should be retrieved, Default is Vec(0, 0, 0)"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoAABBGetCorners",
+        "description": "Get the corners of the given Bounds",
+        "arguments": [
+            "aa vector lower-bound",
+            "bb vector upper-bound"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoAABBSize",
+        "description": "Get data about the size of the given Bounds",
+        "arguments": [
+            "aa vector lower-bound",
+            "bb vector upper-bound"
+        ],
+        "returns": [
+            "table representing the size of the Bounds",
+            "number smallest smallest edge size of the Bounds",
+            "number longest longest edge size of the Bounds"
+        ]
+    },
+    {
+        "function": "AutoSubdivideBounds",
+        "description": "Takes a given AABB and subdivides into new AABBs",
+        "arguments": [
+            "aa vector lower-bound",
+            "bb vector upper-bound",
+            "levels number?"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoDrawAABB",
+        "description": "Draws a given Axis Aligned Bounding Box",
+        "arguments": [
+            "aa vector lower-bound",
+            "bb vector upper-bound",
+            "colorR number",
+            "colorG number",
+            "colorB number",
+            "alpha number",
+            "rgbcolors boolean?",
+            "draw boolean?"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoAABBToOBB",
+        "description": "@class OBB: { pos:vector, rot:quaternion, size:vector }|transformConverts an Axi\ns Aligned Bounding Box to a Oriented Bounding Box",
+        "arguments": [
+            "aa vector",
+            "bb vector"
+        ],
+        "returns": [
+            "OBB"
+        ]
+    },
+    {
+        "function": "AutoOBB",
+        "description": "Defines a Oriented Bounding Box",
+        "arguments": [
+            "center vector",
+            "rot quaternion",
+            "size vector|number?"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoGetOBBCorners",
+        "description": "Returns the corners of a Oriented Bounding Box",
+        "arguments": [
+            "obb OBB"
+        ],
+        "returns": [
+            "{ xyz:table, Xyz:table, xYz:table, xyZ:table, XYz:table, XyZ:table, xYZ:table, XYZ:table }"
+        ]
+    },
+    {
+        "function": "AutoGetOBBFaces",
+        "description": "Returns the planes and corners representing the faces of a Oriented Bounding Box",
+        "arguments": [
+            "obb OBB"
+        ],
+        "returns": [
+            "{ z:plane, zn:plane, x:plane, xn:plane, y:plane, yn:plane }",
+            "{ xyz:table, Xyz:table, xYz:table, xyZ:table, XYz:table, XyZ:table, xYZ:table, XYZ:table }"
+        ]
+    },
+    {
+        "function": "AutoOBBLines",
+        "description": "Returns a table representing the lines connecting the sides of a Oriented Boundi\nng Box",
+        "arguments": [
+            "obb OBB"
+        ],
+        "returns": [
+            "table<{ [1]:vector, [2]:vector }>"
+        ]
+    },
+    {
+        "function": "AutoGetShapeOBB",
+        "description": "",
+        "arguments": [
+            "shape shape_handle"
+        ],
+        "returns": [
+            "OBB"
+        ]
+    },
+    {
+        "function": "AutoDrawOBB",
+        "description": "Draws a given Oriented Bounding Box",
+        "arguments": [
+            "obb OBB",
+            "red number? Default is 0",
+            "green number? Default is 0",
+            "blue number? Default is 0",
+            "alpha number? Default is 1"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoPlane",
+        "description": "@class plane: { pos:vector, rot:quaternion, size:{ [1]:number, [2]:number } }|tr\nansform",
+        "arguments": [
+            "pos vector",
+            "rot quaternion",
+            "size { [1]:number, [2]:number }"
+        ],
+        "returns": [
+            "plane"
+        ]
+    },
+    {
+        "function": "AutoGetPlaneCorners",
+        "description": "",
+        "arguments": [
+            "plane plane"
+        ],
+        "returns": [
+            "{ [1]:vector, [2]:vector, [3]:vector, [4]:vector }"
+        ]
+    },
+    {
+        "function": "AutoRaycastPlane",
+        "description": "",
+        "arguments": [
+            "plane plane",
+            "startPos vector",
+            "direction vector",
+            "oneway boolean?"
+        ],
+        "returns": [
+            "{ hit:boolean, intersection:vector, normal:vector, dist:number, dot:number }"
+        ]
+    },
+    {
+        "function": "AutoDrawPlane",
+        "description": "",
+        "arguments": [
+            "plane plane",
+            "pattern 0|1|2|3",
+            "patternstrength number",
+            "oneway boolean?",
+            "r number?",
+            "g number?",
+            "b number?",
+            "a number?"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "---@param _layer number?\n---@return table\nfunction AutoProcessOctree",
+        "description": "Undocumented",
+        "arguments": [
+            "BoundsAA vector",
+            "BoundsBB vector",
+            "Layers number",
+            "conditionalFuction"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoQueryBoundsForBody",
+        "description": "Undocumented",
+        "arguments": [
+            "aa vector",
+            "bb vector"
+        ],
+        "returns": [
+            "boolean",
+            "table"
+        ]
+    },
+    {
+        "function": "function?\nfunction AutoDrawOctree",
+        "description": "Draws the Octree from AutoProcessOctree",
+        "arguments": [
+            "node table",
+            "layer number",
+            "draw"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSimInstance",
+        "description": "Creates a Point Physics Simulation Instance",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "t:CreatePoint",
+        "description": "Creates a Point to be Simulated with SimInstance:CreatePoint(), you can add para\nmeters after it is created and change existing ones, such as point.reflectivity,\n and point.mass",
+        "arguments": [
+            "Position vector? Default is Vec(0, 0, 0)",
+            "Velocity vector? Default is Vec(0, 0, 0)"
+        ],
+        "returns": [
+            "table point",
+            "number newindex"
+        ]
+    },
+    {
+        "function": "t:Simulate",
+        "description": "Updates all of the point in the Simulation",
+        "arguments": [
+            "dt number The timestep that is used. Default is GetTimeStep()"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "or table of functions\n\t---@param index table The Index of the Point that should be removed\n\tfunction t:Remove",
+        "description": "Removes a point from the Simulation by it's index, Calls point.remove if it is a",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "The Function that is called, called with the input parameter of",
+        "description": "Iterate through every Point",
+        "arguments": [
+            "func"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "---@param Image string|false? A image that is drawn in the position of the points, Default is 'ui/common/dot.png', if set to false, then draws a Transform at the position instead\n\t---@param SizeMultiplier number? a multipler for the size of the drawn image, Default is 3.5\n\t---@param Occlude boolean? Whether to hide points that are obscured by walls, Default is true\n\tfunction t:Draw",
+        "description": "Draw every point in which point.draw is not false (by default, point.draw is tru\ne), calling p.draw at the end if it is a",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSM_Define",
+        "description": "@class Secondary_Motion_Data: tableReturns a table representing a Second Order S\nystem (SOS) that can be used to make secondary motion",
+        "arguments": [
+            "initial number|table<number>",
+            "frequency number",
+            "dampening number",
+            "response number",
+            "raw_k boolean?"
+        ],
+        "returns": [
+            "Secondary_Motion_Data"
+        ]
+    },
+    {
+        "function": "AutoSM_DefineQuat",
+        "description": "Returns a table representing a Second Order System (SOS) that can be used to mak\ne secondary motion",
+        "arguments": [
+            "initial number|table<number>",
+            "frequency number",
+            "dampening number",
+            "response number",
+            "raw_k boolean?"
+        ],
+        "returns": [
+            "Secondary_Motion_Data"
+        ]
+    },
+    {
+        "function": "is used in conjunction with the AutoSM_Define\n---@param sm Secondary_Motion_Data\n---@param target number|table<number>\n---@param timestep number\nfunction AutoSM_Update",
+        "description": "Updates the state of the Second Order System (SOS) towards the target value, ove\nr the specified timestep.This",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSM_Get",
+        "description": "\"wtf\" - Autumnsm.data.velocity = VecAdd(sm.data.velocity, VecScale(VecScale(VecA\ndd(s, VecSub(VecScale(dx, sm.k_values[3]), VecScale(sm.data.velocity, sm.k_value\ns[1]))), timestep), 1 / k2_stable))    endendReturns the current value of a Seco\nnd Order System",
+        "arguments": [
+            "sm Secondary_Motion_Data"
+        ],
+        "returns": [
+            "number|table<number>|quaternion"
+        ]
+    },
+    {
+        "function": "AutoSM_GetVelocity",
+        "description": "Returns the current velocity of a Second Order System",
+        "arguments": [
+            "sm Secondary_Motion_Data"
+        ],
+        "returns": [
+            "number|table<number>"
+        ]
+    },
+    {
+        "function": "AutoSM_Set",
+        "description": "Sets the current values of a Second Order System",
+        "arguments": [
+            "sm Secondary_Motion_Data",
+            "target number|table<number>|quaternion",
+            "keep_velocity boolean?"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSM_SetVelocity",
+        "description": "Sets the current velocity of a Second Order System",
+        "arguments": [
+            "sm Secondary_Motion_Data",
+            "velocity number|table<number>"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSM_AddVelocity",
+        "description": "Adds a amount to the current velocity of a Second Order System",
+        "arguments": [
+            "sm Secondary_Motion_Data",
+            "velocity number|table<number>"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSM_RecalculateK",
+        "description": "Recalculates The K values for a Second Order System",
+        "arguments": [
+            "sm Secondary_Motion_Data",
+            "frequency number",
+            "dampening number",
+            "response number",
+            "raw_k boolean?"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoTableCount",
+        "description": "Returns the amount of elements in the given list.",
+        "arguments": [
+            "t table"
+        ],
+        "returns": [
+            "integer"
+        ]
+    },
+    {
+        "function": "AutoTableRepeatValue",
+        "description": "Repeats a value `v`, `r` amount of times",
+        "arguments": [
+            "v any",
+            "r integer"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoTableConcat",
+        "description": "Concats Table 2 onto the end of Table 1, does not return anything",
+        "arguments": [
+            "t1 table",
+            "t2 table"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoTableMerge",
+        "description": "Merges two tables together, does not return anything",
+        "arguments": [
+            "base table",
+            "overwrite table"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "for returning a table's key's values.\n---@param t table\n---@param key any\n---@return table\nfunction AutoTableSub",
+        "description": "A lambda like",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "for returning a table's key's values.\n---Same as AutoTableSub, but uses ipairs instead\n---@param t table\n---@param key any\n---@return table\nfunction AutoTableSubi",
+        "description": "A lambda like",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoTableSwapKeysAndValues",
+        "description": "Swaps the keys and the values of a table",
+        "arguments": [
+            "t table"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoTableAppend",
+        "description": "Equivalent to```for i, v in pairs(t) do    v[key] = tset[i]end```",
+        "arguments": [
+            "t table",
+            "key any",
+            "tset table"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoTableContains",
+        "description": "Returns true and the index if the v is in t, otherwise returns false and nil",
+        "arguments": [
+            "t table",
+            "v any"
+        ],
+        "returns": [
+            "boolean, unknown"
+        ]
+    },
+    {
+        "function": "AutoTableLast",
+        "description": "Returns the Last item of a given list",
+        "arguments": [
+            "t table"
+        ],
+        "returns": [
+            "any"
+        ]
+    },
+    {
+        "function": "AutoTableDeepCopy",
+        "description": "Copy a Table Recursivly Stolen from http://lua-users.org/wiki/CopyTable",
+        "arguments": [
+            "orig table",
+            "copies table?"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoDefault",
+        "description": "If val is nil, return default instead",
+        "arguments": [
+            "v any",
+            "default any"
+        ],
+        "returns": [
+            "any"
+        ]
+    },
+    {
+        "function": "or table of functions `f` and gives `...` as input parameters\n---@param f function|table<function>\n---@vararg any\nfunction AutoExecute",
+        "description": "Calls",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoVecTableLerp",
+        "description": "Calls VecLerp on a table of Vectors",
+        "arguments": [
+            "a table A table of Vectors",
+            "b table A table of Vectors the same size of a",
+            "t number"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoTableLerp",
+        "description": "Calls VecLerp on a table of Vectors",
+        "arguments": [
+            "a table A table of values",
+            "b table A table of values the same size of a",
+            "t number"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoTransformLerp",
+        "description": "Returns a Linear Interpolated Transform, Interpolated by t.",
+        "arguments": [
+            "a transform",
+            "b transform",
+            "t number",
+            "t2 number?"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoTransformFwd",
+        "description": "Equivalent to `QuatRotateVec(t.rot, Vec(0, 0, -(scale or 1)))`",
+        "arguments": [
+            "t transform",
+            "scale number?"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoTransformUp",
+        "description": "Equivalent to `QuatRotateVec(t.rot, Vec(0, scale or 1))`",
+        "arguments": [
+            "t transform",
+            "scale number?"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoTransformRight",
+        "description": "Equivalent to `QuatRotateVec(t.rot, Vec(scale or 1))`",
+        "arguments": [
+            "t transform",
+            "scale number?"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoTransformOffset",
+        "description": "Equivalent to `Transform(TransformToParentPoint(t, offset), t.rot)`",
+        "arguments": [
+            "t transform",
+            "offset vector"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoEulerTable",
+        "description": "Equivalent to `{ GetQuatEuler(quat) }`",
+        "arguments": [
+            "quat quaternion"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoVecToXML",
+        "description": "Returns a Vector for easy use when put into a parameter for xml",
+        "arguments": [
+            "vec any",
+            "round number"
+        ],
+        "returns": [
+            "string"
+        ]
+    },
+    {
+        "function": "AutoSplit",
+        "description": "Splits a string by a separator",
+        "arguments": [
+            "inputstr string",
+            "sep string"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoCamelCase",
+        "description": "Converts a string to be capitalized following the Camel Case pattern",
+        "arguments": [
+            "str string"
+        ],
+        "returns": [
+            "string"
+        ]
+    },
+    {
+        "function": "AutoHSVToRGB",
+        "description": "Returns 3 values from HSV color space from RGB color space",
+        "arguments": [
+            "hue number? The hue from 0 to 1",
+            "sat number? The saturation from 0 to 1",
+            "val number? The value from 0 to 1"
+        ],
+        "returns": [
+            "number, number, number Returns the red, green, blue of the given hue, saturation, value"
+        ]
+    },
+    {
+        "function": "AutoRGBToHSV",
+        "description": "Returns 3 values from RGB color space from HSV color space",
+        "arguments": [
+            "r number? The red from 0 to 1",
+            "g number? The green from 0 to 1",
+            "b number? The blue from 0 to 1"
+        ],
+        "returns": [
+            "number, number, number Returns the hue, the saturation, and the value"
+        ]
+    },
+    {
+        "function": "AutoHEXtoRGB",
+        "description": "Converts a hex code or a table of hex codes to RGB color space",
+        "arguments": [
+            "hex string|table<string>"
+        ],
+        "returns": [
+            "number|table"
+        ]
+    },
+    {
+        "function": "AutoStringToByteTable",
+        "description": "Performs `:byte()` on each character of a given string",
+        "arguments": [
+            "str string"
+        ],
+        "returns": [
+            "table<number>"
+        ]
+    },
+    {
+        "function": "AutoByteTableToString",
+        "description": "Performs `:char()` on each number of a given table, returning a stringThe invers\ne of AutoStringToByteTable",
+        "arguments": [
+            "t table<number>"
+        ],
+        "returns": [
+            "string"
+        ]
+    },
+    {
+        "function": "AutoPrimaryMenuButton",
+        "description": "Usually, the Primary Menu Button only is suppose to work in the mod's level, thi\ns is a work around to have it work in any level.",
+        "arguments": [
+            "title string"
+        ],
+        "returns": [
+            "boolean"
+        ]
+    },
+    {
+        "function": "AutoDeleteHandles",
+        "description": "Goes through a table and performs Delete() on each element",
+        "arguments": [
+            "t table<entity_handle>",
+            "CheckIfValid boolean?"
+        ],
+        "returns": [
+            "table<{handle:entity_handle, type:entity_type, valid:boolean}>"
+        ]
+    },
+    {
+        "function": "AutoListHandleTypes",
+        "description": "Creates a list from a table of entity handles, containing the handle and it's ty\npe. If the handle is invalid then the type will be false.",
+        "arguments": [
+            "t table<entity_handle>"
+        ],
+        "returns": [
+            "table<{handle:entity_handle, type:entity_type}>"
+        ]
+    },
+    {
+        "function": "AutoSpawnScript",
+        "description": "Spawn in a script node in the game world.",
+        "arguments": [
+            "path td_path",
+            "... string|number?"
+        ],
+        "returns": [
+            "script_handle"
+        ]
+    },
+    {
+        "function": "AutoRaycast",
+        "description": "A Wrapper for QueryRaycast; comes with some extra features.",
+        "arguments": [
+            "origin vector",
+            "direction vector",
+            "maxDist number",
+            "radius number?",
+            "rejectTransparent boolean?"
+        ],
+        "returns": [
+            "{ hit:boolean, dist:number, normal:vector, shape:shape_handle, intersection:vector, dot:number, reflection:vector }"
+        ]
+    },
+    {
+        "function": "AutoRaycastTo",
+        "description": "AutoRaycast from point A to point B. The distance will default to the distance b\netween the points, but can be set.",
+        "arguments": [
+            "pointA vector",
+            "pointB vector",
+            "manualDistance number?",
+            "radius number?",
+            "rejectTransparent boolean?"
+        ],
+        "returns": [
+            "{ hit:boolean, dist:number, normal:vector, shape:shape_handle, intersection:vector, dot:number, reflection:vector }"
+        ]
+    },
+    {
+        "function": "AutoRaycastCamera",
+        "description": "AutoRaycast using the camera or player camera as the origin and direction",
+        "arguments": [
+            "usePlayerCamera boolean",
+            "maxDist number",
+            "radius number?",
+            "rejectTransparent boolean?"
+        ],
+        "returns": [
+            "{ hit:boolean, dist:number, normal:vector, shape:shape_handle, intersection:vector, dot:number, reflection:vector }",
+            "transform cameraTransform",
+            "vector cameraForward"
+        ]
+    },
+    {
+        "function": "AutoQueryClosest",
+        "description": "A Wrapper for QueryClosestPoint; comes with some extra features.",
+        "arguments": [
+            "origin vector",
+            "maxDist number"
+        ],
+        "returns": [
+            "{ hit:boolean, point:vector, normal:vector, shape:shape_handle, dist:number, dir:vector, dot:number, reflection:vector }"
+        ]
+    },
+    {
+        "function": "AutoGetBodyVoxels",
+        "description": "Goes through each shape on a body and adds up their voxel count",
+        "arguments": [
+            "body body_handle"
+        ],
+        "returns": [
+            "integer"
+        ]
+    },
+    {
+        "function": "AutoScaleBodyVelocity",
+        "description": "Scales the velocity of a body by `scale`",
+        "arguments": [
+            "body body_handle",
+            "scale number"
+        ],
+        "returns": [
+            "vector scaled",
+            "vector orginal"
+        ]
+    },
+    {
+        "function": "AutoScaleBodyAngularVelocity",
+        "description": "Scales the angular velocity of a body by `scale`",
+        "arguments": [
+            "body body_handle",
+            "scale number"
+        ],
+        "returns": [
+            "vector scaled",
+            "vector orginal"
+        ]
+    },
+    {
+        "function": "AutoPointToAngle",
+        "description": "Gets the angle from a point to the forward direction of a transform",
+        "arguments": [
+            "point vector",
+            "fromtrans transform"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoPointInView",
+        "description": "Checks if a point is in the view using a transform acting as the \"Camera\"",
+        "arguments": [
+            "point vector",
+            "oftrans transform? The Transform acting as the camera, Default is the Player's Camera",
+            "angle number? The Angle at which the point can be seen from, Default is the Player's FOV set in the options menu",
+            "raycastcheck boolean? Check to make sure that the point is not obscured, Default is true"
+        ],
+        "returns": [
+            "boolean seen If the point is in View",
+            "number? angle The Angle the point is away from the center of the looking direction",
+            "number? distance The Distance from the point to fromtrans"
+        ]
+    },
+    {
+        "function": "AutoPlayerInputDir",
+        "description": "Gets the direction the player is inputting and creates a vector.`{ horizontal, 0\n, -vertical }`",
+        "arguments": [
+            "length number?"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoRetrievePath",
+        "description": "Get the last Path Query as a path of points",
+        "arguments": [
+            "precision number The Accuracy"
+        ],
+        "returns": [
+            "table<vector>",
+            "vector \"Last Point\""
+        ]
+    },
+    {
+        "function": "AutoQueryRejectBodies",
+        "description": "Reject a table of bodies for the next Query",
+        "arguments": [
+            "bodies table<body_handle>"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoQueryRejectShapes",
+        "description": "Reject a table of shapes for the next Query",
+        "arguments": [
+            "shapes table<shape_handle>"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoRejectShapesWithoutTag",
+        "description": "Finds and rejects all shapes that do not have a given tag",
+        "arguments": [
+            "tag string"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSetBodyCollisionFilter",
+        "description": "Set the collision filter for the shapes owned by a body",
+        "arguments": [
+            "body body_handle",
+            "layer number",
+            "masknummber number bitmask"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoWorldCenterOfMass",
+        "description": "Get the Center of Mass of a body in World space",
+        "arguments": [
+            "body body_handle"
+        ],
+        "returns": [
+            "vector"
+        ]
+    },
+    {
+        "function": "AutoSpeed",
+        "description": "Adds the velocity and angualr velocity of a body",
+        "arguments": [
+            "body body_handle"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoPredictPosition",
+        "description": "Attempt to predict the position of a body in time",
+        "arguments": [
+            "body body_handle",
+            "time number",
+            "raycast boolean? Check and Halt on Collision, Default is false",
+            "funcbefore function?"
+        ],
+        "returns": [
+            "table<vector> log",
+            "vector vel",
+            "vector normal"
+        ]
+    },
+    {
+        "function": "AutoPredictPlayerPosition",
+        "description": "Attempt to predict the position of the player in time",
+        "arguments": [
+            "time number",
+            "raycast boolean? Check and Halt on Collision, Default is false"
+        ],
+        "returns": [
+            "table<vector> log",
+            "vector vel",
+            "vector normal"
+        ]
+    },
+    {
+        "function": "AutoGetEnvironment",
+        "description": "@class environment@field ambience { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any \n}@field ambient { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field ambientexp\nonent { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field brightness { [1]:any\n, [2]:any, [3]:any ,[4]:any, [5]:any }@field constant { [1]:any, [2]:any, [3]:an\ny ,[4]:any, [5]:any }@field exposure { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:a\nny }@field fogcolor { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field fogpar\nams { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field fogscale { [1]:any, [2\n]:any, [3]:any ,[4]:any, [5]:any }@field nightlight { [1]:any, [2]:any, [3]:any \n,[4]:any, [5]:any }@field puddleamount { [1]:any, [2]:any, [3]:any ,[4]:any, [5]\n:any }@field puddlesize { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field ra\nin { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field skybox { [1]:any, [2]:a\nny, [3]:any ,[4]:any, [5]:any }@field skyboxbrightness { [1]:any, [2]:any, [3]:a\nny ,[4]:any, [5]:any }@field skyboxrot { [1]:any, [2]:any, [3]:any ,[4]:any, [5]\n:any }@field skyboxtint { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field sl\nippery { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field snowamount { [1]:an\ny, [2]:any, [3]:any ,[4]:any, [5]:any }@field snowdir { [1]:any, [2]:any, [3]:an\ny ,[4]:any, [5]:any }@field snowonground { [1]:any, [2]:any, [3]:any ,[4]:any, [\n5]:any }@field sunbrightness { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@fie\nld suncolortint { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field sundir { [\n1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field sunfogscale { [1]:any, [2]:an\ny, [3]:any ,[4]:any, [5]:any }@field sunglare { [1]:any, [2]:any, [3]:any ,[4]:a\nny, [5]:any }@field sunlength { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@fi\neld sunspread { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field waterhurt { \n[1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }@field wetness { [1]:any, [2]:any, \n[3]:any ,[4]:any, [5]:any }@field wind { [1]:any, [2]:any, [3]:any ,[4]:any, [5]\n:any }@type environment_propertyReturns a table of every property of the current\n environment",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "environment"
+        ]
+    },
+    {
+        "function": "AutoSetEnvironment",
+        "description": "Sets every environment property of AutoGetEnvironment",
+        "arguments": [
+            "Environment environment"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSolidBackground",
+        "description": "Draws Sprites around the camera to provide the illusion of a solid background",
+        "arguments": [
+            "r number",
+            "g number",
+            "b number",
+            "a number",
+            "sprite sprite_handle? Defaults to TD's 'ui/menu/white-32.png'"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSolidEnvironment",
+        "description": "Returns and environemnt that eliminates as much lighting as possible.Requires a \nsolid DDS file.",
+        "arguments": [
+            "pathToDDS td_path"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoGetPostProcessing",
+        "description": "@class postprocessing@field saturation { [1]:any, [2]:any, [3]:any ,[4]:any }@fi\neld colorbalance { [1]:any, [2]:any, [3]:any ,[4]:any }@field brightness { [1]:a\nny, [2]:any, [3]:any ,[4]:any }@field gamma { [1]:any, [2]:any, [3]:any ,[4]:any\n }@field bloom { [1]:any, [2]:any, [3]:any ,[4]:any }Returns a table of every pr\noperty of the current post-processing",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "postprocessing"
+        ]
+    },
+    {
+        "function": "AutoSetPostProcessing",
+        "description": "Sets every post-processing property of AutoGetPostProcessing",
+        "arguments": [
+            "PostProcessing postprocessing"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "is adapted from the UMF Framework\n---\n--- https://github.com/Thomasims/TeardownUMF/blob/master/src/util/debug.lua\n---@param level integer? Optional\n---@return integer\nfunction AutoGetCurrentLine",
+        "description": "Returns the current Line Number. This",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "is adapted from the UMF Framework\n---\n--- https://github.com/Thomasims/TeardownUMF/blob/master/src/util/debug.lua\n---@param level integer? Optional\n---@return string?\nfunction AutoGetStackTrace",
+        "description": "Returns the current Line Number. This",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoToString",
+        "description": "Creates a neatly formatted table of a value, including tables.",
+        "arguments": [
+            "t any",
+            "singleline_at number?",
+            "indent_str string?",
+            "round_numbers number|false?",
+            "indents number?",
+            "visited_tables table?"
+        ],
+        "returns": [
+            "string"
+        ]
+    },
+    {
+        "function": "AutoInspect",
+        "description": "A Alternative to DebugPrint that uses AutoInspect(), works with tables. Returns \nthe value",
+        "arguments": [
+            "value any",
+            "singleline_at number?",
+            "indent_str string?",
+            "round_numbers number|false?"
+        ],
+        "returns": [
+            "any"
+        ]
+    },
+    {
+        "function": "AutoInspectConsole",
+        "description": "AutoInspect that prints to console",
+        "arguments": [
+            "value any",
+            "singleline_at number?",
+            "indent_str string?",
+            "round_numbers number|false?"
+        ],
+        "returns": [
+            "any"
+        ]
+    },
+    {
+        "function": "AutoInspectWatch",
+        "description": "AutoInspect that prints to DebugWatch.Name will default to current line number",
+        "arguments": [
+            "value any",
+            "name string?",
+            "singleline_at number?",
+            "indent_str string?",
+            "round_numbers number|false?"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoClearConsole",
+        "description": "Prints 24 blank lines to quote on quote, \"clear the console\"",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoDrawTransform",
+        "description": "Draws a Transform",
+        "arguments": [
+            "transform transform|vector",
+            "size number? the size in meters, Default is 0.5",
+            "alpha number? Default is 1",
+            "draw boolean? Whether to use DebugLine or DrawLine, Default is false (DebugLine)"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoDrawBox",
+        "description": "Simply draws a box given a center and the half size.",
+        "arguments": [
+            "point vector",
+            "halfextents number|vector",
+            "r number",
+            "g number",
+            "b number",
+            "a number"
+        ],
+        "returns": [
+            "vector aa lower bounds point",
+            "vector bb upper point"
+        ]
+    },
+    {
+        "function": "AutoDrawCone",
+        "description": "Draws a Transform as a Cone",
+        "arguments": [
+            "transform transform",
+            "sides number? the amount of sides on the cone, Default is 12",
+            "angle number? how wide the cone is in degrees, Default is 25",
+            "size number? the size in meters, Default is 0.5",
+            "color table? Default is 1",
+            "draw boolean? Whether to use DebugLine or DrawLine, Default is false (DebugLine)"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoGraphContinuous",
+        "description": "Creates a Continuous Graph that can be drawn. The given value is added into the \ngraph as the previous ones are kept in memory.",
+        "arguments": [
+            "id string",
+            "value number",
+            "range number? Default is 64"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoGraphFunction",
+        "description": "Creates a Graph with values within a range fed into a given function.",
+        "arguments": [
+            "id string",
+            "rangemin number? Default is 0",
+            "rangemax number? Default is 1",
+            "func function? Is fed one parameter, a number ranging from rangemin to rangemax, Defaults to a Logisitc Function",
+            "steps number? How many steps, or the interval of values taken from the range."
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoGraphDraw",
+        "description": "Draws a given graph with some parameters",
+        "arguments": [
+            "id string",
+            "sizex number width of the graph, Default is 128",
+            "sizey number height of the graph, Default is 64",
+            "rangemin number? If left nil, then the graph will automatically stretch the values to fill the bottom of the graph. Default is nil",
+            "rangemax number? If left nil, then the graph will automatically stretch the values to fill the top of the graph. Default is nil",
+            "linewidth number? The line width, Default is 2"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoKey",
+        "description": "Concats any amount of strings by adding a single period between them@vararg stri\nng",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "string"
+        ]
+    },
+    {
+        "function": "AutoExpandRegistryKey",
+        "description": "One out of the many methods to convert a registry key to a table",
+        "arguments": [
+            "key string"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoKeyDefaultInt",
+        "description": "Gets a Int from the registry, if the key does not exist, then set the key to the\n default value and return it.",
+        "arguments": [
+            "path string",
+            "default integer"
+        ],
+        "returns": [
+            "integer"
+        ]
+    },
+    {
+        "function": "AutoKeyDefaultFloat",
+        "description": "Gets a Float from the registry, if the key does not exist, then set the key to t\nhe default value and return it.",
+        "arguments": [
+            "path string",
+            "default number"
+        ],
+        "returns": [
+            "number"
+        ]
+    },
+    {
+        "function": "AutoKeyDefaultString",
+        "description": "Gets a String from the registry, if the key does not exist, then set the key to \nthe default value and return it.",
+        "arguments": [
+            "path string",
+            "default string"
+        ],
+        "returns": [
+            "string"
+        ]
+    },
+    {
+        "function": "AutoKeyDefaultBool",
+        "description": "Gets a Bool from the registry, if the key does not exist, then set the key to th\ne default value and return it.",
+        "arguments": [
+            "path string",
+            "default boolean"
+        ],
+        "returns": [
+            "boolean"
+        ]
+    },
+    {
+        "function": "AutoCMD_Pipe",
+        "description": "A very sinful way to pipe raw code into the registry, use in combination with `A\nutoCMD_Parse`",
+        "arguments": [
+            "path string",
+            "luastr string"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoCMD_Parse",
+        "description": "A very sinful way to parse raw code from the registry, use in combination with `\nAutoCMD_Pipe`_God is dead and we killed her._",
+        "arguments": [
+            "path string"
+        ],
+        "returns": [
+            "table<{ cmd:string, result:any }>"
+        ]
+    },
+    {
+        "function": "AutoRegistryBindedTable",
+        "description": "Attempts to create a table that when written to, will update the registry, and w\nhen read from, will pull from the registry",
+        "arguments": [
+            "path string"
+        ],
+        "returns": [
+            "table"
+        ]
+    },
+    {
+        "function": "AutoUiCenter",
+        "description": "UiTranslate and UiAlign to the Center",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoUiBounds",
+        "description": "Returns the bounds, optionally subtracted by some amount",
+        "arguments": [
+            "subtract number?"
+        ],
+        "returns": [
+            "number",
+            "number"
+        ]
+    },
+    {
+        "function": "AutoUiLine",
+        "description": "Draws a line between two points in screen space",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoTooltip",
+        "description": "OLDUIFUNCTIONS-- AutoPad = { none = 0, atom = 4, micro = 6, thin = 12, thick = 2\n4, heavy = 48, beefy = 128 }-- AutoPrimaryColor = { 0.95, 0.95, 0.95, 1 }-- Auto\nSpecialColor = { 1, 1, 0.55, 1 }-- AutoSecondaryColor = { 0, 0, 0, 0.55 }-- Auto\nFont = 'regular.ttf'-- local SpreadStack = {}-- Draws some text at a world posit\nion.--",
+        "arguments": [
+            "text string|number? Text Displayed, Default is 'nil'-- ",
+            "position vector The WorldSpace Position-- ",
+            "occlude boolean? Hides the tooltip behind walls, Default is false-- ",
+            "fontsize number? Fontsize, Default is 24-- ",
+            "alpha number? Alpha, Default is 0.75--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoAlignmentToPos",
+        "description": "Takes an alignment and returns a Vector representation.--",
+        "arguments": [
+            "alignment string-- "
+        ],
+        "returns": [
+            "table--"
+        ]
+    },
+    {
+        "function": "AutoSpreadDown",
+        "description": "The next Auto Ui functions will be spread Down until AutoSpreadEnd() is called--",
+        "arguments": [
+            "padding number? The amount of padding that will be used, Default is AutoPad.thin--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSpreadUp",
+        "description": "The next Auto Ui functions will be spread Up until AutoSpreadEnd() is called--",
+        "arguments": [
+            "padding number? The amount of padding that will be used, Default is AutoPad.thin--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSpreadRight",
+        "description": "The next Auto Ui functions will be spread Right until AutoSpreadEnd() is called-\n-",
+        "arguments": [
+            "padding number? The amount of padding that will be used, Default is AutoPad.thin--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSpreadLeft",
+        "description": "The next Auto Ui functions will be spread Left until AutoSpreadEnd() is called--",
+        "arguments": [
+            "padding number? The amount of padding that will be used, Default is AutoPad.thin--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSpreadVerticle",
+        "description": "The next Auto Ui functions will be spread Verticlely across the Height of the Bo\nunds until AutoSpreadEnd() is called--",
+        "arguments": [
+            "count number? The amount of Auto Ui functions until AutoSpreadEnd()--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSpreadHorizontal",
+        "description": "The next Auto Ui functions will be spread Horizontally across the Width of the B\nounds until AutoSpreadEnd() is called--",
+        "arguments": [
+            "count number? The amount of Auto Ui functions until AutoSpreadEnd()--"
+        ],
+        "returns": [
+            "None"
+        ]
+    },
+    {
+        "function": "AutoSpreadEnd",
+        "description": "Stop the last known Spread--",
+        "arguments": [
+            "None"
+        ],
+        "returns": [
+            "table a table with information about the transformations used--"
+        ]
+    },
+    {
+        "function": "AutoTextInput",
+        "description": "Given the current string, will return a modified string based on the input of th\ne user. It's basically just a text box. Has a few options.--",
+        "arguments": [
+            "current any-- ",
+            "maxlength any-- ",
+            "allowlowercase any-- ",
+            "allowspecial any-- ",
+            "forcekey any-- "
+        ],
+        "returns": [
+            "any-- ",
+            "any-- ",
+            "boolean--"
+        ]
+    },
+    {
+        "function": "AutoContainer",
+        "description": "--- -User Interface Creation Functions-- --- Create a Container with new bounds-\n-",
+        "arguments": [
+            "width number-- ",
+            "height number-- ",
+            "padding number? The Amount of padding against sides of the container, Default is AutoPad.micro-- ",
+            "clip boolean? Whether  to clip stuff outside of the container, Default is false-- ",
+            "draw boolean? Draws the container's background, otherwise it will be invisible, Default is true-- "
+        ],
+        "returns": [
+            "table containerdata--"
+        ]
+    },
+    {
+        "function": "AutoButton",
+        "description": "Creates a Button--",
+        "arguments": [
+            "name string-- ",
+            "fontsize number-- ",
+            "paddingwidth number Amount of padding used Horizontally-- ",
+            "paddingheight number Amount of padding used Vertically-- ",
+            "draw boolean Draws the Button-- ",
+            "spreadpad boolean Adds padding when used with AutoSpread...()-- "
+        ],
+        "returns": [
+            "boolean Pressed-- ",
+            "table ButtonData--"
+        ]
+    },
+    {
+        "function": "AutoText",
+        "description": "Draws some Text--",
+        "arguments": [
+            "name string-- ",
+            "fontsize number-- ",
+            "draw boolean Draws the Text-- ",
+            "spread boolean Adds padding when used with AutoSpread...()-- "
+        ],
+        "returns": [
+            "table TextData--"
+        ]
+    },
+    {
+        "function": "AutoSlider",
+        "description": "Creates a Slider--",
+        "arguments": [
+            "set number The Current Value-- ",
+            "min number The Minimum-- ",
+            "max number The Maximum-- ",
+            "lockincrement number The increment-- ",
+            "paddingwidth Amount of padding used Horizontally-- ",
+            "paddingheight Amount of padding used Vertically-- ",
+            "spreadpad boolean Adds padding when used with AutoSpread...()-- "
+        ],
+        "returns": [
+            "number NewValue-- ",
+            "table SliderData--"
+        ]
+    },
+    {
+        "function": "AutoImage",
+        "description": "Draws an Image--",
+        "arguments": [
+            "path string-- ",
+            "width number-- ",
+            "height number-- ",
+            "alpha number-- ",
+            "draw boolean Draws the Image-- ",
+            "spreadpad boolean Adds padding when used with AutoSpread...()-- "
+        ],
+        "returns": [
+            "table ImageData--"
+        ]
+    },
+    {
+        "function": "AutoMarker",
+        "description": "Creates a handy little marker, doesnt effect anything, purely visual--",
+        "arguments": [
+            "size number, Default is 1--"
+        ],
+        "returns": [
+            "None"
+        ]
+    }
+]

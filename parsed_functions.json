@@ -1,0 +1,1805 @@
+{
+  "version": "3.09",
+  "functions": [
+    {
+      "name": "AutoNoteFrequency",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoNoteFrequency(baseline)\nlocal f = {\nC  = 261.63,\nCs = 277.18,\nD  = 293.66,\nDs = 311.13,\nE  = 329.63,\nF  = 349.23,\nFs = 369.99,\nG  = 392.00,\nGs = 415.30,\nA  = 440.00,\nAs = 466.16,\nB  = 493.88,\n}\n\nlocal tuned = {}\nfor note, freq in pairs(f) do\ntuned[note] = freq / f[baseline]\nend\n\nreturn tuned\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Arithmetic\n-Sigmoid"
+    },
+    {
+      "name": "AutoSigmoid",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSigmoid(v, max, steep, offset)\nv = AutoDefault(v, math.random(0, 10000) / 10000)\nreturn (max or 1) / (1 + math.exp((v - (offset or 0.5)) * (steep or -10)))\nend",
+      "tables": {},
+      "function_definition": "-Rounds a number.\n-\n-This was a Challenge by @TallTim and @1ssnl to make the smallest rounding"
+    },
+    {
+      "name": "AutoRound",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRound(v, increment)\nincrement = AutoDefault(increment, 1)\nif increment == 0 then return v end\nlocal s = 1 / increment\nreturn math.floor(v * s + 0.5) / s\nend",
+      "tables": {},
+      "function_definition": "-Maps a value from range a1-a2 to range b1-b2\n-@param v number Input number\n-@param a1 number Goes from the range of number a1\n-@param a2 number To number a2\n-@param b1 number To the range of b1\n-@param b2 number To number b2\n-@param clamp boolean? Clamp the number between b1 and b2, Default is false\n-@return number"
+    },
+    {
+      "name": "AutoMap",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoMap(v, a1, a2, b1, b2, clamp)\nclamp = AutoDefault(clamp, false)\nif a1 == a2 then return b2 end\nlocal mapped = b1 + ((v - a1) * (b2 - b1)) / (a2 - a1)\nreturn clamp and AutoClamp(mapped, math.min(b1, b2), math.max(b1, b2)) or mapped\nend",
+      "tables": {},
+      "function_definition": "-Limits a value from going below the min and above the max\n-@param v number The number to clamp\n-@param min number? The minimum the number can be, Default is 0\n-@param max number? The maximum the number can be, Default is 1\n-@return number"
+    },
+    {
+      "name": "AutoClamp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoClamp(v, min, max)\nmin = AutoDefault(min, 0)\nmax = AutoDefault(max, 1)\nreturn math.max(math.min(v, max), min)\nend",
+      "tables": {},
+      "function_definition": "-Limits a value from going below the min and above the max\n-@param v number The number to clamp\n-@param max number? The maximum the length of the number can be, Default is 1\n-@return number"
+    },
+    {
+      "name": "AutoClampLength",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoClampLength(v, max)\nmax = AutoDefault(max, 1)\nif v < -max then\nreturn -max\nelseif v > max then\nreturn max\nelse\nreturn v\nend\nend",
+      "tables": {},
+      "function_definition": "-Wraps a value inbetween a range, Thank you iaobardar for the Optimization\n-@param v number The number to wrap\n-@param min number? The minimum range\n-@param max number? The maximum range\n-@return number"
+    },
+    {
+      "name": "AutoWrap",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoWrap(v, min, max)\nmin = AutoDefault(min, 0)\nmax = AutoDefault(max, 1)\n\nreturn (v - min) % ((max + 1) - min) + min\nend",
+      "tables": {},
+      "function_definition": "-Linerarly Iterpolates between `a` and `b` by fraction `t`\n-\n-Does not clamp\n-@param a number Goes from number A\n-@param b number To number B\n-@param t number Interpolated by T\n-@return number"
+    },
+    {
+      "name": "AutoLerp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoLerp(a, b, t)\nreturn (1 - t) * a + t * b\nend",
+      "tables": {},
+      "function_definition": "-Spherically Iterpolates between `a` and `b` by fraction `t`.\n-\n-Basically Lerp but with wrapping\n-@param a number Goes from number A\n-@param b number To number B\n-@param t number Interpolated by T\n-@param w number Wraps at\n-@return number"
+    },
+    {
+      "name": "AutoLerpWrap",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoLerpWrap(a, b, t, w)\nlocal m = w\nlocal da = (b - a) % m\nlocal n = (da * 2) % m - da\nreturn a + n * t\nend",
+      "tables": {},
+      "function_definition": "-Moves `a` towards `b` by amount `t`\n-\n-Will clamp as to not overshoot\n-@param a number Goes from number A\n-@param b number To number B\n-@param t number Moved by T\n-@return number"
+    },
+    {
+      "name": "AutoMove",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoMove(a, b, t)\noutput = a\nif a == b then\nreturn a\nelseif a > b then\noutput = math.max(a - t, b)\nelse\noutput = math.min(a + t, b)\nend\n\nreturn output\nend",
+      "tables": {},
+      "function_definition": "-Return the Distance between the numbers `a` and `b`\n-@param a number\n-@param b number\n-@return number"
+    },
+    {
+      "name": "AutoDist",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDist(a, b)\nreturn math.abs(a - b)\nend",
+      "tables": {},
+      "function_definition": "-Normalizes all values in a table to have a magnitude of 1 - Scales every number to still represent the same \"direction\"\n-@param t table<number>\n-@param scale number?\n-@return table"
+    },
+    {
+      "name": "AutoNormalize",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoNormalize(t, scale)\nlocal norm = {}\nlocal maxabs = 0\nfor i = 1, #t do\nlocal abs = math.abs(t[i])\nmaxabs = abs > maxabs and abs or maxabs\nend\n\nfor i = 1, #t do\nnorm[i] = t[i] / maxabs * (scale or 1)\nend\nreturn norm\nend",
+      "tables": {},
+      "function_definition": "-Takes a table of weights, like {1, 2, 0.5, 0.5}, and produces a table of how much space each weight would take up if it were to span over a given length.\n-If given the weights {1, 2, 0.5, 0.5}, with a span length of 100, the resulting table would be = {25, 50, 12.5, 12.5}.\n-A padding parameter can also be added which can be used to make Ui easier. Iterate through the resulting table, after each UiRect, move the width + the padding parameter\n-@param weights table<number>|number weights\n-@param span number\n-@param padding number?\n-@return table"
+    },
+    {
+      "name": "AutoFlex",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoFlex(weights, span, padding)\nlocal istable = type(weights) == \"table\"\nweights = not istable and (",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoBias",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoBias(weights)\nlocal T = {}\nlocal max = 0\nfor i = 1, #weights do\nmax = max + weights[i]\nT[i] = {}\nT[i].i = i\nT[i].w = weights[i]\nend\n\ntable.sort(T,",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoSwizzle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSwizzle(vec, swizzle)\nlocal swizzleMap = { x = 1, y = 2, z = 3, w = 4, r = 1, g = 2, b = 3, a = 4 }\nlocal built = {}\nfor i = 1, #swizzle do\nlocal axis = swizzle:sub(i, i)\nlocal asnum = tonumber(axis)\nbuilt[i] = vec[asnum or swizzleMap[axis]]\nend\nreturn built\nend",
+      "tables": {},
+      "function_definition": "-Returns true if each axis of vector `a` is equal to each axis of vector `b`\n-@param a vector\n-@param b vector\n-@return boolean"
+    },
+    {
+      "name": "AutoVecEquals",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecEquals(a, b)\nfor i, va in pairs(a) do\nif va ~= b[i] then return false end\nend\n\nreturn true\nend",
+      "tables": {},
+      "function_definition": "-Return a Random Vector with an optional offset and scale\n-@param param1 number|vector\n-@param param2 number?\n-@return vector"
+    },
+    {
+      "name": "AutoVecRnd",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecRnd(param1, param2)\nlocal offset, scale\nif type(param1) == \"table\" then\noffset = param1\nscale = param2 or 1\nelse\noffset = { 0, 0, 0 }\nscale = param1\nend\n\nlocal rndVec = VecNormalize({\n(math.random() * 2 - 1),\n(math.random() * 2 - 1),\n(math.random() * 2 - 1),\n})\n\nlocal v = VecAdd(offset, VecScale(rndVec, scale))\nreturn v\nend",
+      "tables": {},
+      "function_definition": "-Return the Distance between Two Vectors\n-@param a vector\n-@param b vector\n-@return number"
+    },
+    {
+      "name": "AutoVecDist",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecDist(a, b)\nreturn VecLength(VecSub(b, a))\nend",
+      "tables": {},
+      "function_definition": "-Return the Distance between Two Vectors, without considering the X component\n-@param a vector\n-@param b vector\n-@return number"
+    },
+    {
+      "name": "AutoVecDistNoX",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecDistNoX(a, b)\nreturn math.sqrt((b[2] - a[2])^2 + (b[3] - a[3])^2)\nend",
+      "tables": {},
+      "function_definition": "-Return the Distance between Two Vectors, without considering the Y component\n-@param a vector\n-@param b vector\n-@return number"
+    },
+    {
+      "name": "AutoVecDistNoY",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecDistNoY(a, b)\nreturn math.sqrt((b[1] - a[1])^2 + (b[3] - a[3])^2)\nend",
+      "tables": {},
+      "function_definition": "-Return the Distance between Two Vectors, without considering the Z component\n-@param a vector\n-@param b vector\n-@return number"
+    },
+    {
+      "name": "AutoVecDistNoZ",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecDistNoZ(a, b)\nreturn math.sqrt((b[1] - a[1])^2 + (b[2] - a[2])^2)\nend",
+      "tables": {},
+      "function_definition": "-Moves a vector in a direction by a given amount\n-\n-Equivalent to `VecAdd(vec, VecScale(dir, dist))`\n-@param vec any\n-@param dir any\n-@param dist any\n-@return vector"
+    },
+    {
+      "name": "AutoVecMove",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecMove(vec, dir, dist)\nreturn VecAdd(vec, VecScale(dir, dist))\nend",
+      "tables": {},
+      "function_definition": "-Returns a Vector Rounded to a number\n-@param vec vector\n-@param r number?\n-@return vector"
+    },
+    {
+      "name": "AutoVecRound",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecRound(vec, r)\nreturn Vec(AutoRound(vec[1], r), AutoRound(vec[2], r), AutoRound(vec[3], r))\nend",
+      "tables": {},
+      "function_definition": "-Returns a Vector where all numbers are floored\n-@param vec vector\n-@return vector"
+    },
+    {
+      "name": "AutoVecFloor",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecFloor(vec)\nreturn Vec(math.floor(vec[1]), math.floor(vec[2]), math.floor(vec[3]))\nend",
+      "tables": {},
+      "function_definition": "-Returns a Vector where all numbers are ceiled\n-@param vec vector\n-@return vector"
+    },
+    {
+      "name": "AutoVecCeil",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecCeil(vec)\nreturn Vec(math.ceil(vec[1]), math.ceil(vec[2]), math.ceil(vec[3]))\nend",
+      "tables": {},
+      "function_definition": "-Return a vector that has the magnitude of `b`, but with the direction of `a`\n-\n-Equivalent to `VecScale(VecNormalize(a), b)`\n-@param a vector\n-@param b number\n-@return vector"
+    },
+    {
+      "name": "AutoVecRescale",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecRescale(a, b)\nreturn VecScale(VecNormalize(a), b)\nend",
+      "tables": {},
+      "function_definition": "-Maps a Vector from range a1-a2 to range b1-b2\n-@param v vector Input Vector\n-@param a1 number Goes from the range of number a1\n-@param a2 number To number a2\n-@param b1 number To the range of b1\n-@param b2 number To number b2\n-@return vector"
+    },
+    {
+      "name": "AutoVecMap",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecMap(v, a1, a2, b1, b2)\nif a1 == a2 then return AutoVecRescale(v, b2) end\nlocal out = {\nAutoMap(v[1], a1, a2, b1, b2),\nAutoMap(v[2], a1, a2, b1, b2),\nAutoMap(v[3], a1, a2, b1, b2),\n}\nreturn out\nend",
+      "tables": {},
+      "function_definition": "-Limits the magnitude of a vector to be between min and max\n-@param v vector The Vector to clamp\n-@param min number? The minimum the magnitude can be, Default is 0\n-@param max number? The maximum the magnitude can be, Default is 1\n-@return vector"
+    },
+    {
+      "name": "AutoVecClampMagnitude",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecClampMagnitude(v, min, max)\nmin, max = AutoDefault(min, 0), AutoDefault(max, 1)\nlocal l = VecLength(v)\nif l > max then\nreturn AutoVecRescale(v, max)\nelseif l < min then\nreturn AutoVecRescale(v, min)\nelse\nreturn v\nend\nend",
+      "tables": {},
+      "function_definition": "-Limits a vector to be between min and max\n-@param v vector The Vector to clamp\n-@param min number? The minimum, Default is 0\n-@param max number? The maximum, Default is 1\n-@return vector"
+    },
+    {
+      "name": "AutoVecClamp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecClamp(v, min, max)\nmin, max = AutoDefault(min, 0), AutoDefault(max, 1)\nreturn {\nAutoClamp(v[1], min, max),\nAutoClamp(v[2], min, max),\nAutoClamp(v[3], min, max)\n}\nend",
+      "tables": {},
+      "function_definition": "-Return Vec(1, 1, 1) scaled by length\n-@param length number return the vector of size length, Default is 1\n-@return vector"
+    },
+    {
+      "name": "AutoVecOne",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecOne(length)\nreturn VecScale(Vec(1, 1, 1), length or 1)\nend",
+      "tables": {},
+      "function_definition": "-Returns the midpoint between two vectors\n-\n-Equivalent to `VecScale(VecAdd(a, b), 0.5)`\n-@param a any\n-@param b any\n-@return vector"
+    },
+    {
+      "name": "AutoVecMidpoint",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecMidpoint(a, b)\nreturn VecScale(VecAdd(a, b), 0.5)\nend",
+      "tables": {},
+      "function_definition": "-Return Vec `a` multiplied by Vec `b`\n-@param a vector\n-@param b vector\n-@return vector"
+    },
+    {
+      "name": "AutoVecMulti",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecMulti(a, b)\nreturn {\na[1] * b[1],\na[2] * b[2],\na[3] * b[3],\n}\nend",
+      "tables": {},
+      "function_definition": "-Return Vec `a` divided by Vec `b`\n-@param a vector\n-@param b vector\n-@return vector"
+    },
+    {
+      "name": "AutoVecDiv",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecDiv(a, b)\nreturn {\na[1] / b[1],\na[2] / b[2],\na[3] / b[3],\n}\nend",
+      "tables": {},
+      "function_definition": "-Return Vec `a` to the Power of `b`\n-@param a vector\n-@param b number\n-@return vector"
+    },
+    {
+      "name": "AutoVecPow",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecPow(a, b)\nreturn {\na[1] ^ b,\na[2] ^ b,\na[3] ^ b,\n}\nend",
+      "tables": {},
+      "function_definition": "-Return Vec `a` to the Power of Vec `b`\n-@param a vector\n-@param b vector\n-@return vector"
+    },
+    {
+      "name": "AutoVecPowVec",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecPowVec(a, b)\nreturn {\na[1] ^ b[1],\na[2] ^ b[2],\na[3] ^ b[3],\n}\nend",
+      "tables": {},
+      "function_definition": "-Returns the absolute value of an vector\n-@param v vector\n-@return vector"
+    },
+    {
+      "name": "AutoVecAbs",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecAbs(v)\nreturn {\nmath.abs(v[1]),\nmath.abs(v[2]),\nmath.abs(v[3]),\n}\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `math.min(unpack(v))`\n-@param v vector\n-@return number"
+    },
+    {
+      "name": "AutoVecMin",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecMin(v)\nreturn math.min(unpack(v))\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `math.max(unpack(v))`\n-@param v vector\n-@return number"
+    },
+    {
+      "name": "AutoVecMax",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecMax(v)\nreturn math.max(unpack(v))\nend",
+      "tables": {},
+      "function_definition": "- Rotates a vector around an axis by a given angle\n- @param vec vector The vector to rotate\n- @param axis vector The rotation axis, a unit vector\n- @param angle number The rotation angle in degrees\n- @return vector vec The rotated vector"
+    },
+    {
+      "name": "AutoVecRotate",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecRotate(vec, axis, angle)\nlocal quat = QuatAxisAngle(axis, angle)\nreturn QuatRotateVec(quat, vec)\nend",
+      "tables": {},
+      "function_definition": "-Return `v` with it's `x` value replaced by `subx`\n-@param v vector\n-@param subx number"
+    },
+    {
+      "name": "AutoVecSubsituteX",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecSubsituteX(v, subx)\nlocal new = VecCopy(v)\nnew[1] = subx\nreturn new\nend",
+      "tables": {},
+      "function_definition": "-Return `v` with it's `y` value replaced by `suby`\n-@param v vector\n-@param suby number"
+    },
+    {
+      "name": "AutoVecSubsituteY",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecSubsituteY(v, suby)\nlocal new = VecCopy(v)\nnew[2] = suby\nreturn new\nend",
+      "tables": {},
+      "function_definition": "-Return `v` with it's `z` value replaced by `subz`\n-@param v vector\n-@param subz number"
+    },
+    {
+      "name": "AutoVecSubsituteZ",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecSubsituteZ(v, subz)\nlocal new = VecCopy(v)\nnew[3] = subz\nreturn new\nend",
+      "tables": {},
+      "function_definition": "-Converts the output of VecDot with normalized vectors to an angle\n-@param dot number\n-@return number"
+    },
+    {
+      "name": "AutoDotToAngle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDotToAngle(dot)\nreturn math.deg(math.acos(dot))\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Quat Functions\n-Equivalent to `QuatRotateVec(rot, Vec(0, 0, 1))`\n-@param rot quaternion\n-@return vector"
+    },
+    {
+      "name": "AutoQuatFwd",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatFwd(rot)\nreturn QuatRotateVec(rot, Vec(0, 0, 1))\nend",
+      "tables": {},
+      "function_definition": "-Returns a random quaternion\n-@param angle number degrees\n-@return quaternion"
+    },
+    {
+      "name": "AutoRandomQuat",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRandomQuat(angle)\nlocal axis = { math.random() - 0.5, math.random() - 0.5, math.random() - 0.5 }\nlocal sinHalfAngle = math.sin(math.rad(angle) / 2)\nlocal cosHalfAngle = math.cos(math.rad(angle) / 2)\nreturn Quat(\naxis[1] * sinHalfAngle,\naxis[2] * sinHalfAngle,\naxis[3] * sinHalfAngle,\ncosHalfAngle\n)\nend",
+      "tables": {},
+      "function_definition": "-Computes the dot product of two quaternions.\n-@param a quaternion\n-@param b quaternion\n-@return number"
+    },
+    {
+      "name": "AutoQuatDot",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatDot(a, b)\nreturn a[1] * b[1] + a[2] * b[2] + a[3] * b[3] + a[4] * b[4]\nend",
+      "tables": {},
+      "function_definition": "-Returns the Conjugate of the given quaternion.\n-@param quat quaternion\n-@return quaternion quat"
+    },
+    {
+      "name": "AutoQuatConjugate",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatConjugate(quat)\nreturn { -quat[1], -quat[2], -quat[3], quat[4] }\nend",
+      "tables": {},
+      "function_definition": "-Returns the Inverse of the given quaternion.\n-@param quat quaternion\n-@return quaternion quat"
+    },
+    {
+      "name": "AutoQuatInverse",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatInverse(quat)\nlocal norm = quat[1] ^ 2 + quat[2] ^ 2 + quat[3] ^ 2 + quat[4] ^ 2\nlocal inverse = { -quat[1] / norm, -quat[2] / norm, -quat[3] / norm, quat[4] / norm }\nreturn inverse\nend",
+      "tables": {},
+      "function_definition": "-Between -a and a, picks the quaternion nearest to b\n-@param a quaternion\n-@param b quaternion\n-@return quaternion\n-\n-Thankyou to Mathias for this"
+    },
+    {
+      "name": "AutoQuatNearest",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatNearest(a, b)\nreturn AutoQuatDot(a, b) < 0 and { -a[1], -a[2], -a[3], -a[4] } or { a[1], a[2], a[3], a[4] }\nend",
+      "tables": {},
+      "function_definition": "-Same as `QuatAxisAngle()` but takes a single vector instead of a unit vector + an angle, for convenience\n-\n-Thankyou to Mathias for this"
+    },
+    {
+      "name": "AutoQuatFromAxisAngle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatFromAxisAngle(v)\nlocal xyz = VecScale(v, 0.5)\nlocal angle = VecLength(xyz)\n\nif angle == 0 then\nreturn Quat()\nend\n\nlocal co = math.cos(angle)\nlocal si = math.sin(angle)\nlocal qXYZ = VecScale(xyz, si / angle)\nreturn Quat(qXYZ[1], qXYZ[2], qXYZ[3], co)\nend",
+      "tables": {},
+      "function_definition": "-Converts a quaternion to an axis angle representation\n-Returns a rotation vector where axis is the direction and angle is the length\n-\n-Thankyou to Mathias for this"
+    },
+    {
+      "name": "AutoQuatToAxisAngle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQuatToAxisAngle(q)\nlocal qXYZ = Vec(q[1], q[2], q[3])\nlocal co = q[4]\nlocal si = VecLength(qXYZ)\n\nif si == 0 then\nreturn VecScale(qXYZ, 2.0 / co)\nend\n\nlocal angle = math.atan2(si, co)\nreturn VecScale(qXYZ, 2.0 * angle / si)\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region AABB Bounds Functions\n-Get the center of a body's bounds\n-@param body body_handle\n-@return vector"
+    },
+    {
+      "name": "AutoBodyCenter",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoBodyCenter(body)\nlocal aa, bb = GetBodyBounds(body)\nreturn VecScale(VecAdd(aa, bb), 0.5)\nend",
+      "tables": {},
+      "function_definition": "-Get the center of a shapes's bounds\n-@param shape shape_handle\n-@return vector"
+    },
+    {
+      "name": "AutoShapeCenter",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoShapeCenter(shape)\nlocal aa, bb = GetShapeBounds(shape)\nreturn VecScale(VecAdd(aa, bb), 0.5)\nend",
+      "tables": {},
+      "function_definition": "-Expands a given boudns to include a point\n-@param aa vector\n-@param bb vector\n-@param ... vector Points, can be one or multiple\n-@return vector\n-@return vector"
+    },
+    {
+      "name": "AutoAABBInclude",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBInclude(aa, bb, ...)\nfor _, point in ipairs(arg) do\naa, bb = {\nmath.min(aa[1], point[1]),\nmath.min(aa[2], point[2]),\nmath.min(aa[3], point[3]),\n}, {\nmath.max(bb[1], point[1]),\nmath.max(bb[2], point[2]),\nmath.max(bb[3], point[3]),\n}\nend\n\nreturn aa, bb\nend",
+      "tables": {},
+      "function_definition": "-Returns a Axis ALigned Bounding Box with the center of pos\n-@param pos vector\n-@param halfextents vector|number\n-@return vector lower-bound\n-@return vector upper-bound"
+    },
+    {
+      "name": "AutoAABBBoxFromPoint",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBBoxFromPoint(pos, halfextents)\nif type(halfextents) == \"number\" then\nhalfextents = AutoVecOne(halfextents)\nend\n\nreturn VecSub(pos, halfextents), VecAdd(pos, halfextents)\nend",
+      "tables": {},
+      "function_definition": "-Takes two vectors and modifys them so they can be used in other bound"
+    },
+    {
+      "name": "AutoAABBCorrection",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBCorrection(aa, bb)\nlocal min, max = VecCopy(aa), VecCopy(bb)\n\nif bb[1] < aa[1] then\nmin[1] = bb[1]\nmax[1] = aa[1]\nend\nif bb[2] < aa[2] then\nmin[2] = bb[2]\nmax[2] = aa[2]\nend\nif bb[3] < aa[3] then\nmin[3] = bb[3]\nmax[3] = aa[3]\nend\n\nreturn min, max\nend",
+      "tables": {},
+      "function_definition": "-Get a position inside or on the Input Bounds\n-@param aa vector lower-bound\n-@param bb vector upper-bound\n-@param vec vector? A normalized Vector pointing towards the position that should be retrieved, Default is Vec(0, 0, 0)\n-@return vector"
+    },
+    {
+      "name": "AutoAABBGetPos",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBGetPos(aa, bb, vec)\nvec = AutoDefault(vec, Vec(0, 0, 0))\n\nvec = AutoVecMap(vec, -1, 1, 0, 1)\nlocal sizevec = VecSub(bb, aa)\n\nlocal size = VecLength(sizevec)\nlocal scaled = AutoVecMulti(vec, sizevec)\nreturn VecAdd(scaled, aa)\nend",
+      "tables": {},
+      "function_definition": "-Get the corners of the given Bounds\n-@param aa vector lower-bound\n-@param bb vector upper-bound\n-@return table"
+    },
+    {
+      "name": "AutoAABBGetCorners",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBGetCorners(aa, bb)\nlocal mid = {}\nfor i = 1, 3 do\nmid[i] = (aa[i] + bb[i]) / 2\nend\n\nlocal corners = {\n{ bb[1], mid[2], mid[3] },\n{ aa[1], mid[2], mid[3] },\n{ mid[1], bb[2], mid[3] },\n{ mid[1], aa[2], mid[3] },\n{ mid[1], mid[2], bb[3] },\n{ mid[1], mid[2], aa[3] },\n{ aa[1], bb[2], mid[3] },\n{ bb[1], aa[2], mid[3] }\n}\n\nreturn corners\nend",
+      "tables": {},
+      "function_definition": "-Get data about the size of the given Bounds\n-@param aa vector lower-bound\n-@param bb vector upper-bound\n-@return table representing the size of the Bounds\n-@return number smallest smallest edge size of the Bounds\n-@return number longest longest edge size of the Bounds"
+    },
+    {
+      "name": "AutoAABBSize",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBSize(aa, bb)\nlocal size = VecSub(bb, aa)\nlocal minval = math.min(unpack(size))\nlocal maxval = math.max(unpack(size))\n\nreturn size, minval, maxval\nend",
+      "tables": {},
+      "function_definition": "-Takes a given AABB and subdivides into new AABBs\n-@param aa vector lower-bound\n-@param bb vector upper-bound\n-@param levels number?\n-@return table"
+    },
+    {
+      "name": "AutoAABBSubdivideBounds",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBSubdivideBounds(aa, bb, levels)\nlevels = levels or 1\nlocal bounds = { { aa, bb } }\n\nfor level = 1, levels do\nlocal newBounds = {}\n\nfor _, bound in ipairs(bounds) do\nlocal mid = {}\nfor i = 1, 3 do\nmid[i] = (bound[1][i] + bound[2][i]) / 2\nend\n\ntable.insert(newBounds, { { bound[1][1], mid[2], mid[3] }, { mid[1], bound[2][2], bound[2][3] } })\ntable.insert(newBounds, { { mid[1], mid[2], mid[3] }, { bound[2][1], bound[2][2], bound[2][3] } })\ntable.insert(newBounds, { { mid[1], bound[1][2], mid[3] }, { bound[2][1], mid[2], bound[2][3] } })\ntable.insert(newBounds, { { bound[1][1], bound[1][2], mid[3] }, { mid[1], mid[2], bound[2][3] } })\ntable.insert(newBounds, { { bound[1][1], mid[2], bound[1][3] }, { mid[1], bound[2][2], mid[3] } })\ntable.insert(newBounds, { { mid[1], mid[2], bound[1][3] }, { bound[2][1], bound[2][2], mid[3] } })\ntable.insert(newBounds, { { mid[1], bound[1][2], bound[1][3] }, { bound[2][1], mid[2], mid[3] } })\ntable.insert(newBounds, { { bound[1][1], bound[1][2], bound[1][3] }, { mid[1], mid[2], mid[3] } })\nend\n\nbounds = newBounds\nend\n\nreturn bounds\nend",
+      "tables": {},
+      "function_definition": "-Draws a given Axis Aligned Bounding Box\n-@param aa vector lower-bound\n-@param bb vector upper-bound\n-@param colorR number?\n-@param colorG number?\n-@param colorB number?\n-@param alpha number?\n-@param rgbcolors boolean?\n-@param draw boolean?"
+    },
+    {
+      "name": "AutoDrawAABB",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDrawAABB(aa, bb, colorR, colorG, colorB, alpha, rgbcolors, draw)\ncolorR = AutoDefault(colorR, 0)\ncolorG = AutoDefault(colorG, 0)\ncolorB = AutoDefault(colorB, 0)\nalpha = AutoDefault(alpha, 1)\nrgbcolors = AutoDefault(rgbcolors, false)\ndraw = AutoDefault(draw, false)\n\nlocal min, max = {\n[1] = Vec(aa[1], aa[2], aa[3]),\n[2] = Vec(bb[1], aa[2], aa[3]),\n[3] = Vec(bb[1], aa[2], bb[3]),\n[4] = Vec(aa[1], aa[2], bb[3]),\n}, {\n[1] = Vec(aa[1], bb[2], aa[3]),\n[2] = Vec(bb[1], bb[2], aa[3]),\n[3] = Vec(bb[1], bb[2], bb[3]),\n[4] = Vec(aa[1], bb[2], bb[3]),\n}\n\nlocal lines = {\n{ min[2], min[3], colorR, colorG, colorB, alpha },\n{ min[3], min[4], colorR, colorG, colorB, alpha },\n{ max[1], max[2], colorR, colorG, colorB, alpha },\n{ max[4], max[1], colorR, colorG, colorB, alpha },\n{ min[2], max[2], colorR, colorG, colorB, alpha },\n{ min[4], max[4], colorR, colorG, colorB, alpha },\n\n{ min[1], min[2], rgbcolors and 1 or colorR, rgbcolors and 0 or colorG, rgbcolors and 0 or colorB, alpha },\n{ max[2], max[3], rgbcolors and 0 or colorR, rgbcolors and 1 or colorG, rgbcolors and 0 or colorB, alpha },\n{ max[3], max[4], rgbcolors and 1 or colorR, rgbcolors and 0 or colorG, rgbcolors and 0 or colorB, alpha },\n{ min[1], max[1], rgbcolors and 0 or colorR, rgbcolors and 0 or colorG,\nrgbcolors and 1 or rgbcolors and 0 or colorB, alpha },\n{ min[3], max[3], rgbcolors and 0 or colorR, rgbcolors and 0 or colorG,\nrgbcolors and 1 or rgbcolors and 0 or colorB, alpha },\n{ min[4], min[1], rgbcolors and 0 or colorR, rgbcolors and 1 or colorG, rgbcolors and 0 or colorB, alpha },\n}\n\nlocal DrawLine = DrawLine\nlocal DebugLine = DebugLine\n\nfor i, v in ipairs(lines) do\nif draw then\nDrawLine(unpack(v))\nelse\nDebugLine(unpack(v))\nend\nend\nend",
+      "tables": {},
+      "function_definition": "This code made me want to give up\n#endregion\n#region OBB Bounds Functions\n-@class OBB: { pos:vector, rot:quaternion, size:vector }|transform\n-Converts an Axis Aligned Bounding Box to a Oriented Bounding Box\n-@param aa vector\n-@param bb vector\n-@return OBB"
+    },
+    {
+      "name": "AutoAABBToOBB",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAABBToOBB(aa, bb)\nlocal center = VecLerp(bb, aa, 0.5)\nlocal size = VecSub(bb, aa)\nreturn { pos = center, rot = QuatEuler(), size = size }\nend",
+      "tables": {},
+      "function_definition": "-Defines a Oriented Bounding Box\n-@param center vector\n-@param rot quaternion\n-@param size vector|number?\n-@return table"
+    },
+    {
+      "name": "AutoOBB",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoOBB(center, rot, size)\nreturn {\npos = center or Vec(),\nrot = rot or QuatEuler(),\nsize = type(size) == 'table' and size or AutoVecOne(size or 1)\n}\nend",
+      "tables": {},
+      "function_definition": "-Returns the corners of a Oriented Bounding Box\n-@param obb OBB\n-@return { xyz:table, Xyz:table, xYz:table, xyZ:table, XYz:table, XyZ:table, xYZ:table, XYZ:table }"
+    },
+    {
+      "name": "AutoGetOBBCorners",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetOBBCorners(obb)\nlocal corners = {}\n\nlocal hs = VecScale(obb.size, 0.5)\ncorners.xyz = TransformToParentPoint(obb, VecScale(hs, -1))\ncorners.Xyz = TransformToParentPoint(obb, Vec(hs[1], -hs[2], -hs[3]))\ncorners.xYz = TransformToParentPoint(obb, Vec(-hs[1], hs[2], -hs[3]))\ncorners.xyZ = TransformToParentPoint(obb, Vec(-hs[1], -hs[2], hs[3]))\ncorners.XYz = TransformToParentPoint(obb, Vec(hs[1], hs[2], -hs[3]))\ncorners.XyZ = TransformToParentPoint(obb, Vec(hs[1], -hs[2], hs[3]))\ncorners.xYZ = TransformToParentPoint(obb, Vec(-hs[1], hs[2], hs[3]))\ncorners.XYZ = TransformToParentPoint(obb, hs)\n\nreturn corners\nend",
+      "tables": {},
+      "function_definition": "Calculate the eight corner points of the OBB based on the center, dimensions, and orientation\n-Returns the planes and corners representing the faces of a Oriented Bounding Box\n-@param obb OBB\n-@return { z:plane, zn:plane, x:plane, xn:plane, y:plane, yn:plane }\n-@return { xyz:table, Xyz:table, xYz:table, xyZ:table, XYz:table, XyZ:table, xYZ:table, XYZ:table }"
+    },
+    {
+      "name": "AutoGetOBBFaces",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetOBBFaces(obb)\nlocal corners = AutoGetOBBCorners(obb)\n\nlocal faces = {}\nfaces.z = AutoPlane(\nVecLerp(corners.xyZ, corners.XYZ, 0.5),\nQuatRotateQuat(obb.rot, QuatEuler(180, 0, 0)),\n{ obb.size[1], obb.size[2] }\n)\nfaces.zn = AutoPlane(\nVecLerp(corners.xyz, corners.XYz, 0.5),\nQuatRotateQuat(obb.rot, QuatEuler(0, 0, 0)),\n{ obb.size[1], obb.size[2] }\n)\nfaces.x = AutoPlane(\nVecLerp(corners.Xyz, corners.XYZ, 0.5),\nQuatRotateQuat(obb.rot, QuatEuler(0, -90, -90)),\n{ obb.size[2], obb.size[3] }\n)\nfaces.xn = AutoPlane(\nVecLerp(corners.xyz, corners.xYZ, 0.5),\nQuatRotateQuat(obb.rot, QuatEuler(0, 90, 90)),\n{ obb.size[2], obb.size[3] }\n)\nfaces.y = AutoPlane(\nVecLerp(corners.xYz, corners.XYZ, 0.5),\nQuatRotateQuat(obb.rot, QuatEuler(90, 0, 0)),\n{ obb.size[1], obb.size[3] }\n)\nfaces.yn = AutoPlane(\nVecLerp(corners.xyz, corners.XyZ, 0.5),\nQuatRotateQuat(obb.rot, QuatEuler(-90, 180, 0)),\n{ obb.size[1], obb.size[3] }\n)\n\nreturn faces, corners\nend",
+      "tables": {},
+      "function_definition": "-Returns a table representing the lines connecting the sides of a Oriented Bounding Box\n-@param obb OBB\n-@return table<{ [1]:vector, [2]:vector }>"
+    },
+    {
+      "name": "AutoOBBLines",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoOBBLines(obb)\nlocal c = AutoGetOBBCorners(obb)\n\nreturn {\n{ c.xyz, c.Xyz },\n{ c.xYz, c.XYz },\n{ c.xyZ, c.XyZ },\n{ c.xYZ, c.XYZ },\n\n{ c.xyz, c.xYz },\n{ c.Xyz, c.XYz },\n{ c.xyZ, c.xYZ },\n{ c.XyZ, c.XYZ },\n\n{ c.xyz, c.xyZ },\n{ c.Xyz, c.XyZ },\n{ c.xYz, c.xYZ },\n{ c.XYz, c.XYZ },\n}\nend",
+      "tables": {},
+      "function_definition": "-@param shape shape_handle\n-@return OBB"
+    },
+    {
+      "name": "AutoGetShapeOBB",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetShapeOBB(shape)\nlocal transform = GetShapeWorldTransform(shape)\nlocal x, y, z, scale = GetShapeSize(shape)\nlocal size = VecScale(Vec(x, y, z), scale)\n\nlocal center = TransformToParentPoint(transform, VecScale(size, 0.5))\nreturn AutoOBB(center, transform.rot, size)\nend",
+      "tables": {},
+      "function_definition": "-Draws a given Oriented Bounding Box\n-@param obb OBB\n-@param red number? Default is 0\n-@param green number? Default is 0\n-@param blue number? Default is 0\n-@param alpha number? Default is 1\n-@param line"
+    },
+    {
+      "name": "AutoPlane",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPlane(pos, rot, size)\nreturn { pos = pos or Vec(), rot = rot or Quat(), size = size or { 1, 1 } }\nend",
+      "tables": {},
+      "function_definition": "-@param plane plane\n-@return { [1]:vector, [2]:vector, [3]:vector, [4]:vector }"
+    },
+    {
+      "name": "AutoGetPlaneCorners",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetPlaneCorners(plane)\nlocal size = VecScale(plane.size, 0.5)\n\nlocal corner1 = Vec(-size[1], -size[2])\nlocal corner2 = Vec(size[1], -size[2])\nlocal corner3 = Vec(size[1], size[2])\nlocal corner4 = Vec(-size[1], size[2])\n\ncorner1 = TransformToParentPoint(plane, corner1)\ncorner2 = TransformToParentPoint(plane, corner2)\ncorner3 = TransformToParentPoint(plane, corner3)\ncorner4 = TransformToParentPoint(plane, corner4)\n\nreturn { corner1, corner2, corner3, corner4 }\nend",
+      "tables": {},
+      "function_definition": "Rotate corners using the quaternion rotation from the plane object\n-@param plane plane\n-@param startPos vector\n-@param direction vector\n-@param oneway boolean?\n-@return { hit:boolean, intersection:vector, normal:vector, dist:number, dot:number }"
+    },
+    {
+      "name": "AutoRaycastPlane",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRaycastPlane(plane, startPos, direction, oneway)\nlocal pos = plane.pos or Vec(0, 0, 0)\nlocal rot = plane.rot or Quat()\nlocal size = plane.size or Vec(1, 1, 1)\n\nlocal halfsize = VecScale(size, 0.5)\nlocal corner1 = VecAdd(pos, QuatRotateVec(rot, Vec(-halfsize[1], -halfsize[2], 0)))\nlocal corner2 = VecAdd(pos, QuatRotateVec(rot, Vec(halfsize[1], -halfsize[2], 0)))\nlocal corner3 = VecAdd(pos, QuatRotateVec(rot, Vec(halfsize[1], halfsize[2], 0)))\nlocal corner4 = VecAdd(pos, QuatRotateVec(rot, Vec(-halfsize[1], halfsize[2], 0)))\n\nlocal normal = QuatRotateVec(rot, { 0, 0, -1 })\n\nlocal rayDirDotNormal = VecDot(direction, normal)\nif (oneway and rayDirDotNormal or math.abs(rayDirDotNormal)) < 0 then\nreturn { hit = false, normal = normal, dist = 1 / 0, dot = rayDirDotNormal }\nelse\nlocal rayToPlane = VecSub(startPos, pos)\nlocal t = -VecDot(rayToPlane, normal) / rayDirDotNormal\nlocal intersection = VecAdd(startPos, VecScale(direction, t))\n\nlocal dist = AutoVecDist(startPos, intersection)\n\nlocal edge1 = VecSub(corner2, corner1)\nlocal edge2 = VecSub(corner3, corner2)\nlocal edge3 = VecSub(corner4, corner3)\nlocal edge4 = VecSub(corner1, corner4)\nlocal vec1 = VecSub(intersection, corner1)\nlocal vec2 = VecSub(intersection, corner2)\nlocal vec3 = VecSub(intersection, corner3)\nlocal vec4 = VecSub(intersection, corner4)\n\nlocal isInside = true\nlocal",
+      "tables": {},
+      "function_definition": "Ray is parallel to plane, or wrong way; no intersection\nCheck if the intersection is inside the plane's bounds"
+    },
+    {
+      "name": "checkInsideEdge",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function checkInsideEdge(vec, edge)\nif VecDot(edge, vec) < 0 then\nisInside = false\nend\nend\n\ncheckInsideEdge(vec1, edge1)\ncheckInsideEdge(vec2, edge2)\ncheckInsideEdge(vec3, edge3)\ncheckInsideEdge(vec4, edge4)\n\nreturn {\nhit = isInside and t > 0,\nintersection = intersection,\nnormal = normal,\ndist = dist,\ndot = rayDirDotNormal,\n}\nend\nend",
+      "tables": {},
+      "function_definition": "-@param plane plane\n-@param pattern 0|1|2|3\n-@param patternstrength number\n-@param oneway boolean?\n-@param r number?\n-@param g number?\n-@param b number?\n-@param a number?\n-@param line"
+    },
+    {
+      "name": "AutoProcessOctree",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoProcessOctree(BoundsAA, BoundsBB, Layers, conditionalFuction, _layer)\n_layer = _layer or 1\nif _layer >= (Layers or 5) + 1 then return end\n\nconditionalFuction = AutoDefault(conditionalFuction, AutoQueryBoundsForBody)\n\nlocal check, querydata = conditionalFuction(BoundsAA, BoundsBB)\nlocal node = {\naa = BoundsAA,\nbb = BoundsBB,\ncheck = check,\nquerydata = querydata,\nlayer = _layer,\nchildren = {},\n}\n\nif check then\nfor _, nb in ipairs(AutoAABBSubdivideBounds(BoundsAA, BoundsBB)) do\nlocal aa, bb = unpack(nb)\nnode.children[#node.children + 1] = AutoProcessOctree(aa, bb, Layers, conditionalFuction, _layer + 1)\nend\nend\n\nreturn node\nend",
+      "tables": {},
+      "function_definition": "-Undocumented\n-@param aa vector\n-@param bb vector\n-@return boolean\n-@return table"
+    },
+    {
+      "name": "AutoQueryBoundsForBody",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQueryBoundsForBody(aa, bb)\nQueryRequire('physical large')\nlocal mid = VecLerp(aa, bb, 0.5)\nlocal radius = AutoVecDist(aa, bb) * 0.707 / 2\nlocal hit, point, normal, shape = QueryClosestPoint(mid, radius)\nreturn hit, { pos = point, normal = normal, shape }\nend",
+      "tables": {},
+      "function_definition": "-Draws the Octree from AutoProcessOctree\n-@param node table\n-@param layer number\n-@param draw"
+    },
+    {
+      "name": "AutoSimInstance",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSimInstance()\nlocal t = {\nPoints = {\n\n},\nSettings = {\nSteps = 1,\nPointsAffectBodies = true,\n}\n}",
+      "tables": {},
+      "function_definition": "-Creates a Point to be Simulated with SimInstance:CreatePoint(), you can add parameters after it is created and change existing ones, such as point.reflectivity, and point.mass\n-@param Position vector? Default is Vec(0, 0, 0)\n-@param Velocity vector? Default is Vec(0, 0, 0)\n-@return table point\n-@return number newindex"
+    },
+    {
+      "name": "AutoSM_Define",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_Define(initial, frequency, dampening, response, raw_k)\nlocal sosdata = {\ntype = type(initial) == 'table' and 'table' or 'single',\ndata = {},\nk_values = {\nraw_k and frequency or (dampening / (math.pi * frequency)),\nraw_k and dampening or (1 / (2 * math.pi * frequency) ^ 2),\nraw_k and response or (response * dampening / (2 * math.pi * frequency)),\n}\n}\n\nif sosdata.type ~= 'single' then\nfor k, v in pairs(initial) do\nsosdata.data[k] = {\ncurrent = v,\nprevious = v,\nvelocity = 0\n}\nend\nelse\nsosdata.data = {\ncurrent = initial,\nprevious = initial,\nvelocity = 0\n}\nend\n\n\nreturn sosdata\nend",
+      "tables": {},
+      "function_definition": "-Returns a table representing a Second Order System (SOS) that can be used to make secondary motion\n-@param initial number|table<number>\n-@param frequency number\n-@param dampening number\n-@param response number\n-@param raw_k boolean?\n-@return Secondary_Motion_Data"
+    },
+    {
+      "name": "AutoSM_DefineQuat",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_DefineQuat(initial, frequency, dampening, response, raw_k)\nlocal sosdata = {\ntype = 'quaternion',\ndata = {\ncurrent = QuatCopy(initial),\nprevious = QuatCopy(initial),\nvelocity = Vec(), -- Angular velocity as a vector\n},\nk_values = {\nraw_k and frequency or (dampening / (math.pi * frequency)),\nraw_k and dampening or (1 / ((2 * math.pi * frequency) ^ 2)),\nraw_k and response or (dampening * response / (2 * math.pi * frequency)),\n}\n}\n\nreturn sosdata\nend",
+      "tables": {},
+      "function_definition": "-Updates the state of the Second Order System (SOS) towards the target value, over the specified timestep.\n-This"
+    },
+    {
+      "name": "AutoSM_Update",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_Update(sm, target, timestep)\ntimestep = timestep or GetTimeStep()\n\nif sm.type ~= 'quaternion' then\nlocal",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "update",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function update(v, t)\nlocal xd = (t - v.previous) / timestep\nv.previous = t\n\nlocal k2_stable = math.max(sm.k_values[2], timestep ^ 2 / 2 + timestep * sm.k_values[1] / 2,\ntimestep * sm.k_values[1])\nv.current = v.current + timestep * v.velocity\nv.velocity = v.velocity +\ntimestep * (t + sm.k_values[3] * xd - v.current - sm.k_values[1] * v.velocity) / k2_stable\nend\n\nif sm.type == 'single' then\nupdate(sm.data, target)\nelse\nfor k, v in pairs(sm.data) do\nupdate(v, target[k])\nend\nend\nelse\nlocal q = QuatRotateQuat(AutoQuatConjugate(sm.data.previous), AutoQuatNearest(target, sm.data.previous))\nlocal dx = AutoQuatToAxisAngle(q)\ndx = VecScale(dx, 1 / timestep)\n\nsm.data.previous = QuatCopy(target)\n\nlocal qVel = AutoQuatFromAxisAngle(VecScale(sm.data.velocity, timestep))\nsm.data.current = QuatRotateQuat(sm.data.current, qVel) -- Rotate\n\nlocal q2 = QuatRotateQuat(AutoQuatConjugate(sm.data.current), AutoQuatNearest(target, sm.data.current))\nlocal s = AutoQuatToAxisAngle(q2)\nlocal k2_stable = math.max(sm.k_values[2], timestep * timestep / 2 + timestep * sm.k_values[1] / 2, timestep * sm.k_values[1])\n\nsm.data.velocity = VecAdd(sm.data.velocity, VecScale(VecScale(VecAdd(s, VecSub(VecScale(dx, sm.k_values[3]), VecScale(sm.data.velocity, sm.k_values[1]))), timestep), 1 / k2_stable))\nend\nend",
+      "tables": {},
+      "function_definition": "Compute the quaternion that will rotate the last quaternion to the desired quaternion\nConvert it to an axis-angle rotation vector\nConvert our angular velocity to a quaternion\ndesired - sos.data.current, in quaternion form\n- \"wtf\" - Autumn\n-Returns the current value of a Second Order System\n-@param sm Secondary_Motion_Data\n-@return number|table<number>|quaternion"
+    },
+    {
+      "name": "AutoSM_Get",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_Get(sm)\nif sm.type ~= 'table' then\nreturn sm.data.current\nelse\nlocal values = {}\nfor k, v in pairs(sm.data) do\nvalues[k] = v.current\nend\n\nreturn values\nend\nend",
+      "tables": {},
+      "function_definition": "-Returns the current velocity of a Second Order System\n-@param sm Secondary_Motion_Data\n-@return number|table<number>"
+    },
+    {
+      "name": "AutoSM_GetVelocity",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_GetVelocity(sm)\nif sm.type ~= 'table' then\nreturn sm.data.velocity\nelse\nreturn AutoTableSubi(sm.data, 'velocity')\nend\nend",
+      "tables": {},
+      "function_definition": "-Sets the current values of a Second Order System\n-@param sm Secondary_Motion_Data\n-@param target number|table<number>|quaternion\n-@param keep_velocity boolean?"
+    },
+    {
+      "name": "AutoSM_Set",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_Set(sm, target, keep_velocity)\nif sm.type ~= 'table' then\nsm.data.current = target\nsm.data.previous = target\nif not keep_velocity then\n\nsm.data.velocity = 0\nend\nelse\nfor k, v in pairs(sm.data) do\nv.current = target[k]\nv.previous = target[k]\n\nif not keep_velocity then\nv.velocity = 0\nend\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-Sets the current velocity of a Second Order System\n-@param sm Secondary_Motion_Data\n-@param velocity number|table<number>"
+    },
+    {
+      "name": "AutoSM_SetVelocity",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_SetVelocity(sm, velocity)\nif sm.type == 'single' then\nsm.data.velocity = velocity\nelseif sm.type == 'quaternion' then\nsm.data.velocity = AutoEulerTable(velocity)\nelse\nfor k, v in pairs(sm.data) do\nv.velocity = velocity[k]\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-Adds a amount to the current velocity of a Second Order System\n-@param sm Secondary_Motion_Data\n-@param velocity number|table<number>"
+    },
+    {
+      "name": "AutoSM_AddVelocity",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_AddVelocity(sm, velocity)\nif sm.type == 'single' then\nsm.data.velocity = sm.data.velocity + velocity\nelseif sm.type == 'quaternion' then\nsm.data.velocity = VecAdd(sm.data.velocity, AutoEulerTable(velocity))\nelse\nfor k, v in pairs(sm.data) do\nv.velocity = v.velocity + velocity[k]\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-Recalculates The K values for a Second Order System\n-@param sm Secondary_Motion_Data\n-@param frequency number\n-@param dampening number\n-@param response number\n-@param raw_k boolean?"
+    },
+    {
+      "name": "AutoSM_RecalculateK",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSM_RecalculateK(sm, frequency, dampening, response, raw_k)\nsm.k_values = {\nraw_k and frequency or (dampening / (math.pi * frequency)),\nraw_k and dampening or (1 / (2 * math.pi * frequency) ^ 2),\nraw_k and response or (response * dampening / (2 * math.pi * frequency)),\n}\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Table Functions\n-Returns the amount of elements in the given list.\n-@param t table\n-@return integer"
+    },
+    {
+      "name": "AutoTableCount",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableCount(t)\nlocal c = 0\nfor i in pairs(t) do\nc = c + 1\nend\n\nreturn c\nend",
+      "tables": {},
+      "function_definition": "-Repeats a value `v`, `r` amount of times\n-@param v any\n-@param r integer\n-@return table"
+    },
+    {
+      "name": "AutoTableRepeatValue",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableRepeatValue(v, r)\nlocal t = {}\nfor i=1,r do\nt[#t+1] = type(v) == 'table' and AutoTableDeepCopy(v) or v\nend\nreturn t\nend",
+      "tables": {},
+      "function_definition": "-Concats Table 2 onto the end of Table 1, does not return anything\n-@param t1 table\n-@param t2 table"
+    },
+    {
+      "name": "AutoTableConcat",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableConcat(t1, t2)\nfor i = 1, #t2 do\nt1[#t1 + 1] = t2[i]\nend\nend",
+      "tables": {},
+      "function_definition": "-Merges two tables together, does not return anything\n-@param base table\n-@param overwrite table"
+    },
+    {
+      "name": "AutoTableMerge",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableMerge(base, overwrite)\nfor k, v in pairs(overwrite) do\nif type(v) == \"table\" then\nif type(base[k] or false) == \"table\" then\nAutoTableMerge(base[k], v)\nelse\nbase[k] = v\nend\nelse\nbase[k] = v\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-A lambda like"
+    },
+    {
+      "name": "AutoTableSub",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableSub(t, key)\nlocal _t = {}\nfor i, v in pairs(t) do\n_t[i] = v[key]\nend\nreturn _t\nend",
+      "tables": {},
+      "function_definition": "-A lambda like"
+    },
+    {
+      "name": "AutoTableSubi",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableSubi(t, key)\nlocal _t = {}\nfor i, v in ipairs(t) do\n_t[i] = v[key]\nend\nreturn _t\nend",
+      "tables": {},
+      "function_definition": "-Swaps the keys and the values of a table\n-@param t table\n-@return table"
+    },
+    {
+      "name": "AutoTableSwapKeysAndValues",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableSwapKeysAndValues(t)\nlocal _t = {}\nfor k, v in pairs(t) do\n_t[v] = k\nend\nreturn _t\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to\n-```\n-for i, v in pairs(t) do\n-    v[key] = tset[i]\n-end\n-```\n-@param t table\n-@param key any\n-@param tset table"
+    },
+    {
+      "name": "AutoTableAppend",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableAppend(t, key, tset)\nfor i, v in pairs(t) do\nv[key] = tset[i]\nend\nend",
+      "tables": {},
+      "function_definition": "-Returns true and the index if the v is in t, otherwise returns false and nil\n-@param t table\n-@param v any\n-@return boolean, unknown"
+    },
+    {
+      "name": "AutoTableContains",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableContains(t, v)\nfor i, v2 in ipairs(t) do\nif v == v2 then\nreturn true, i\nend\nend\nreturn false, nil\nend",
+      "tables": {},
+      "function_definition": "-Returns the Last item of a given list\n-@param t table\n-@return any"
+    },
+    {
+      "name": "AutoTableLast",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableLast(t)\nreturn t[AutoTableCount(t)]\nend",
+      "tables": {},
+      "function_definition": "-Copy a Table Recursivly Stolen from http://lua-users.org/wiki/CopyTable\n-@generic T : table\n-@param orig T\n-@param copies table?\n-@return T"
+    },
+    {
+      "name": "AutoTableDeepCopy",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableDeepCopy(orig, copies)\ncopies = copies or {}\nlocal orig_type = type(orig)\nlocal copy\nif orig_type == 'table' then\nif copies[orig] then\ncopy = copies[orig]\nelse\ncopy = {}\ncopies[orig] = copy\nfor orig_key, orig_value in next, orig, nil do\ncopy[AutoTableDeepCopy(orig_key, copies)] = AutoTableDeepCopy(orig_value, copies)\nend\nsetmetatable(copy, AutoTableDeepCopy(getmetatable(orig), copies))\nend\nelse -- number, string, boolean, etc\ncopy = orig\nend\nreturn copy\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Utility Functions\n-If val is nil, return default instead\n-@param v any\n-@param default any\n-@return any"
+    },
+    {
+      "name": "AutoDefault",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDefault(v, default)\nif v == nil then return default else return v end\nend",
+      "tables": {},
+      "function_definition": "-Calls"
+    },
+    {
+      "name": "AutoExecute",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoExecute(f, ...)\nif not f then return end\n\nif type(f) == \"",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoVecTableLerp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecTableLerp(a, b, t)\nlocal c = {}\nfor k, _ in pairs(a) do\nc[k] = VecLerp(a[k], b[k], t)\nend\nreturn c\nend",
+      "tables": {},
+      "function_definition": "-Calls VecLerp on a table of Vectors\n-@param a table A table of values\n-@param b table A table of values the same size of a\n-@param t number\n-@return table"
+    },
+    {
+      "name": "AutoTableLerp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTableLerp(a, b, t)\nlocal c = {}\nfor k, _ in pairs(a) do\nc[k] = AutoLerp(a[k], b[k], t)\nend\nreturn c\nend",
+      "tables": {},
+      "function_definition": "-Returns a Linear Interpolated Transform, Interpolated by t.\n-@param a transform\n-@param b transform\n-@param t number\n-@param t2 number?\n-@return table"
+    },
+    {
+      "name": "AutoTransformLerp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTransformLerp(a, b, t, t2)\nif t2 == nil then\nt2 = t\nend\nreturn Transform(\nVecLerp(a.pos, b.pos, t),\nQuatSlerp(a.rot, b.rot, t2)\n)\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `QuatRotateVec(t.rot, Vec(0, 0, -(scale or 1)))`\n-@param t transform\n-@param scale number?\n-@return vector"
+    },
+    {
+      "name": "AutoTransformFwd",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTransformFwd(t, scale)\nreturn QuatRotateVec(t.rot, Vec(0, 0, -(scale or 1)))\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `QuatRotateVec(t.rot, Vec(0, scale or 1))`\n-@param t transform\n-@param scale number?\n-@return vector"
+    },
+    {
+      "name": "AutoTransformUp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTransformUp(t, scale)\nreturn QuatRotateVec(t.rot, Vec(0, scale or 1))\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `QuatRotateVec(t.rot, Vec(scale or 1))`\n-@param t transform\n-@param scale number?\n-@return vector"
+    },
+    {
+      "name": "AutoTransformRight",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTransformRight(t, scale)\nreturn QuatRotateVec(t.rot, Vec(scale or 1))\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `Transform(TransformToParentPoint(t, offset), t.rot)`\n-@param t transform\n-@param offset vector\n-@return transform"
+    },
+    {
+      "name": "AutoTransformOffset",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTransformOffset(t, offset)\nreturn Transform(TransformToParentPoint(t, offset), t.rot)\nend",
+      "tables": {},
+      "function_definition": "-Equivalent to `{ GetQuatEuler(quat) }`\n-@param quat quaternion\n-@return vector"
+    },
+    {
+      "name": "AutoEulerTable",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoEulerTable(quat)\nreturn { GetQuatEuler(quat) }\nend",
+      "tables": {},
+      "function_definition": "-Returns a Vector for easy use when put into a parameter for xml\n-@param vec any\n-@param round number\n-@return string"
+    },
+    {
+      "name": "AutoVecToXML",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoVecToXML(vec, round)\nround = AutoDefault(round, 0)\nreturn AutoRound(vec[1], round) .. ' ' .. AutoRound(vec[2], round) .. ' ' .. AutoRound(vec[3], round)\nend",
+      "tables": {},
+      "function_definition": "-Splits a string by a separator\n-@param inputstr string\n-@param sep string\n-@return table"
+    },
+    {
+      "name": "AutoSplit",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSplit(inputstr, sep, number)\nif sep == nil then\nsep = \"%s\"\nend\nlocal t = {}\nfor str in string.gmatch(inputstr, \"([^\" .. sep .. \"]+)\") do\ntable.insert(t, number and tonumber(str) or str)\nend\nreturn t\nend",
+      "tables": {},
+      "function_definition": "-Converts a string to be capitalized following the Camel Case pattern\n-@param str string\n-@return string"
+    },
+    {
+      "name": "AutoCamelCase",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoCamelCase(str)\nlocal subbed = str:gsub('_', ' ')\nreturn string.gsub(\" \" .. subbed, \"%W%l\", string.upper):sub(2)\nend",
+      "tables": {},
+      "function_definition": "-Returns 3 values from HSV color space from RGB color space\n-@param hue number? The hue from 0 to 1\n-@param sat number? The saturation from 0 to 1\n-@param val number? The value from 0 to 1\n-@return number, number, number Returns the red, green, blue of the given hue, saturation, value"
+    },
+    {
+      "name": "AutoHSVToRGB",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoHSVToRGB(hue, sat, val)\nlocal r, g, b\n\nlocal i = math.floor(hue * 6);\nlocal f = hue * 6 - i;\nlocal p = val * (1 - sat);\nlocal q = val * (1 - f * sat);\nlocal t = val * (1 - (1 - f) * sat);\n\ni = i % 6\n\nif i == 0 then r, g, b = val, t, p\nelseif i == 1 then r, g, b = q, val, p\nelseif i == 2 then r, g, b = p, val, t\nelseif i == 3 then r, g, b = p, q, val\nelseif i == 4 then r, g, b = t, p, val\nelseif i == 5 then r, g, b = val, p, q\nend\n\nreturn r, g, b\nend",
+      "tables": {},
+      "function_definition": "-Returns 3 values from RGB color space from HSV color space\n-@param r number? The red from 0 to 1\n-@param g number? The green from 0 to 1\n-@param b number? The blue from 0 to 1\n-@return number, number, number Returns the hue, the saturation, and the value"
+    },
+    {
+      "name": "AutoRGBToHSV",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRGBToHSV(r, g, b)\nr, g, b = r, g, b\nlocal max, min = math.max(r, g, b), math.min(r, g, b)\nlocal h, s, v\nv = max\n\nlocal d = max - min\nif max == 0 then s = 0 else s = d / max end\n\nif max == min then\nh = 0 -- achromatic\nelse\nif max == r then\nh = (g - b) / d\nif g < b then h = h + 6 end\nelseif max == g then h = (b - r) / d + 2\nelseif max == b then h = (r - g) / d + 4\nend\nh = h / 6\nend\n\nreturn h, s, v\nend",
+      "tables": {},
+      "function_definition": "-Converts a hex code or a table of hex codes to RGB color space\n-@param hex string|table<string>\n-@return number|table"
+    },
+    {
+      "name": "AutoHEXtoRGB",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoHEXtoRGB(hex)\nlocal",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "f",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function f(x, p)\nx = x:gsub(\"#\", \"\")\nlocal r, g, b = tonumber(\"0x\" .. x:sub(1, 2)) / 255, tonumber(\"0x\" .. x:sub(3, 4)) / 255,\ntonumber(\"0x\" .. x:sub(5, 6)) / 255\nif p then return { r, g, b } else return r, g, b end\nend\n\nif type(hex) == 'string' then return f(hex) else\nlocal t = {}\nfor key, val in pairs(hex) do\nt[key] = f(val, true)\nend\nreturn t\nend\nend",
+      "tables": {},
+      "function_definition": "-Converts an RGB color code or a table of RGB color codes to hexadecimal color space\n-@param r number|table<number> Red component (0-1) or table of RGB color codes\n-@param g number Green component (0-1) (optional)\n-@param b number Blue component (0-1) (optional)\n-@return string|table<string> Hexadecimal color code or table of hex codes"
+    },
+    {
+      "name": "AutoRGBtoHEX",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRGBtoHEX(r, g, b)\nlocal",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "f",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function f(x)\nlocal hx = string.format(\"%02X\", math.floor(x * 255))\nreturn hx\nend\n\nif type(r) == 'table' then\nlocal t = {}\nfor key, val in pairs(r) do\nlocal hex = \"#\" .. f(val[1]) .. f(val[2]) .. f(val[3])\nt[key] = hex\nend\nreturn t\nelse\nlocal hex = \"#\" .. f(r) .. f(g) .. f(b)\nreturn hex\nend\nend",
+      "tables": {},
+      "function_definition": "-Performs `:byte()` on each character of a given string\n-@param str string\n-@return table<number>"
+    },
+    {
+      "name": "AutoStringToByteTable",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoStringToByteTable(str)\nlocal t = {}\nfor i = 1, #str do\nt[i] = (str:sub(i, i)):byte()\nend\nreturn t\nend",
+      "tables": {},
+      "function_definition": "-Performs `:char()` on each number of a given table, returning a string\n-\n-The inverse of AutoStringToByteTable\n-@param t table<number>\n-@return string"
+    },
+    {
+      "name": "AutoByteTableToString",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoByteTableToString(t)\nlocal str = ''\nfor i, b in ipairs(t) do\nstr = str .. string.char(b)\nend\nreturn str\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Game Functions\n-Usually, the Primary Menu Button only is suppose to work in the mod's level, this is a work around to have it work in any level.\n-@param title string\n-@return boolean"
+    },
+    {
+      "name": "AutoPrimaryMenuButton",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPrimaryMenuButton(title)\nlocal value = PauseMenuButton(title, true)\n\nfor _, item in pairs(ListKeys('game.pausemenu.items')) do\nif GetString(AutoKey('game.pausemenu.items', item)) == title then\nSetInt('game.pausemenu.primary', item)\nbreak\nend\nend\n\nreturn value\nend",
+      "tables": {},
+      "function_definition": "-Goes through a table and performs Delete() on each element\n-@param t table<entity_handle>\n-@param CheckIfValid boolean?\n-@return table<{handle:entity_handle, type:entity_type, valid:boolean}>"
+    },
+    {
+      "name": "AutoDeleteHandles",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDeleteHandles(t, CheckIfValid)\nlocal list = {}\nfor k, v in pairs(t) do\nlocal valid = IsHandleValid(v)\nlist[#list+1] = { handle = v, type = GetEntityType(v), valid = valid }\n\nif not CheckIfValid or (valid and v ~= GetWorldBody()) then\nDelete(v)\nend\nend\n\nreturn list\nend",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoTags",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTags(handle)\nlocal T = {}\nfor _, t in pairs(ListTags(handle)) do\nT[t] = GetTagValue(handle, t)\nend\n\nreturn T\nend",
+      "tables": {},
+      "function_definition": "-Creates a list from a table of entity handles, containing the handle and it's type. If the handle is invalid then the type will be false.\n-@param t table<entity_handle>\n-@return table<{handle:entity_handle, type:entity_type}>"
+    },
+    {
+      "name": "AutoListHandleTypes",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoListHandleTypes(t)\nlocal nt = {}\nfor key, value in pairs(t) do\nnt[key] = { handle = value, type = IsHandleValid(value) and GetEntityType(value) or false }\nend\nreturn nt\nend",
+      "tables": {},
+      "function_definition": "-Spawn in a script node in the game world.\n-@param path td_path\n-@param ... string|number?\n-@return script_handle"
+    },
+    {
+      "name": "AutoSpawnScript",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpawnScript(path, ...)\nlocal f = [[<script file=\"%s\" param0=\"%s\" param1=\"%s\" param2=\"%s\" param3=\"%s\"/>]]\nlocal param = { arg[1] or '', arg[2] or '', arg[3] or '', arg[4] or '' }\nreturn Spawn((f):format(path, unpack(param)), Transform())[1]\nend",
+      "tables": {},
+      "function_definition": "-Attempts to get the handle of the current script by abusing pause menu item keys\n-\n-May not work if a pause menu button is already being created from the script\n-\n-Original coded from Thomasims"
+    },
+    {
+      "name": "AutoGetScriptHandle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetScriptHandle()\nlocal id = tostring(math.random())\nPauseMenuButton(id)\nfor _, handle in ipairs(ListKeys(\"game.pausemenu.items\")) do\nif GetString(\"game.pausemenu.items.\" .. handle) == id then\nreturn tonumber(handle)\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-A Wrapper for QueryRaycast; comes with some extra features.\n-@param origin vector\n-@param direction vector\n-@param maxDist number\n-@param radius number?\n-@param rejectTransparent boolean?\n-@return { hit:boolean, intersection:vector, dist:number, normal:vector, shape:shape_handle, body:body_handle, dot:number, reflection:vector }"
+    },
+    {
+      "name": "AutoRaycast",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRaycast(origin, direction, maxDist, radius, rejectTransparent)\ndirection = direction and VecNormalize(direction) or nil\n\nlocal data = {}\ndata.hit, data.dist, data.normal, data.shape = QueryRaycast(origin, direction, maxDist or 256, radius, rejectTransparent)\ndata.intersection = VecAdd(origin, VecScale(direction, data.dist))\ndata.dot = VecDot(direction, data.normal)\ndata.reflection = VecSub(direction, VecScale(data.normal, data.dot * 2))\ndata.body = GetShapeBody(data.shape)\n\nreturn data\nend",
+      "tables": {},
+      "function_definition": "-AutoRaycast from point A to point B. The distance will default to the distance between the points, but can be set.\n-@param pointA vector\n-@param pointB vector\n-@param manualDistance number?\n-@param radius number?\n-@param rejectTransparent boolean?\n-@return { hit:boolean, dist:number, normal:vector, shape:shape_handle, intersection:vector, body:body_handle, dot:number, reflection:vector }"
+    },
+    {
+      "name": "AutoRaycastTo",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRaycastTo(pointA, pointB, manualDistance, radius, rejectTransparent)\nlocal diff = VecSub(pointB, pointA)\nreturn AutoRaycast(pointA, diff, manualDistance or VecLength(diff), radius, rejectTransparent)\nend",
+      "tables": {},
+      "function_definition": "-AutoRaycast using the camera or player camera as the origin and direction\n-@param usePlayerCamera boolean\n-@param maxDist number\n-@param radius number?\n-@param rejectTransparent boolean?\n-@return { hit:boolean, dist:number, normal:vector, shape:shape_handle, intersection:vector, body:body_handle, dot:number, reflection:vector }\n-@return transform cameraTransform\n-@return vector cameraForward"
+    },
+    {
+      "name": "AutoRaycastCamera",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRaycastCamera(usePlayerCamera, maxDist, radius, rejectTransparent)\nlocal trans = usePlayerCamera and GetPlayerCameraTransform() or GetCameraTransform()\nlocal fwd = AutoTransformFwd(trans)\n\nreturn AutoRaycast(trans.pos, fwd, maxDist, radius, rejectTransparent), trans, fwd\nend",
+      "tables": {},
+      "function_definition": "-A Wrapper for QueryClosestPoint; comes with some extra features.\n-@param origin vector\n-@param maxDist number\n-@return { hit:boolean, point:vector, normal:vector, shape:shape_handle, body:body_handle, dist:number, dir:vector, dot:number, reflection:vector }"
+    },
+    {
+      "name": "AutoQueryClosest",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQueryClosest(origin, maxDist)\nlocal data = {}\ndata.hit, data.point, data.normal, data.shape = QueryClosestPoint(origin, maxDist)\n\nif data.hit then\nlocal diff = VecSub(data.point, origin)\nlocal dir = VecNormalize(diff)\nlocal dot = VecDot(dir, data.normal)\n\ndata.dist = VecLength(diff)\ndata.dir = dir\ndata.dot = dot\ndata.reflection = VecSub(dir, VecScale(data.normal, 2 * dot))\ndata.body = GetShapeBody(data.shape)\nelse\ndata.dist = maxDist\nend\n\nreturn data\nend",
+      "tables": {},
+      "function_definition": "-A Wrapper for GetBodyClosestPoint; comes with some extra features.\n-@param body body_handle\n-@param origin vector\n-@return { hit:boolean, point:vector, normal:vector, shape:shape_handle, body:body_handle, dist:number, dir:vector, dot:number, reflection:vector }"
+    },
+    {
+      "name": "AutoQueryClosestBody",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQueryClosestBody(body, origin)\nlocal data = {}\ndata.hit, data.point, data.normal, data.shape = GetBodyClosestPoint(body, origin)\n\nif data.hit then\nlocal diff = VecSub(data.point, origin)\nlocal dir = VecNormalize(diff)\nlocal dot = VecDot(dir, data.normal)\n\ndata.dist = VecLength(diff)\ndata.dir = dir\ndata.dot = dot\ndata.reflection = VecSub(dir, VecScale(data.normal, 2 * dot))\ndata.body = GetShapeBody(data.shape)\nend\n\nreturn data\nend",
+      "tables": {},
+      "function_definition": "-A Wrapper for GetShapeClosestPoint; comes with some extra features.\n-@param shape shape_handle\n-@param origin vector\n-@return { hit:boolean, point:vector, normal:vector, dist:number, dir:vector, dot:number, reflection:vector }"
+    },
+    {
+      "name": "AutoQueryClosestShape",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQueryClosestShape(shape, origin)\nlocal data = {}\ndata.hit, data.point, data.normal = GetShapeClosestPoint(shape, origin)\n\nif data.hit then\nlocal diff = VecSub(data.point, origin)\nlocal dir = VecNormalize(diff)\nlocal dot = VecDot(dir, data.normal)\n\ndata.dist = VecLength(diff)\ndata.dir = dir\ndata.dot = dot\ndata.reflection = VecSub(dir, VecScale(data.normal, 2 * dot))\nend\n\nreturn data\nend",
+      "tables": {},
+      "function_definition": "-Goes through each shape on a body and adds up their voxel count\n-@param body body_handle\n-@return integer"
+    },
+    {
+      "name": "AutoGetBodyVoxels",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetBodyVoxels(body)\nlocal v = 0\nfor _, s in pairs(GetBodyShapes(body)) do\nv = v + GetShapeVoxelCount(s)\nend\nreturn v\nend",
+      "tables": {},
+      "function_definition": "-Scales the velocity of a body by `scale`\n-@param body body_handle\n-@param scale number\n-@return vector scaled\n-@return vector orginal"
+    },
+    {
+      "name": "AutoScaleBodyVelocity",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoScaleBodyVelocity(body, scale)\nlocal orginal = GetBodyVelocity(body)\nlocal scaled = VecScale(orginal, scale)\nSetBodyVelocity(body, scaled)\nreturn scaled, orginal\nend",
+      "tables": {},
+      "function_definition": "-Scales the angular velocity of a body by `scale`\n-@param body body_handle\n-@param scale number\n-@return vector scaled\n-@return vector orginal"
+    },
+    {
+      "name": "AutoScaleBodyAngularVelocity",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoScaleBodyAngularVelocity(body, scale)\nlocal current = GetBodyAngularVelocity(body)\nlocal scaled = VecScale(current, scale)\nSetBodyAngularVelocity(body, scaled)\nreturn scaled, current\nend",
+      "tables": {},
+      "function_definition": "-Gets the angle from a point to the forward direction of a transform\n-@param point vector\n-@param fromtrans transform\n-@return number"
+    },
+    {
+      "name": "AutoPointToAngle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPointToAngle(point, fromtrans)\nfromtrans = AutoDefault(fromtrans, GetCameraTransform())\n\nlocal fromtopointdir = VecNormalize(VecSub(point, fromtrans.pos))\nlocal fromdir = AutoTransformFwd(fromtrans)\n\nlocal dot = VecDot(fromtopointdir, fromdir)\nreturn math.deg(math.acos(dot))\nend",
+      "tables": {},
+      "function_definition": "-Checks if a point is in the view using a transform acting as the \"Camera\"\n-@param point vector\n-@param oftrans transform? The Transform acting as the camera, Default is the Player's Camera\n-@param angle number? The Angle at which the point can be seen from, Default is the Player's FOV set in the options menu\n-@param raycastcheck boolean? Check to make sure that the point is not obscured, Default is true\n-@return boolean seen If the point is in View\n-@return number? angle The Angle the point is away from the center of the looking direction\n-@return number? distance The Distance from the point to fromtrans"
+    },
+    {
+      "name": "AutoPointInView",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPointInView(point, oftrans, angle, raycastcheck, raycasterror)\noftrans = AutoDefault(oftrans, GetCameraTransform())\nangle = AutoDefault(angle, GetInt('options.gfx.fov'))\nraycastcheck = AutoDefault(raycastcheck, true)\nraycasterror = AutoDefault(raycasterror, 0)\n\nlocal useangle = not (angle < 0)\n\nlocal fromtopointdir = VecNormalize(VecSub(point, oftrans.pos))\nlocal fromdir = AutoTransformFwd(oftrans)\n\nlocal dist = AutoVecDist(oftrans.pos, point)\n\nlocal dot = VecDot(fromtopointdir, fromdir)\nlocal dotangle = math.deg(math.acos(dot))\nlocal seen = dotangle < angle / 2\n\nseen = (not useangle) and (true) or (seen)\n\nif seen then\nif raycastcheck then\nlocal hit, hitdist = QueryRaycast(oftrans.pos, fromtopointdir, dist, 0, true)\nif hit then\nif raycasterror > 0 then\nlocal hitpoint = VecAdd(oftrans.pos, VecScale(fromtopointdir, hitdist))\nif AutoVecDist(hitpoint, point) > raycasterror then\nseen = false\nend\nelse\nseen = false\nend\nend\nend\nend\n\nreturn seen, dotangle, dist\nend",
+      "tables": {},
+      "function_definition": "-Gets the direction the player is inputting and creates a vector.\n-\n-`{ horizontal, 0, -vertical }`\n-@param length number?\n-@return vector"
+    },
+    {
+      "name": "AutoPlayerInputDir",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPlayerInputDir(length)\nreturn VecScale({\n-InputValue('left') + InputValue('right'),\n0,\n-InputValue('down') + InputValue('up'),\n}, length or 1)\nend",
+      "tables": {},
+      "function_definition": "-Get the last Path Query as a path of points\n-@param precision number The Accuracy\n-@return table<vector>\n-@return vector \"Last Point\""
+    },
+    {
+      "name": "AutoRetrievePath",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRetrievePath(precision)\nprecision = AutoDefault(precision, 0.2)\n\nlocal path = {}\nlocal length = GetPathLength()\nlocal l = 0\nwhile l < length do\npath[#path + 1] = GetPathPoint(l)\nl = l + precision\nend\n\nreturn path, path[#path]\nend",
+      "tables": {},
+      "function_definition": "-Reject a table of bodies for the next Query\n-@param bodies table<body_handle>"
+    },
+    {
+      "name": "AutoQueryRejectBodies",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQueryRejectBodies(bodies)\nfor _, h in pairs(bodies) do\nif h then\nQueryRejectBody(h)\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-Reject a table of shapes for the next Query\n-@param shapes table<shape_handle>"
+    },
+    {
+      "name": "AutoQueryRejectShapes",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoQueryRejectShapes(shapes)\nfor _, h in pairs(shapes) do\nif h then\nQueryRejectShape(h)\nend\nend\nend",
+      "tables": {},
+      "function_definition": "-Finds and rejects all shapes that do not have a given tag\n-@param tag string"
+    },
+    {
+      "name": "AutoRejectShapesWithoutTag",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRejectShapesWithoutTag(tag)\nlocal all = FindShapes(nil, true)\nlocal keep = {}\nfor _, v in pairs(FindShapes(tag, true)) do\nkeep[v] = v\nend\n\nfor _, v in pairs(all) do\nif keep[v] == nil then QueryRejectShape(v) end\nend\nend",
+      "tables": {},
+      "function_definition": "-Set the collision filter for the shapes owned by a body\n-@param body body_handle\n-@param layer number\n-@param masknummber number bitmask"
+    },
+    {
+      "name": "AutoSetBodyCollisionFilter",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSetBodyCollisionFilter(body, layer, masknummber)\nlocal shapes = GetBodyShapes(body)\nfor i in pairs(shapes) do\nSetShapeCollisionFilter(shapes[i], layer, masknummber)\nend\nend",
+      "tables": {},
+      "function_definition": "-Get the Center of Mass of a body in World space\n-@param body body_handle\n-@return vector"
+    },
+    {
+      "name": "AutoWorldCenterOfMass",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoWorldCenterOfMass(body)\nlocal trans = GetBodyTransform(body)\nlocal pos = TransformToParentPoint(trans, GetBodyCenterOfMass(body))\nreturn pos\nend",
+      "tables": {},
+      "function_definition": "-Adds the velocity and angualr velocity of a body\n-@param body body_handle\n-@return number"
+    },
+    {
+      "name": "AutoSpeed",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpeed(body)\nreturn VecLength(GetBodyVelocity(body)) + VecLength(GetBodyAngularVelocity(body))\nend",
+      "tables": {},
+      "function_definition": "-Attempt to predict the position of a body in time\n-@param body body_handle\n-@param time number\n-@param raycast boolean? Check and Halt on Collision, Default is false\n-@param funcbefore"
+    },
+    {
+      "name": "AutoPredictPosition",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPredictPosition(body, time, raycast, funcbefore)\nraycast = AutoDefault(raycast, false)\nlocal point = {\npos = AutoWorldCenterOfMass(body),\nvel = GetBodyVelocity(body)\n}\nlocal log = { VecCopy(point.pos) }\nlocal normal = Vec(0, 1, 0)\n\nfor steps = 0, time, GetTimeStep() do\nif type(funcbefore) == \"",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoPredictPlayerPosition",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoPredictPlayerPosition(time, raycast)\nraycast = AutoDefault(raycast, false)\nlocal player = GetPlayerTransform(true)\nlocal pos = player.pos\nlocal vel = GetPlayerVelocity()\nlocal log = { VecCopy(pos) }\nlocal normal = Vec(0, 1, 0)\n\nfor steps = 0, time, GetTimeStep() do\nvel = VecAdd(vel, VecScale(Vec(0, -10, 0), GetTimeStep()))\nlog[#log + 1] = VecAdd(log[#log], VecScale(vel, GetTimeStep()))\n\nif raycast then\nlocal last = log[#log - 1]\nlocal cur = log[#log]\nlocal hit, dist, norm = QueryRaycast(last, QuatLookAt(last, cur), VecLength(VecSub(cur, last)))\nnormal = norm\n\nif hit then break end\nend\nend\n\nreturn log, vel, normal\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Environment\n-@class environment\n-@field ambience { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field ambient { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field ambientexponent { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field brightness { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field constant { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field exposure { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field fogcolor { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field fogparams { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field fogscale { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field nightlight { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field puddleamount { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field puddlesize { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field rain { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field skybox { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field skyboxbrightness { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field skyboxrot { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field skyboxtint { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field slippery { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field snowamount { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field snowdir { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field snowonground { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field sunbrightness { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field suncolortint { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field sundir { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field sunfogscale { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field sunglare { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field sunlength { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field sunspread { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field waterhurt { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field wetness { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@field wind { [1]:any, [2]:any, [3]:any ,[4]:any, [5]:any }\n-@type environment_property\n-Returns a table of every property of the current environment\n-@return environment"
+    },
+    {
+      "name": "AutoGetEnvironment",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetEnvironment()\nlocal params = {\n\"ambience\",\n\"ambient\",\n\"ambientexponent\",\n\"brightness\",\n\"constant\",\n\"exposure\",\n\"fogcolor\",\n\"fogparams\",\n\"fogscale\",\n\"nightlight\",\n\"puddleamount\",\n\"puddlesize\",\n\"rain\",\n\"skybox\",\n\"skyboxbrightness\",\n\"skyboxrot\",\n\"skyboxtint\",\n\"slippery\",\n\"snowamount\",\n\"snowdir\",\n\"snowonground\",\n\"sunbrightness\",\n\"suncolortint\",\n\"sundir\",\n\"sunfogscale\",\n\"sunglare\",\n\"sunlength\",\n\"sunspread\",\n\"waterhurt\",\n\"wetness\",\n\"wind\",\n}\n\nlocal assembled = {}\nfor _, k in ipairs(params) do\nassembled[k] = { GetEnvironmentProperty(k) }\nend\n\nreturn assembled\nend",
+      "tables": {},
+      "function_definition": "-Sets every environment property of AutoGetEnvironment\n-@param Environment environment"
+    },
+    {
+      "name": "AutoSetEnvironment",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSetEnvironment(Environment)\nfor k, v in pairs(Environment) do\nif type(v) == \"table\" then\nSetEnvironmentProperty(k, unpack(v))\nelseif type(v) == \"",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoFlatBackground",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoFlatBackground(r, g, b, a, sprite, distance)\nr = AutoDefault(r, 0)\ng = AutoDefault(g, 0)\nb = AutoDefault(b, 0)\na = AutoDefault(a, 1)\nsprite = AutoDefault(sprite, AutoFlatSprite)\n\nlocal cam = GetCameraTransform()\nlocal distance = distance or 256\nlocal overextention = 2\nlocal transforms = {\nTransform(VecAdd(cam.pos, Vec(0, 0, distance))),\nTransform(VecAdd(cam.pos, Vec(0, 0, -distance))),\nTransform(VecAdd(cam.pos, Vec(-distance, 0, 0)), QuatEuler(0, 90)),\nTransform(VecAdd(cam.pos, Vec(distance, 0, 0)), QuatEuler(0, 90)),\nTransform(VecAdd(cam.pos, Vec(0, -distance, 0)), QuatEuler(90, 0, 0)),\nTransform(VecAdd(cam.pos, Vec(0, distance, 0)), QuatEuler(90, 0, 0)),\n}\nfor i, v in ipairs(transforms) do\nDrawSprite(sprite, v, distance * 2 + overextention, distance * 2 + overextention,\nr, g, b, a, true, false\n)\nend\nend",
+      "tables": {},
+      "function_definition": "-Returns and environemnt that eliminates as much lighting as possible, making colors look flat.\n-\n-Requires a flat DDS file.\n-@param pathToDDS td_path\n-@return table"
+    },
+    {
+      "name": "AutoFlatEnvironment",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoFlatEnvironment(pathToDDS)\nreturn {\nambience = { \"outdoor/field.ogg\", 0 },\nambient = { 1 },\nambientexponent = { 10 ^ -37.9275 },\nbrightness = { 1 },\nconstant = { 0, 0, 0 },\nexposure = { 1, 1 },\nfogColor = { 0, 0, 0 },\nfogParams = { 0, 0, 0, 0 },\nfogscale = { 0 },\nnightlight = { true },\npuddleamount = { 0 },\npuddlesize = { 0 },\nrain = { 0 },\nskybox = { pathToDDS },\nskyboxbrightness = { 1 },\nskyboxrot = { 0 },\nskyboxtint = { 1, 1, 1 },\nslippery = { 0 },\nsnowamount = { 0, 0 },\nsnowdir = { 0, 0, 1, 0 },\nsnowonground = {},\nsunBrightness = { 0 },\nsunColorTint = { 0, 0, 0 },\nsunDir = { 0, 0, 0 },\nsunFogScale = { 0 },\nsunGlare = { 0 },\nsunLength = { 0 },\nsunSpread = { 0 },\nwaterhurt = { 0 },\nwetness = { 0 },\nwind = { 0, 0, 0 },\n}\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Post Processing\n-@class postprocessing\n-@field saturation { [1]:any, [2]:any, [3]:any ,[4]:any }\n-@field colorbalance { [1]:any, [2]:any, [3]:any ,[4]:any }\n-@field brightness { [1]:any, [2]:any, [3]:any ,[4]:any }\n-@field gamma { [1]:any, [2]:any, [3]:any ,[4]:any }\n-@field bloom { [1]:any, [2]:any, [3]:any ,[4]:any }\n-Returns a table of every property of the current post-processing\n-@return postprocessing"
+    },
+    {
+      "name": "AutoGetPostProcessing",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetPostProcessing()\nlocal params = {\n'saturation',\n'colorbalance',\n'brightness',\n'gamma',\n'bloom',\n}\n\nlocal assembled = {}\nfor _, k in ipairs(params) do\nassembled[k] = { GetPostProcessingProperty(k) }\nend\n\nreturn assembled\nend",
+      "tables": {},
+      "function_definition": "-Sets every post-processing property of AutoGetPostProcessing\n-@param PostProcessing postprocessing"
+    },
+    {
+      "name": "AutoSetPostProcessing",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSetPostProcessing(PostProcessing)\n\nfor k, v in pairs(PostProcessing) do\nif type(v) == \"table\" then\nSetPostProcessingProperty(k, unpack(v))\nelseif type(v) == \"",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoGetCurrentLine",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetCurrentLine(level)\nlevel = (level or 0)\nlocal _, line = pcall(error, '', level + 3) -- The level + 3 is to get out of error, then out of pcall, then out of this",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoGetStackTrace",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetStackTrace(level)\nlevel = (level or 0)\nlocal _, line = pcall(error, '', level + 3) -- The level + 3 is to get out of error, then out of pcall, then out of this",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoToString",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoToString(t, singleline_at, indent_str, round_numbers, show_number_keys, lua_compatible, indents, visited_tables)\nsingleline_at = singleline_at or 1\nindent_str = indent_str or '  '\nindents = indents or 0\nvisited_tables = visited_tables or {}\n\nlocal str = \"\"\n\nif type(t) ~= \"table\" then\nif type(t) == \"string\" then\nreturn string.format(\"%q\", t)\nelseif type(t) == 'number' then\nif round_numbers then\nreturn tostring(AutoRound(t, round_numbers))\nelse\nreturn tostring(t)\nend\nend\nreturn tostring(t)\nelse\nif visited_tables[t] then return string.format('\"<circular reference of %s>\"', tostring(t)) end\nvisited_tables[t] = true\nif AutoTableCount(t) == 0 then return('{}') end\nend\n\nlocal passedSLthreshold = singleline_at <= 0\nstr = passedSLthreshold and \"{ \" or \"{\\n\"\nif passedSLthreshold then indents = indents + 1 end\n\nfor k, v in pairs(t) do\nif not passedSLthreshold then\nstr = str .. indent_str:rep(indents+1)\nend\n\nlocal not_a_number = type(k) ~= \"number\"\nlocal k_str = not_a_number and tostring(k) or (show_number_keys and string.format('[%s]', tostring(k)) or false)\nlocal prefix = k_str and ((lua_compatible and not_a_number) and string.format(\"%q\", tostring(k)) or k_str) .. \" = \" or ''\n\nlocal v_str = AutoToString(v, singleline_at - 1, indent_str, round_numbers, show_number_keys, lua_compatible, indents + 1, visited_tables)\nstr = str .. prefix .. v_str .. \", \"\n\nif not passedSLthreshold then\nstr = str .. \"\\n\"\nend\nend\nstr = (passedSLthreshold and str:sub(1, -3) or str) .. (passedSLthreshold and \" }\" or (indent_str:rep(indents) .. \"}\"))\nreturn str\nend",
+      "tables": {},
+      "function_definition": "-A Alternative to DebugPrint that uses AutoToString(), works with tables. Returns the value\n-@param value any\n-@param singleline_at number?\n-@param indent_str string?\n-@param round_numbers number|false?\n-@param show_number_keys boolean?\n-@param lua_compatible boolean?\n-@return any"
+    },
+    {
+      "name": "AutoInspect",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoInspect(value, singleline_at, indent_str, round_numbers, show_number_keys, lua_compatible)\nlocal text = AutoToString(value, singleline_at or 3, indent_str, round_numbers, show_number_keys, lua_compatible)\nlocal split = AutoSplit(text, '\\n')\nfor i=1, #split do\nlocal t = split[i]\nif i > 20 and i == #split then\nt = t .. ' - Some of AutoInspect has been cut off (' .. #split - 20 .. ' Lines Cut), lowering `singleline_at` may give more room'\nend\nDebugPrint(t)\nend\n\nreturn value\nend",
+      "tables": {},
+      "function_definition": "-AutoInspect that prints to console\n-@param value any\n-@param singleline_at number?\n-@param indent_str string?\n-@param round_numbers number|false?\n-@param show_number_keys boolean?\n-@param lua_compatible boolean?\n-@return any"
+    },
+    {
+      "name": "AutoInspectConsole",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoInspectConsole(value, singleline_at, indent_str, round_numbers, show_number_keys, lua_compatible)\nprint(AutoToString(value, singleline_at or 3, indent_str, round_numbers, show_number_keys, lua_compatible))\nreturn value\nend",
+      "tables": {},
+      "function_definition": "-AutoInspect that prints to DebugWatch.\n-\n-Name will default to current line number\n-@param value any\n-@param name string?\n-@param singleline_at number?\n-@param indent_str string?\n-@param round_numbers number|false?\n-@param show_number_keys boolean?\n-@param lua_compatible boolean?"
+    },
+    {
+      "name": "AutoInspectWatch",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoInspectWatch(value, name, singleline_at, indent_str, round_numbers, show_number_keys, lua_compatible)\nif not name then name = 'Inspecting Line ' .. AutoGetCurrentLine(1) end\nDebugWatch(name, AutoToString(value, singleline_at, indent_str, round_numbers, show_number_keys, lua_compatible))\nend",
+      "tables": {},
+      "function_definition": "-Prints 24 blank lines to quote on quote, \"clear the console\""
+    },
+    {
+      "name": "AutoClearConsole",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoClearConsole()\nfor i = 1, 24 do DebugPrint('') end\nend",
+      "tables": {},
+      "function_definition": "-Draws a Transform\n-@param transform transform|vector\n-@param size number? the size in meters, Default is 0.5\n-@param alpha number? Default is 1\n-@param draw boolean? Whether to use DebugLine or DrawLine, Default is false (DebugLine)"
+    },
+    {
+      "name": "AutoDrawTransform",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDrawTransform(transform, size, alpha, draw)\nif not transform then return end\nif not transform['pos'] then\ntransform = Transform(transform)\nend\n\ntransform.rot = AutoDefault(transform.rot, QuatEuler(0, 0, 0))\nsize = AutoDefault(size, 0.5)\nalpha = AutoDefault(alpha, 1)\ndraw = AutoDefault(draw, false)\n\nlocal right = TransformToParentPoint(transform, Vec(size, 0, 0))\nlocal up = TransformToParentPoint(transform, Vec(0, size, 0))\nlocal forward = TransformToParentPoint(transform, Vec(0, 0, size))\n\nlocal lines = {\n{ transform['pos'], right, 1, 0, 0, alpha },\n{ transform['pos'], up, 0, 1, 0, alpha },\n{ transform['pos'], forward, 0, 0, 1, alpha },\n}\n\nfor i, v in ipairs(lines) do\nif draw then\nDrawLine(unpack(v))\nelse\nDebugLine(unpack(v))\nend\nend\n\nreturn transform\nend",
+      "tables": {},
+      "function_definition": "DebugPrint('AutoDrawTransform given input not a transform')\n-Simply draws a box given a center and the half size.\n-@param point vector\n-@param halfextents number|vector\n-@param r number\n-@param g number\n-@param b number\n-@param a number\n-@return vector aa lower bounds point\n-@return vector bb upper point"
+    },
+    {
+      "name": "AutoDrawBox",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDrawBox(point, halfextents, r, g, b, a)\nlocal aa, bb = AutoAABBBoxFromPoint(point, halfextents)\nAutoDrawAABB(aa, bb, r, g, b, a)\n\nreturn aa, bb\nend",
+      "tables": {},
+      "function_definition": "-Draws a Transform as a Cone\n-@param transform transform\n-@param sides number? the amount of sides on the cone, Default is 12\n-@param angle number? how wide the cone is in degrees, Default is 25\n-@param size number? the size in meters, Default is 0.5\n-@param color table? Default is 1\n-@param draw boolean? Whether to use DebugLine or DrawLine, Default is false (DebugLine)"
+    },
+    {
+      "name": "AutoDrawCone",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoDrawCone(transform, sides, angle, size, color, draw)\nif not transform['pos'] then\nDebugPrint('AutoDrawCone given input not a transform')\nend\n\ntransform.rot = AutoDefault(transform.rot, QuatEuler(0, 0, 0))\nsize = AutoDefault(size, 0.5)\ncolor = AutoDefault(color, { 1, 1, 1, 1 })\ndraw = AutoDefault(draw, false)\nsides = AutoDefault(sides, 12)\nangle = AutoDefault(angle, 25)\n\nlocal forward = TransformToParentPoint(transform, Vec(0, 0, size))\n\nlocal lines = {}\nlocal endpoints = {}\nfor i = 1, sides do\nlocal rotated = TransformCopy(transform)\nlocal rr = i / sides * 360\nrotated.rot = QuatRotateQuat(rotated.rot, QuatEuler(angle, 0, rr))\n\nlocal endpoint = TransformToParentPoint(rotated, Vec(0, 0, -size))\nlines[#lines + 1] = { transform['pos'], endpoint }\nendpoints[#endpoints + 1] = endpoint\nend\n\nfor i = 1, #endpoints do\nlines[#lines + 1] = { endpoints[i], endpoints[AutoWrap(i + 1, 1, #endpoints)] }\nend\n\nfor i, v in ipairs(lines) do\nif draw then\nDrawLine(v[1], v[2], unpack(color))\nelse\nDebugLine(v[1], v[2], unpack(color))\nend\nend\n\nreturn transform\nend\n\n\nAutoGraphs = {}",
+      "tables": {},
+      "function_definition": "#endregion\n#region Graphing\n-Creates a Continuous Graph that can be drawn. The given value is added into the graph as the previous ones are kept in memory.\n-@param id string\n-@param value number\n-@param range number? Default is 64"
+    },
+    {
+      "name": "AutoGraphContinuous",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGraphContinuous(id, value, range)\nlocal Graph = AutoDefault(AutoGraphs[id], {\nscan = 0,\nrange = AutoDefault(range, 64),\nvalues = {}\n})\n\nGraph.scan = AutoWrap(Graph.scan + 1, 1, range)\nGraph.values[Graph.scan] = value\n\nAutoGraphs[id] = Graph\nend",
+      "tables": {},
+      "function_definition": "-Creates a Graph with values within a range fed into a given"
+    },
+    {
+      "name": "AutoGraphFunction",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGraphFunction(id, rangemin, rangemax, func, steps)\nrangemin = AutoDefault(rangemin, 0)\nrangemax = AutoDefault(rangemax, 1)\nsteps = AutoDefault(steps, 100)\n\nfunc = AutoDefault(func,",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "AutoGraphDraw",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGraphDraw(id, sizex, sizey, rangemin, rangemax, linewidth)\nlocal Graph = AutoGraphs[id]\nif Graph == nil then error(\"Graph Doesn't exist, nil\") end\n\nsizex = AutoDefault(sizex, 128)\nsizey = AutoDefault(sizey, 64)\n\nUiPush()\nUiWindow(sizex + AutoPad.micro * 2, sizey + AutoPad.micro * 2, true)\n\nlocal minval = 0\nlocal maxval = 0\nfor _, v in ipairs(Graph.values) do\nif v < minval then minval = v end\nif v > maxval then maxval = v end\nend\n\nminval = AutoDefault(rangemin, minval)\nmaxval = AutoDefault(rangemax, maxval)\n\nfor i = 1, #Graph.values - 1 do\nif Graph.values[i] == AutoClamp(Graph.values[i], minval, maxval) then\nlocal a = Vec(\nAutoMap(i, 1, #Graph.values, 0, sizex),\nAutoMap(Graph.values[i], minval, maxval, sizey, 0),\n0\n)\nlocal b = Vec(\nAutoMap(i + 1, 1, #Graph.values, 0, sizex),\nAutoMap(Graph.values[i + 1], minval, maxval, sizey, 0),\n0\n)\n\nlocal angle = math.atan2(b[1] - a[1], b[2] - a[2]) * 180 / math.pi\nlocal distance = AutoVecDist(a, b)\nlocal width = AutoDefault(linewidth, 2)\n\nUiPush()\nUiTranslate(a[1] - width / 2, a[2] - width / 2)\nUiRotate(angle)\n\nUiColor(unpack(AutoPrimaryColor))\nUiAlign('left top')\nUiRect(width, distance + 1)\nUiPop()\nend\nend\nUiPop()\n\nlocal data = { rect = { w = sizex + AutoPad.micro * 2, h = sizey + AutoPad.micro * 2 } }\nAutoHandleSpread(AutoGetSpread(), data, 'draw')\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region Registry\n-Concats any amount of strings by adding a single period between them\n-@vararg string\n-@return string"
+    },
+    {
+      "name": "AutoKey",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoKey(...)\nreturn table.concat(arg, '.')\nend",
+      "tables": {},
+      "function_definition": "-One out of the many methods to convert a registry key to a table\n-@param key string\n-@return table"
+    },
+    {
+      "name": "AutoExpandRegistryKey",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoExpandRegistryKey(key)\nlocal t = {}\nlocal",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "delve",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function delve(k, current)\nlocal subkeys = ListKeys(k)\nlocal splitkey = AutoSplit(k, '.')\nlocal neatkey = splitkey[#splitkey]\nif #subkeys > 0 then\ncurrent[neatkey] = {}\nfor _, subkey in ipairs(subkeys) do\ndelve(AutoKey(k, subkey), current[neatkey])\nend\nelse\ncurrent[neatkey] = HasKey(k) and GetString(k) or nil\nend\nend\n\nfor _, k in pairs(ListKeys(key)) do\ndelve(AutoKey(key, k), t)\nend\n\nreturn t\nend",
+      "tables": {},
+      "function_definition": "-Gets a Int from the registry, if the key does not exist, then set the key to the default value and return it.\n-@param path string\n-@param default integer\n-@return integer"
+    },
+    {
+      "name": "AutoKeyDefaultInt",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoKeyDefaultInt(path, default)\nif path == nil then error(\"path nil\") end\nif HasKey(path) then\nreturn GetInt(path, default)\nelse\nSetInt(path, default)\nreturn default\nend\nend",
+      "tables": {},
+      "function_definition": "-Gets a Float from the registry, if the key does not exist, then set the key to the default value and return it.\n-@param path string\n-@param default number\n-@return number"
+    },
+    {
+      "name": "AutoKeyDefaultFloat",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoKeyDefaultFloat(path, default)\nif path == nil then error(\"path nil\") end\nif HasKey(path) then\nreturn GetFloat(path, default)\nelse\nSetFloat(path, default)\nreturn default\nend\nend",
+      "tables": {},
+      "function_definition": "-Gets a String from the registry, if the key does not exist, then set the key to the default value and return it.\n-@param path string\n-@param default string\n-@return string"
+    },
+    {
+      "name": "AutoKeyDefaultString",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoKeyDefaultString(path, default)\nif path == nil then error(\"path nil\") end\nif HasKey(path) then\nreturn GetString(path, default)\nelse\nSetString(path, default)\nreturn default\nend\nend",
+      "tables": {},
+      "function_definition": "-Gets a Bool from the registry, if the key does not exist, then set the key to the default value and return it.\n-@param path string\n-@param default boolean\n-@return boolean"
+    },
+    {
+      "name": "AutoKeyDefaultBool",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoKeyDefaultBool(path, default)\nif path == nil then error(\"path nil\") end\nif HasKey(path) then\nreturn GetBool(path)\nelse\nSetBool(path, default)\nreturn default\nend\nend\n\nlocal RegistryTableMeta = {\n__index =",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "dive",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function dive(p, v)\nif type(v) ~= \"table\" then\nSetString(p, v)\n\nif type(v) ~= \"nil\" then\nSetString(AutoKey(p, '__type'), type(v))\nend\nelse\nSetString(AutoKey(p, '__type'), 'table')\nfor k, set in pairs(v) do\ndive(AutoKey(p, k), set)\nend\nend\nend\n\ndive(path, value)\nend,\n__call =",
+      "tables": {},
+      "function_definition": ""
+    },
+    {
+      "name": "dive",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function dive(p)\nlocal keys = ListKeys(p)\nlocal full = {}\n\nfor i = 1, #keys do\nlocal child = AutoKey(p, keys[i])\n\nif keys[i] ~= '__type' then\nlocal t = GetString(AutoKey(child, '__type'))\nif t == 'table' then\nfull[keys[i]] = dive(child)\nelse\nlocal str = GetString(child)\nlocal num = tonumber(str)\nfull[keys[i]] = num or str\nend\nend\nend\n\nreturn full\nend\n\nreturn dive(path)\nend\n}",
+      "tables": {},
+      "function_definition": "-Attempts to create a table that when written to, will update the registry, and when read from, will pull from the registry\n-@param path string\n-@return table"
+    },
+    {
+      "name": "AutoRegistryBindedTable",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoRegistryBindedTable(path)\nlocal t = {}\nt.__path = path\nsetmetatable(t, RegistryTableMeta)\n\nreturn t\nend",
+      "tables": {},
+      "function_definition": "#endregion\n#region User Interface\n-UiTranslate and UiAlign to the Center"
+    },
+    {
+      "name": "AutoUiCenter",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoUiCenter()\nUiTranslate(UiCenter(), UiMiddle())\nUiAlign('center middle')\nend",
+      "tables": {},
+      "function_definition": "-Returns the bounds, optionally subtracted by some amount\n-@param subtract number?\n-@return number\n-@return number"
+    },
+    {
+      "name": "AutoUiBounds",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoUiBounds(subtract)\nsubtract = subtract or 0\nreturn UiWidth() - subtract, UiHeight() - subtract\nend",
+      "tables": {},
+      "function_definition": "-Draws a line between two points in screen space\n-\n-Relative to current cursor position\n-@param p1 { [1]:number, [2]:number }\n-@param p2 { [1]:number, [2]:number }\n-@param width integer? Default is 2"
+    },
+    {
+      "name": "AutoUiLine",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoUiLine(p1, p2, width)\nwidth = AutoDefault(width, 2)\nlocal angle = math.atan2(p2[1] - p1[1], p2[2] - p1[2]) * 180 / math.pi\nlocal distance = AutoVecDistNoZ(p1, p2)\n\nUiPush()\nUiTranslate(p1[1] - width / 2, p1[2] - width / 2)\nUiRotate(angle)\n\nUiAlign('center top')\nUiRect(width, distance + 1)\nUiPop()\nend",
+      "tables": {},
+      "function_definition": "-Draws a cricle out of lines in screen space\n-\n-Relative to current cursor position\n-@param radius number\n-@param width integer? Default is 2\n-@param steps integer?"
+    },
+    {
+      "name": "AutoUiCircle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoUiCircle(radius, width, steps)\nwidth = width or 2\nsteps = steps or 16\n\nfor i = 1, steps do\nlocal t1 = (i - 1) / steps * math.pi * 2\nlocal t2 = i / steps * math.pi * 2\n\nUiPush()\n\nUiTranslate(width/2, width/2)\nAutoUiLine({\nmath.cos(t1) * radius,\nmath.sin(t1) * radius\n}, {\nmath.cos(t2) * radius,\nmath.sin(t2) * radius\n}, width)\n\nUiPop()\nend\nend",
+      "tables": {},
+      "function_definition": "-Draws a Fancy looking Arrow between two points on the screen\n-\n-Relative to current cursor position\n-@param p1 { [1]: number, [2]:number }\n-@param p2 { [1]: number, [2]:number }\n-@param line_width integer\n-@param radius integer"
+    },
+    {
+      "name": "AutoUIArrow",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoUIArrow(p1, p2, line_width, radius)\nlocal dir = VecNormalize(VecSub(p2, p1))\nlocal angle = math.atan2(unpack(AutoSwizzle(dir, 'yx')))\n\nlocal dist = AutoVecDistNoZ(p1, p2)\nlocal arrow_scale = AutoSigmoid(dist, radius * 3, -0.3, 15)\n\nUiPush()\n\nif radius > 0 then\nUiPush()\nUiTranslate(unpack(p1))\nAutoUiCircle(radius, line_width, 32)\nUiPop()\nend\n\nif dist > radius + line_width then\nAutoUiLine(AutoVecMove(p1, dir, radius), p2, line_width)\n\nif arrow_scale >= 0.1 then\nAutoUiLine(p2, {\np2[1] + math.cos(angle + math.rad(135)) * arrow_scale,\np2[2] + math.sin(angle + math.rad(135)) * arrow_scale\n}, line_width)\nAutoUiLine(p2, {\np2[1] + math.cos(angle + math.rad(-135)) * arrow_scale,\np2[2] + math.sin(angle + math.rad(-135)) * arrow_scale\n}, line_width)\nend\nend\n\nUiPop()\nend",
+      "tables": {},
+      "function_definition": "-Draws a Fancy looking Arrow between two points in the world\n-\n-Relative to current cursor position\n-@param p1 vector\n-@param p2 vector\n-@param line_width integer\n-@param radius integer"
+    },
+    {
+      "name": "AutoUIArrowInWorld",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoUIArrowInWorld(p1, p2, line_width, radius)\nlocal s_p1 = { UiWorldToPixel(p1) }\nlocal s_p2 = { UiWorldToPixel(p2) }\n\nif s_p1[3] > 0 or s_p2[3] > 0 then\nAutoUIArrow(s_p1, s_p2, line_width, s_p1[3] > 0 and radius or 0)\nend\nend",
+      "tables": {},
+      "function_definition": "-OLD\n-UI\n-FUNCTIONS\nAutoPad = { none = 0, atom = 4, micro = 6, thin = 12, thick = 24, heavy = 48, beefy = 128 }\nAutoPrimaryColor = { 0.95, 0.95, 0.95, 1 }\nAutoSpecialColor = { 1, 1, 0.55, 1 }\nAutoSecondaryColor = { 0, 0, 0, 0.55 }\nAutoFont = 'regular.ttf'\nlocal SpreadStack = {}\n---Draws some text at a world position.\n---@param text string|number? Text Displayed, Default is 'nil'\n---@param position vector The WorldSpace Position\n---@param occlude boolean? Hides the tooltip behind walls, Default is false\n---@param fontsize number? Fontsize, Default is 24\n---@param alpha number? Alpha, Default is 0.75"
+    },
+    {
+      "name": "AutoTooltip",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTooltip(text, position, occlude, fontsize, alpha)",
+      "tables": {},
+      "function_definition": "text = AutoDefault(text or \"nil\")\nocclude = AutoDefault(occlude or false)\nfontsize = AutoDefault(fontsize or 24)\nalpha = AutoDefault(alpha or 0.75)\nbold = AutoDefault(bold or false)\nif occlude then if not AutoPointInView(position, nil, nil, occlude) then return end end\nUiPush()\nUiAlign('center middle')\nlocal x, y, dist = UiWorldToPixel(position)\nif dist > 0 then\nUiTranslate(x, y)\nUiWordWrap(UiMiddle())\nUiFont(AutoFont, fontsize)\nUiColor(0, 0, 0, 0)\nlocal rw, rh = UiText(text)\nUiColorFilter(1, 1, 1, alpha)\nUiColor(unpack(AutoSecondaryColor))\nUiRect(rw, rh)\nUiColor(unpack(AutoPrimaryColor))\nUiText(text)\nUiPop()\nend\nend\n---Takes an alignment and returns a Vector representation.\n---@param alignment string\n---@return table"
+    },
+    {
+      "name": "AutoAlignmentToPos",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoAlignmentToPos(alignment)",
+      "tables": {},
+      "function_definition": "str, y = 0, 0\nif string.find(alignment, 'left') then str = -1 end\nif string.find(alignment, 'center') then str = 0 end\nif string.find(alignment, 'right') then str = 1 end\nif string.find(alignment, 'bottom') then y = -1 end\nif string.find(alignment, 'middle') then y = 0 end\nif string.find(alignment, 'top') then y = 1 end\nreturn { x = str, y = y }\nend\n---The next Auto Ui"
+    },
+    {
+      "name": "AutoSpreadDown",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadDown(padding)",
+      "tables": {},
+      "function_definition": "table.insert(SpreadStack, { type = 'spread', direction = 'down', padding = AutoDefault(padding, AutoPad.thin) })\nUiPush()\nend\n---The next Auto Ui"
+    },
+    {
+      "name": "AutoSpreadUp",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadUp(padding)",
+      "tables": {},
+      "function_definition": "table.insert(SpreadStack, { type = 'spread', direction = 'up', padding = AutoDefault(padding, AutoPad.thin) })\nUiPush()\nend\n---The next Auto Ui"
+    },
+    {
+      "name": "AutoSpreadRight",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadRight(padding)",
+      "tables": {},
+      "function_definition": "table.insert(SpreadStack, { type = 'spread', direction = 'right', padding = AutoDefault(padding, AutoPad.thin) })\nUiPush()\nend\n---The next Auto Ui"
+    },
+    {
+      "name": "AutoSpreadLeft",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadLeft(padding)",
+      "tables": {},
+      "function_definition": "table.insert(SpreadStack, { type = 'spread', direction = 'left', padding = AutoDefault(padding, AutoPad.thin) })\nUiPush()\nend\n---The next Auto Ui"
+    },
+    {
+      "name": "AutoSpreadVerticle",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadVerticle(count)",
+      "tables": {},
+      "function_definition": "table.insert(SpreadStack, { type = 'spread', direction = 'verticle', length = UiHeight(), count = count })\nUiPush()\nend\n---The next Auto Ui"
+    },
+    {
+      "name": "AutoSpreadHorizontal",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadHorizontal(count)",
+      "tables": {},
+      "function_definition": "table.insert(SpreadStack, { type = 'spread', direction = 'horizontal', length = UiWidth(), count = count })\nUiPush()\nend"
+    },
+    {
+      "name": "AutoGetSpread",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoGetSpread()",
+      "tables": {},
+      "function_definition": "local _l = 0\nlocal count = AutoTableCount(SpreadStack)\nif count <= 0 then return nil end\nfor i = count, 1, -1 do\nif SpreadStack[i].type == 'spread' then\n_l = _l + 1\nif _l >= 1 then\nreturn SpreadStack[i], _l\nend\nend\nend\nreturn nil\nend"
+    },
+    {
+      "name": "AutoSetSpread",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSetSpread(Spread)",
+      "tables": {},
+      "function_definition": "local count = AutoTableCount(SpreadStack)\nfor i = count, 1, -1 do\nif SpreadStack[i].type == 'spread' then\nstr = SpreadStack[i]\nend\nend\nstr = Spread\nend\n---Stop the last known Spread\n---@return table a table with information about the transformations used"
+    },
+    {
+      "name": "AutoSpreadEnd",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSpreadEnd()",
+      "tables": {},
+      "function_definition": "local unitdata = { comb = { w = 0, h = 0 }, max = { w = 0, h = 0 } }\n-- local _, LastSpread = AutoGetSpread(1)\nwhile true do\nlocal count = #SpreadStack\nif SpreadStack[count].type ~= 'spread' then\nif SpreadStack[count].data.rect then\nlocal rect = SpreadStack[count].data.rect\nunitdata.comb.w, unitdata.comb.h = unitdata.comb.w + rect.w, unitdata.comb.h + rect.h\nunitdata.max.w, unitdata.max.h = math.max(unitdata.max.w, rect.w), math.max(unitdata.max.h, rect.h)\nend\ntable.remove(SpreadStack, count)\nelse\nUiPop()\ntable.remove(SpreadStack, count)\nreturn unitdata\nend\nif count <= 0 then\nreturn unitdata\nend\nend\nend"
+    },
+    {
+      "name": "AutoHandleSpread",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoHandleSpread(gs, data, type, spreadpad)",
+      "tables": {},
+      "function_definition": "spreadpad = AutoDefault(spreadpad, false)\nif not AutoGetSpread() then return end\nif gs ~= nil then\nif not spreadpad then pad = 0 else pad = gs.padding end\nif gs.direction == 'down' then\nUiTranslate(0, data.rect.h + pad)\nelseif gs.direction == 'up' then\nUiTranslate(0, -(data.rect.h + pad))\nelseif gs.direction == 'right' then\nUiTranslate(data.rect.w + pad, 0)\nelseif gs.direction == 'left' then\nUiTranslate(-(data.rect.w + pad), 0)\nelseif gs.direction == 'verticle' then\nUiTranslate(0, gs.length / gs.count * 1.5 + gs.length / gs.count)\nelseif gs.direction == 'horizontal' then\nUiTranslate(gs.length / gs.count, 0)\nend\nend\nif type ~= nil then\ntable.insert(SpreadStack, { type = type, data = data })\nend\nend\n---Given the current string, will return a modified string based on the input of the user. It's basically just a text box. Has a few options.\n---@param current any\n---@param maxlength any\n---@param allowlowercase any\n---@param allowspecial any\n---@param forcekey any\n---@return any\n---@return any\n---@return boolean"
+    },
+    {
+      "name": "AutoTextInput",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoTextInput(current, maxlength, allowlowercase, allowspecial, forcekey)",
+      "tables": {},
+      "function_definition": "current = AutoDefault(current, '')\nmaxlength = AutoDefault(maxlength, 1 / 0)\nallowlowercase = AutoDefault(allowlowercase, true)\nallowspecial = AutoDefault(allowspecial, true)\nforcekey = AutoDefault(forcekey, nil)\nlocal modified = current\nlocal special = {\n['1'] = '!',\n['2'] = '@',\n['3'] = '#',\n['4'] = '$',\n['5'] = '%',\n['6'] = '^',\n['7'] = '&',\n['8'] = '*',\n['9'] = '(',\n['0'] = ')',\n}\nlocal lpk = forcekey or InputLastPressedKey()\nif lpk == 'backspace' then\nmodified = modified:sub(1, #modified - 1)\nelseif lpk == 'delete' then\nmodified = ''\nelseif #modified < maxlength then\nif lpk == 'space' then\nmodified = modified .. ' '\nelseif #lpk == 1 then\nif not InputDown('shift') then\nif allowlowercase then\nlpk = lpk:lower()\nend\nelse\nif allowspecial and special[lpk] then\nlpk = special[lpk]\nend\nend\nmodified = modified .. lpk\nend\nend\nreturn modified, lpk ~= '' and lpk or nil, modified ~= current\nend\n-- local keys = {\n-- \t\"lmb\", \"mmb\", \"rmb\", -- mouse\n-- \t\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"0\", -- numerical\n-- \t\"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"g\", \"h\", \"i\", \"j\", \"k\", \"l\", \"m\", \"n\", \"o\", \"p\", \"q\", \"r\", \"s\", \"t\", \"u\", \"v\", \"w\", \"x\",\n-- \t\"y\", \"z\", -- alphabatical\n-- \t\"f1\", \"f2\", \"f3\", \"f4\", \"f5\", \"f6\", \"f7\", \"f8\", \"f9\", \"f10\", \"f11\", \"f12\", --"
+    },
+    {
+      "name": "AutoContainer",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoContainer(width, height, padding, clip, draw)",
+      "tables": {},
+      "function_definition": "width = AutoDefault(width, 300)\nheight = AutoDefault(height, 400)\npadding = math.max(AutoDefault(padding, AutoPad.micro), 0)\nclip = AutoDefault(clip, false)\ndraw = AutoDefault(draw, true)\nlocal paddingwidth = math.max(width - padding * 2, padding * 2)\nlocal paddingheight = math.max(height - padding * 2, padding * 2)\nUiWindow(width, height, clip)\nUiAlign('left top')\nif draw then\nUiPush()\nUiColor(unpack(AutoSecondaryColor))\nUiImageBox(\"ui/common/box-solid-10.png\", UiWidth(), UiHeight(), 10, 10)\nUiPop()\nend\nhover = UiIsMouseInRect(UiWidth(), UiHeight())\nUiTranslate(padding, padding)\nUiWindow(paddingwidth, paddingheight, false)\nlocal offset = { x = 0, y = 0 }\nUiTranslate(offset.x, offset.y)\nreturn { rect = { w = paddingwidth, h = paddingheight }, hover = hover }\nend\n---Creates a Button\n---@param name string\n---@param fontsize number\n---@param paddingwidth number Amount of padding used Horizontally\n---@param paddingheight number Amount of padding used Vertically\n---@param draw boolean Draws the Button\n---@param spreadpad boolean Adds padding when used with AutoSpread...()\n---@return boolean Pressed\n---@return table ButtonData"
+    },
+    {
+      "name": "AutoButton",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoButton(name, fontsize, color, paddingwidth, paddingheight, draw, spreadpad)",
+      "tables": {},
+      "function_definition": "fontsize = AutoDefault(fontsize, 28)\ncolor = AutoDefault(color, AutoPrimaryColor)\npaddingwidth = AutoDefault(paddingwidth, AutoPad.thick)\npaddingheight = AutoDefault(paddingheight, AutoPad.thin)\ndraw = AutoDefault(draw, true)\nspreadpad = AutoDefault(spreadpad, true)\nUiPush()\nUiWordWrap(UiWidth() - AutoPad.thick)\nUiFont(AutoFont, fontsize)\nUiButtonHoverColor(unpack(AutoSpecialColor))\nUiButtonPressColor(0.75, 0.75, 0.75, 1)\nUiButtonPressDist(0.25)\nUiColor(0, 0, 0, 0)\nlocal rw, rh = UiText(name)\nlocal padrw, padrh = rw + paddingwidth * 2, rh + paddingheight * 2\nif draw then\nhover = UiIsMouseInRect(padrw, padrh)\nUiColor(unpack(color))\nUiButtonImageBox('ui/common/box-outline-6.png', 6, 6, unpack(color))\npressed = UiTextButton(name, padrw, padrh)\nend\nUiPop()\nlocal data = { pressed = pressed, hover = hover, rect = { w = padrw, h = padrh } }\nif draw then AutoHandleSpread(AutoGetSpread(), data, 'draw', spreadpad) end\nreturn pressed, data\nend\n---Draws some Text\n---@param name string\n---@param fontsize number\n---@param draw boolean Draws the Text\n---@param spread boolean Adds padding when used with AutoSpread...()\n---@return table TextData"
+    },
+    {
+      "name": "AutoText",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoText(name, fontsize, color, draw, spread)",
+      "tables": {},
+      "function_definition": "fontsize = AutoDefault(fontsize, 28)\ndraw = AutoDefault(draw, true)\nspread = AutoDefault(spread, true)\nUiPush()\nUiWordWrap(UiWidth() - AutoPad.thick)\nUiFont(AutoFont, fontsize)\nUiColor(0, 0, 0, 0)\nlocal rw, rh = UiText(name)\nif draw then\nUiPush()\nUiWindow(rw, rh)\nAutoCenter()\nUiColor(unpack(color or AutoPrimaryColor))\nUiText(name)\nUiPop()\nend\nUiPop()\nlocal data = { rect = { w = rw, h = rh }, hover = UiIsMouseInRect(rw, rh) }\nif spread then AutoHandleSpread(AutoGetSpread(), data, 'draw', true) end\nreturn data\nend\n---Creates a Slider\n---@param set number The Current Value\n---@param min number The Minimum\n---@param max number The Maximum\n---@param lockincrement number The increment\n---@param paddingwidth Amount of padding used Horizontally\n---@param paddingheight Amount of padding used Vertically\n---@param spreadpad boolean Adds padding when used with AutoSpread...()\n---@return number NewValue\n---@return table SliderData"
+    },
+    {
+      "name": "AutoSlider",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoSlider(set, min, max, lockincrement, paddingwidth, paddingheight, spreadpad)",
+      "tables": {},
+      "function_definition": "min = AutoDefault(min, 0)\nmax = AutoDefault(max, 1)\nset = AutoDefault(set, min)\nlockincrement = AutoDefault(lockincrement, 0)\npaddingwidth = AutoDefault(paddingwidth, AutoPad.thick)\npaddingheight = AutoDefault(paddingheight, AutoPad.micro)\nspreadpad = AutoDefault(spreadpad, true)\nlocal width = UiWidth() - paddingwidth * 2\nlocal dotwidth, dotheight = UiGetImageSize(\"MOD/slider.png\")\nlocal screen = AutoMap(set, min, max, 0, width)\nUiPush()\nUiTranslate(paddingwidth, paddingheight)\nUiColor(unpack(AutoSpecialColor))\nUiPush()\nUiTranslate(0, dotheight / 2)\nUiRect(width, 2)\nUiPop()\nUiTranslate(-dotwidth / 2, 0)\nscreen, released = UiSlider('MOD/slider.png', \"x\", screen, 0, width)\nscreen = AutoMap(screen, 0, width, min, max)\nscreen = AutoRound(screen, lockincrement)\nscreen = AutoClamp(screen, min, max)\nset = screen\nUiPop()\nlocal data = { value = set, released = released, rect = { w = width, h = paddingheight * 2 + dotheight } }\nAutoHandleSpread(AutoGetSpread(), data, 'draw', spreadpad)\nreturn set, data\nend\n---Draws an Image\n---@param path string\n---@param width number\n---@param height number\n---@param alpha number\n---@param draw boolean Draws the Image\n---@param spreadpad boolean Adds padding when used with AutoSpread...()\n---@return table ImageData"
+    },
+    {
+      "name": "AutoImage",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoImage(path, width, height, border, spreadpad)",
+      "tables": {},
+      "function_definition": "local w, h = UiGetImageSize(path)\nwidth = AutoDefault(width, (height == nil and UiWidth() or (height * (w / h))))\nheight = AutoDefault(height, width * (h / w))\nborder = AutoDefault(border, 0)\ndraw = AutoDefault(draw, true)\nspreadpad = AutoDefault(spreadpad, true)\nUiPush()\nUiImageBox(path, width, height, border, border)\nUiPop()\nlocal hover = UiIsMouseInRect(width, height)\nlocal data = { hover = hover, rect = { w = width, h = height } }\nif draw then AutoHandleSpread(AutoGetSpread(), data, 'draw', spreadpad) end\nreturn data\nend\n---Creates a handy little marker, doesnt effect anything, purely visual\n---@param size number, Default is 1"
+    },
+    {
+      "name": "AutoMarker",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoMarker(size)",
+      "tables": {},
+      "function_definition": "size = AutoDefault(size, 1) / 2\nUiPush()\nUiAlign('center middle')\nUiScale(size, size)\nUiColor(unpack(AutoSpecialColor))\nUiImage('ui/common/dot.png')\nUiPop()\nend\n#endregion\n#region Cursed\n-Loads a string as `return <lua_string>`\n-@param lua_string string\n-@return boolean success\n-@return unknown? return_value"
+    },
+    {
+      "name": "AutoParse",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoParse(lua_string)\nlocal formatted = 'return ' .. lua_string\nlocal success, func = pcall(loadstring, formatted)\nif success and func then\nlocal result_success, result = pcall(func)\nif result_success and result then\nreturn true, result\nend\nend\n\nreturn false\nend",
+      "tables": {},
+      "function_definition": "-A very sinful way to pipe raw code into the registry, use in combination with `AutoCMD_Parse`\n-@param path string\n-@param luastr string"
+    },
+    {
+      "name": "AutoCMD_Pipe",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoCMD_Pipe(path, luastr)\nlocal keys = ListKeys(path)\nlocal newkey = AutoKey(path, #keys + 1)\n\nSetString(newkey, luastr)\nend",
+      "tables": {},
+      "function_definition": "-A very sinful way to parse raw code from the registry, use in combination with `AutoCMD_Pipe`\n-\n-_God is dead and we killed her._\n-@param path string\n-@return table<{ cmd:string, result:any }>"
+    },
+    {
+      "name": "AutoCMD_Parse",
+      "arguments": [],
+      "returns": [],
+      "examples": [],
+      "description": "function AutoCMD_Parse(path)\nlocal results = {}\nfor index = 1, #ListKeys(path) do\nlocal key = AutoKey(path, index)\nlocal cmd = GetString(key)\nlocal success, func = pcall(loadstring, cmd)\n\nif success and func then -- if it fails, then the cmd is discarded and we do not try to fix it\nresults[#results + 1] = {\ncmd = cmd,\nresult = func()\n}\nend\n\nClearKey(key)\nend\n\nreturn results\nend",
+      "tables": {},
+      "function_definition": "#endregion"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ A discord bot for the Teardown server that fulfills a variety of functions
 
 CREDITS:
 
--GGProGaming: creator of this bot
+-GGProGaming - Nathan G: creator of this bot
 
 -Micro: for hosting the bot and giving feedback
 

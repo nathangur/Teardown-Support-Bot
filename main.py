@@ -1327,7 +1327,7 @@ async def _usage_analytics(ctx: SlashContext):
         embed = interactions.Embed(title="Usage Analytics", description=response, color=0xe9254e)
         await ctx.send(embed=embed, silent=True, delete_after=210)
 
-STEAM_API_KEY = "F15539D3EE060289D56DC3B3A70248A6"
+STEAM_API_KEY = "GAH FORGOT TO REMOVE"
 WORKSHOP_API_URL = "https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/"
 
 async def fetch_mods_based_on_url(workshop_url: str):
